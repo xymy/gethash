@@ -3,6 +3,8 @@ import hmac
 import os
 import re
 
+import click
+
 DEFAULT_CHUNK_SIZE = 0x100000
 
 
@@ -37,6 +39,8 @@ def generate_hash(ctx, patterns):
             with open(hash_path, 'w', encoding='utf-8') as f:
                 f.write(hash_line)
 
+            click.echo(hash_line, nl=False)
+
 
 def check_hash(ctx, patterns):
     for pattern in patterns:
@@ -45,10 +49,11 @@ def check_hash(ctx, patterns):
                 hash_line = f.read()
             hash_value, path = phash(hash_line)
             current_hash_value = gethash(ctx.copy(), path)
+
             if hmac.compare_digest(hash_value, current_hash_value):
-                print('[SUCCESS] {}'.format(path))
+                click.secho('[SUCCESS] {}'.format(path), fg='green')
             else:
-                print('[FAILURE] {}'.format(path))
+                click.secho('[FAILURE] {}'.format(path), fg='red')
 
 
 def script_main(ctx, check, files):
