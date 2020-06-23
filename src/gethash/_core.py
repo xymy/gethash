@@ -36,7 +36,7 @@ def generate_hash(ctx, patterns, *, suffix='.sha'):
         for path in map(os.path.normpath, glob.iglob(pattern)):
             hash_value = gethash(ctx.copy(), path)
             hash_line = fhash(hash_value, path)
-            hash_path = os.path.splitext(path)[0] + ctx.suffix
+            hash_path = os.path.splitext(path)[0] + suffix
             with open(hash_path, 'w', encoding='utf-8') as f:
                 f.write(hash_line)
 
