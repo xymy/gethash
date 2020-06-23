@@ -31,7 +31,7 @@ def gethash(ctx, path, *, chunk_size=DEFAULT_CHUNK_SIZE):
         return ctx.digest()
 
 
-def generate_hash(ctx, patterns):
+def generate_hash(ctx, patterns, *, suffix='.sha'):
     for pattern in patterns:
         for path in map(os.path.normpath, glob.iglob(pattern)):
             hash_value = gethash(ctx.copy(), path)
@@ -57,14 +57,13 @@ def check_hash(ctx, patterns):
                 click.secho('[FAILURE] {}'.format(path), fg='red')
 
 
-def script_main(command, ctx, name, check, files):
+def script_main(command, ctx, suffix, check, files):
     # When no argument, print help.
     if not files:
         sys.argv.append('--help')
         command()
 
-    ctx.suffix = '.' + name
     if check:
         check_hash(ctx, files)
     else:
-        generate_hash(ctx, files)
+        generate_hash(ctx, files, suffix=suffix)

@@ -47,7 +47,9 @@ setup(
 
     entry_points={
         'console_scripts': [
+            'getmd5 = gethash.getmd5:main',
             'getsha1 = gethash.getsha1:main',
+            'md5 = gethash.getmd5:main',
             'sha1 = gethash.getsha1:main',
         ]
     },
