@@ -1,10 +1,15 @@
+import importlib
+import sys
 from pathlib import Path
 
 from setuptools import find_packages, setup
 
-__project__ = 'gethash'
-__version__ = '0.1'
-__author__ = 'xymy'
+# Import this package from src directory.
+sys.path = [str(Path(__file__).with_name('src'))] + sys.path
+package = importlib.import_module('gethash')
+__project__ = package.__project
+__version__ = package.__version__
+__author__ = package.__author__
 
 readme = Path(__file__).with_name('README.md').read_text()
 
@@ -48,6 +53,7 @@ setup(
 
     install_requires=[
         'click>=7.0',
+        'colorama>=0.4.0; sys_platform == "win32"',
     ],
     python_requires='>=3.6'
 )
