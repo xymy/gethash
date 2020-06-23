@@ -2,6 +2,7 @@ import glob
 import hmac
 import os
 import re
+import sys
 
 import click
 
@@ -35,7 +36,7 @@ def generate_hash(ctx, patterns):
         for path in map(os.path.normpath, glob.iglob(pattern)):
             hash_value = gethash(ctx.copy(), path)
             hash_line = fhash(hash_value, path)
-            hash_path = os.path.splitext(path)[0] + '.' + ctx.name
+            hash_path = os.path.splitext(path)[0] + ctx.suffix
             with open(hash_path, 'w', encoding='utf-8') as f:
                 f.write(hash_line)
 
@@ -56,7 +57,13 @@ def check_hash(ctx, patterns):
                 click.secho('[FAILURE] {}'.format(path), fg='red')
 
 
-def script_main(ctx, check, files):
+def script_main(command, ctx, name, check, files):
+    # When no argument, print help.
+    if not files:
+        sys.argv.append('--help')
+        command()
+
+    ctx.suffix = '.' + name
     if check:
         check_hash(ctx, files)
     else:
