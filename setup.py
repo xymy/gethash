@@ -7,7 +7,7 @@ from setuptools import find_packages, setup
 # Import this package from src directory.
 sys.path = [str(Path(__file__).with_name('src'))] + sys.path
 package = importlib.import_module('gethash')
-__project__ = package.__project
+__project__ = package.__project__
 __version__ = package.__version__
 __author__ = package.__author__
 
