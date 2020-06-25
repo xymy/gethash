@@ -1,12 +1,12 @@
-import importlib
 import sys
+from importlib import import_module
 from pathlib import Path
 
 from setuptools import find_packages, setup
 
 # Import this package from src directory.
 sys.path = [str(Path(__file__).with_name('src'))] + sys.path
-package = importlib.import_module('gethash')
+package = import_module('gethash')
 __project__ = package.__project__
 __version__ = package.__version__
 __author__ = package.__author__
@@ -55,8 +55,9 @@ setup(
     },
 
     install_requires=[
-        'click>=7.0',
-        'colorama>=0.4.0; sys_platform == "win32"',
+        'click>=7.1',
+        'colorama>=0.4; sys_platform == "win32"',
+        'tqdm >= 4.46'
     ],
     python_requires='>=3.6'
 )
