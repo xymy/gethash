@@ -3,17 +3,21 @@ import hmac
 import os
 import re
 import sys
+from os import PathLike
+from typing import ByteString, Tuple
 
 import click
 
 DEFAULT_CHUNK_SIZE = 0x100000
 
 
-def fhash(hash_value, path):
+def fhash(hash_value: ByteString, path: PathLike) -> str:
+    """Format hash_value and path to hash_line."""
     return '{} *{}\n'.format(hash_value.hex(), path)
 
 
-def phash(hash_line):
+def phash(hash_line: str) -> Tuple[ByteString, PathLike]:
+    """Parse hash_line to hash_value and path."""
     m = re.match(r'([0-9a-fA-F]+) \*(.+)', hash_line)
     if m is None:
         raise ValueError('unexpected hash line')
