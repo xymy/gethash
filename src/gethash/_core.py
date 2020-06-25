@@ -7,6 +7,7 @@ from os import PathLike
 from typing import ByteString, Tuple
 
 import click
+from tqdm import tqdm
 
 DEFAULT_CHUNK_SIZE = 0x100000
 
@@ -26,12 +27,15 @@ def phash(hash_line: str) -> Tuple[ByteString, PathLike]:
 
 
 def gethash(ctx, path, *, chunk_size=DEFAULT_CHUNK_SIZE):
-    with open(path, 'rb') as f:
+    file_size = os.path.getsize(path)
+    bar = tqdm(total=file_size, leave=False, ascii=True)
+    with bar as bar, open(path, 'rb') as f:
         while True:
             chunk = f.read(chunk_size)
             if not chunk:
                 break
             ctx.update(chunk)
+            bar.update(len(chunk))
         return ctx.digest()
 
 
