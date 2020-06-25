@@ -1,8 +1,8 @@
-import glob
-import hmac
 import os
 import re
 import sys
+from glob import iglob
+from hmac import compare_digest
 from os import PathLike
 from typing import ByteString, Tuple
 
@@ -17,7 +17,7 @@ def fhash(hash_value: ByteString, path: PathLike) -> str:
     return '{} *{}\n'.format(hash_value.hex(), path)
 
 
-def phash(hash_line: str) -> Tuple[ByteString, PathLike]:
+def phash(hash_line: str) -> Tuple[bytes, str]:
     """Parse hash_line to hash_value and path."""
     m = re.match(r'([0-9a-fA-F]+) \*(.+)', hash_line)
     if m is None:
@@ -41,7 +41,7 @@ def gethash(ctx, path, *, chunk_size=DEFAULT_CHUNK_SIZE):
 
 def generate_hash(ctx, patterns, *, suffix='.sha'):
     for pattern in patterns:
-        for path in map(os.path.normpath, glob.iglob(pattern)):
+        for path in map(os.path.normpath, iglob(pattern)):
             hash_value = gethash(ctx.copy(), path)
             hash_line = fhash(hash_value, path)
             hash_path = path + suffix
@@ -53,13 +53,13 @@ def generate_hash(ctx, patterns, *, suffix='.sha'):
 
 def check_hash(ctx, patterns):
     for pattern in patterns:
-        for hash_path in map(os.path.normpath, glob.iglob(pattern)):
+        for hash_path in map(os.path.normpath, iglob(pattern)):
             with open(hash_path, 'r', encoding='utf-8') as f:
                 hash_line = f.read()
             hash_value, path = phash(hash_line)
             current_hash_value = gethash(ctx.copy(), path)
 
-            if hmac.compare_digest(hash_value, current_hash_value):
+            if compare_digest(hash_value, current_hash_value):
                 click.secho('[SUCCESS] {}'.format(path), fg='green')
             else:
                 click.secho('[FAILURE] {}'.format(path), fg='red')
