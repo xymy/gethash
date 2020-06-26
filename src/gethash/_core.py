@@ -13,12 +13,12 @@ DEFAULT_CHUNK_SIZE = 0x100000
 
 
 def fhash(hash_value: ByteString, path: PathLike) -> str:
-    """Format hash_value and path to hash_line."""
+    """Format `hash_value` and `path` to `hash_line`."""
     return '{} *{}\n'.format(hash_value.hex(), path)
 
 
 def phash(hash_line: str) -> Tuple[bytes, str]:
-    """Parse hash_line to hash_value and path."""
+    """Parse `hash_line` to `hash_value` and `path`."""
     m = re.match(r'([0-9a-fA-F]+) \*(.+)', hash_line)
     if m is None:
         raise ValueError('unexpected hash line')
@@ -26,7 +26,7 @@ def phash(hash_line: str) -> Tuple[bytes, str]:
     return bytes.fromhex(hash_value), path
 
 
-def calcualte_hash(
+def calculate_hash(
     ctx,
     path: PathLike,
     *,
@@ -34,6 +34,10 @@ def calcualte_hash(
     file=None,
     disable=False
 ) -> bytes:
+    """Calculate the hash value of `path` using given hash context `ctx`.
+
+    A progressbar is available when `file` is a tty and `disable` is `False`.
+    """
     file_size = os.path.getsize(path)
     bar = tqdm(total=file_size, leave=False,
                file=file, ascii=True, disable=disable)
@@ -48,7 +52,7 @@ def calcualte_hash(
 
 
 def _generate_hash(ctx, path, *, suffix='.sha'):
-    hash_value = calcualte_hash(ctx.copy(), path)
+    hash_value = calculate_hash(ctx.copy(), path)
     hash_line = fhash(hash_value, path)
     hash_path = path + suffix
     with open(hash_path, 'w', encoding='utf-8') as f:
@@ -67,7 +71,7 @@ def _check_hash(ctx, hash_path):
     with open(hash_path, 'r', encoding='utf-8') as f:
         hash_line = f.read()
     hash_value, path = phash(hash_line)
-    current_hash_value = calcualte_hash(ctx.copy(), path)
+    current_hash_value = calculate_hash(ctx.copy(), path)
     is_ok = compare_digest(hash_value, current_hash_value)
     return is_ok, path
 
