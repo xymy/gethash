@@ -8,6 +8,7 @@ from ._core import script_main
 @click.command()
 @click.option('-c', '--check', is_flag=True,
               help='read SHA1 from the FILES and check them.')
+@click.version_option()
 @click.argument('files', nargs=-1)
 def main(check, files):
     script_main(main, hashlib.sha1(), '.sha1', check, files)
