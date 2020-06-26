@@ -12,6 +12,10 @@ from tqdm import tqdm
 DEFAULT_CHUNK_SIZE = 0x100000
 
 
+class MissingFile(OSError):
+    """For the filename listed in checksum file but the file not exists."""
+
+
 def fhash(hash_value: ByteString, path: PathLike) -> str:
     """Format `hash_value` and `path` to `hash_line`."""
     return '{} *{}\n'.format(hash_value.hex(), path)
@@ -51,6 +55,11 @@ def calculate_hash(
         return ctx.digest()
 
 
+def _echo_error(path, exc):
+    message = '[ERROR] {}\n\t{}: {}'.format(path, type(exc).__name__, exc)
+    click.secho(message, err=True, fg='red')
+
+
 def _generate_hash(ctx, path, *, suffix='.sha'):
     hash_value = calculate_hash(ctx.copy(), path)
     hash_line = fhash(hash_value, path)
@@ -63,15 +72,22 @@ def _generate_hash(ctx, path, *, suffix='.sha'):
 def generate_hash(ctx, patterns, *, suffix='.sha'):
     for pattern in patterns:
         for path in map(os.path.normpath, iglob(pattern)):
-            hash_line = _generate_hash(ctx, path, suffix=suffix)
-            click.echo(hash_line, nl=False)
+            try:
+                hash_line = _generate_hash(ctx, path, suffix=suffix)
+            except Exception as e:
+                _echo_error(path, e)
+            else:
+                click.echo(hash_line, nl=False)
 
 
 def _check_hash(ctx, hash_path):
     with open(hash_path, 'r', encoding='utf-8') as f:
         hash_line = f.read()
     hash_value, path = phash(hash_line)
-    current_hash_value = calculate_hash(ctx.copy(), path)
+    try:
+        current_hash_value = calculate_hash(ctx.copy(), path)
+    except FileNotFoundError:
+        raise MissingFile(path)
     is_ok = compare_digest(hash_value, current_hash_value)
     return is_ok, path
 
@@ -79,11 +95,15 @@ def _check_hash(ctx, hash_path):
 def check_hash(ctx, patterns):
     for pattern in patterns:
         for hash_path in map(os.path.normpath, iglob(pattern)):
-            is_ok, path = _check_hash(ctx, hash_path)
-            if is_ok:
-                click.secho('[SUCCESS] {}'.format(path), fg='green')
+            try:
+                is_ok, path = _check_hash(ctx, hash_path)
+            except Exception as e:
+                _echo_error(hash_path, e)
             else:
-                click.secho('[FAILURE] {}'.format(path), fg='red')
+                if is_ok:
+                    click.secho('[SUCCESS] {}'.format(path), fg='green')
+                else:
+                    click.secho('[FAILURE] {}'.format(path), fg='red')
 
 
 def script_main(command, ctx, suffix, check, files):
