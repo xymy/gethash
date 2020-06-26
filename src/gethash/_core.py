@@ -47,27 +47,36 @@ def calcualte_hash(
         return ctx.digest()
 
 
+def _generate_hash(ctx, path, *, suffix='.sha'):
+    hash_value = calcualte_hash(ctx.copy(), path)
+    hash_line = fhash(hash_value, path)
+    hash_path = path + suffix
+    with open(hash_path, 'w', encoding='utf-8') as f:
+        f.write(hash_line)
+    return hash_line
+
+
 def generate_hash(ctx, patterns, *, suffix='.sha'):
     for pattern in patterns:
         for path in map(os.path.normpath, iglob(pattern)):
-            hash_value = calcualte_hash(ctx.copy(), path)
-            hash_line = fhash(hash_value, path)
-            hash_path = path + suffix
-            with open(hash_path, 'w', encoding='utf-8') as f:
-                f.write(hash_line)
-
+            hash_line = _generate_hash(ctx, path, suffix=suffix)
             click.echo(hash_line, nl=False)
+
+
+def _check_hash(ctx, hash_path):
+    with open(hash_path, 'r', encoding='utf-8') as f:
+        hash_line = f.read()
+    hash_value, path = phash(hash_line)
+    current_hash_value = calcualte_hash(ctx.copy(), path)
+    is_ok = compare_digest(hash_value, current_hash_value)
+    return is_ok, path
 
 
 def check_hash(ctx, patterns):
     for pattern in patterns:
         for hash_path in map(os.path.normpath, iglob(pattern)):
-            with open(hash_path, 'r', encoding='utf-8') as f:
-                hash_line = f.read()
-            hash_value, path = phash(hash_line)
-            current_hash_value = calcualte_hash(ctx.copy(), path)
-
-            if compare_digest(hash_value, current_hash_value):
+            is_ok, path = _check_hash(ctx, hash_path)
+            if is_ok:
                 click.secho('[SUCCESS] {}'.format(path), fg='green')
             else:
                 click.secho('[FAILURE] {}'.format(path), fg='red')
