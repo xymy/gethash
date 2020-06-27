@@ -92,20 +92,29 @@ def _check_hash_line(ctx, hash_line):
     return is_ok, path
 
 
+def _check_hash(ctx, hash_line, hash_path):
+    try:
+        is_ok, path = _check_hash_line(ctx, hash_line)
+    except Exception as e:
+        _echo_error(hash_path, e)
+    else:
+        if is_ok:
+            click.secho('[SUCCESS] {}'.format(path), fg='green')
+        else:
+            click.secho('[FAILURE] {}'.format(path), fg='red')
+
+
 def check_hash(ctx, patterns):
     for pattern in patterns:
         for hash_path in map(os.path.normpath, iglob(pattern)):
             try:
                 with open(hash_path, 'r', encoding='utf-8') as f:
-                    hash_line = f.read()
-                is_ok, path = _check_hash_line(ctx, hash_line)
+                    for hash_line in f:
+                        if hash_line.isspace():
+                            continue
+                        _check_hash(ctx, hash_line, hash_path)
             except Exception as e:
                 _echo_error(hash_path, e)
-            else:
-                if is_ok:
-                    click.secho('[SUCCESS] {}'.format(path), fg='green')
-                else:
-                    click.secho('[FAILURE] {}'.format(path), fg='red')
 
 
 def script_main(command, ctx, suffix, check, files):
