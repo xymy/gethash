@@ -18,7 +18,7 @@ pip3 install -U gethash
 
 ## Usage
 
-After installation, Four commands are available:
+After installation, 4 commands are available:
 
 - getmd5
 - getsha1
