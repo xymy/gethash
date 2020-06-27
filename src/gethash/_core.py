@@ -16,6 +16,11 @@ class MissingFile(OSError):
     """For the filename listed in checksum file but the file not exists."""
 
 
+def _echo_error(path, exc):
+    message = '[ERROR] {}\n\t{}: {}'.format(path, type(exc).__name__, exc)
+    click.secho(message, err=True, fg='red')
+
+
 def fhash(hash_value: ByteString, path: PathLike) -> str:
     """Format `hash_value` and `path` to `hash_line`."""
     return '{} *{}\n'.format(hash_value.hex(), path)
@@ -55,39 +60,34 @@ def calculate_hash(
         return ctx.digest()
 
 
-def _echo_error(path, exc):
-    message = '[ERROR] {}\n\t{}: {}'.format(path, type(exc).__name__, exc)
-    click.secho(message, err=True, fg='red')
-
-
-def _generate_hash(ctx, path, *, suffix='.sha'):
+def _generate_hash_line(ctx, path):
     hash_value = calculate_hash(ctx.copy(), path)
-    hash_line = fhash(hash_value, path)
-    hash_path = path + suffix
-    with open(hash_path, 'w', encoding='utf-8') as f:
-        f.write(hash_line)
-    return hash_line
+    return fhash(hash_value, path)
 
 
 def generate_hash(ctx, patterns, *, suffix='.sha'):
     for pattern in patterns:
         for path in map(os.path.normpath, iglob(pattern)):
             try:
-                hash_line = _generate_hash(ctx, path, suffix=suffix)
+                hash_line = _generate_hash_line(ctx, path)
+                hash_path = path + suffix
+                with open(hash_path, 'w', encoding='utf-8') as f:
+                    f.write(hash_line)
             except Exception as e:
                 _echo_error(path, e)
             else:
                 click.echo(hash_line, nl=False)
 
 
-def _check_hash(ctx, hash_path):
-    with open(hash_path, 'r', encoding='utf-8') as f:
-        hash_line = f.read()
+def _check_hash_line(ctx, hash_line):
     hash_value, path = phash(hash_line)
+
+    # If we cannot find the file listed in hash line, raise `MissingFile`.
     try:
         current_hash_value = calculate_hash(ctx.copy(), path)
     except FileNotFoundError:
         raise MissingFile(path)
+
     is_ok = compare_digest(hash_value, current_hash_value)
     return is_ok, path
 
@@ -96,7 +96,9 @@ def check_hash(ctx, patterns):
     for pattern in patterns:
         for hash_path in map(os.path.normpath, iglob(pattern)):
             try:
-                is_ok, path = _check_hash(ctx, hash_path)
+                with open(hash_path, 'r', encoding='utf-8') as f:
+                    hash_line = f.read()
+                is_ok, path = _check_hash_line(ctx, hash_line)
             except Exception as e:
                 _echo_error(hash_path, e)
             else:
