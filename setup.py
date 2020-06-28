@@ -49,8 +49,13 @@ setup(
         'console_scripts': [
             'getmd5 = gethash.getmd5:main',
             'getsha1 = gethash.getsha1:main',
+            'getsha256 = gethash.getsha256:main',
+            'getsha512 = gethash.getsha512:main',
+
             'md5 = gethash.getmd5:main',
             'sha1 = gethash.getsha1:main',
+            'sha256 = gethash.getsha256:main',
+            'sha512 = gethash.getsha512:main',
         ]
     },
 
