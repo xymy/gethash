@@ -31,7 +31,7 @@ setup(
     version=__version__,
     license='MIT',
 
-    description='Generate or check hash values.',
+    description='A command-line tools that can generate or check hash values.',
     long_description=readme,
     long_description_content_type='text/markdown',
 
