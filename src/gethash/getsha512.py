@@ -11,7 +11,7 @@ from ._core import script_main
 @click.version_option()
 @click.argument('files', nargs=-1)
 def main(check, files):
-    script_main(main, hashlib.sha512(), '.sha1', check, files)
+    script_main(main, hashlib.sha512(), '.sha512', check, files)
 
 
 if __name__ == '__main__':
