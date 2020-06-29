@@ -65,7 +65,7 @@ def _generate_hash_line(ctx, path):
     return fhash(hash_value, path)
 
 
-def generate_hash(ctx, patterns, *, suffix='.sha'):
+def generate_hash(ctx, patterns, *, file=sys.stdout, suffix='.sha'):
     for pattern in patterns:
         for path in map(os.path.normpath, iglob(pattern)):
             try:
@@ -76,7 +76,7 @@ def generate_hash(ctx, patterns, *, suffix='.sha'):
             except Exception as e:
                 _echo_error(path, e)
             else:
-                click.echo(hash_line, nl=False)
+                click.echo(hash_line, file=file, nl=False)
 
 
 def _check_hash_line(ctx, hash_line):
@@ -92,19 +92,19 @@ def _check_hash_line(ctx, hash_line):
     return is_ok, path
 
 
-def _check_hash(ctx, hash_line, hash_path):
+def _check_hash(ctx, hash_line, hash_path, *, file=sys.stdout):
     try:
         is_ok, path = _check_hash_line(ctx, hash_line)
     except Exception as e:
         _echo_error(hash_path, e)
     else:
         if is_ok:
-            click.secho('[SUCCESS] {}'.format(path), fg='green')
+            click.secho('[SUCCESS] {}'.format(path), file=file, fg='green')
         else:
-            click.secho('[FAILURE] {}'.format(path), fg='red')
+            click.secho('[FAILURE] {}'.format(path), file=file, fg='red')
 
 
-def check_hash(ctx, patterns):
+def check_hash(ctx, patterns, *, file=sys.stdout):
     for pattern in patterns:
         for hash_path in map(os.path.normpath, iglob(pattern)):
             try:
@@ -112,7 +112,7 @@ def check_hash(ctx, patterns):
                     for hash_line in f:
                         if hash_line.isspace():
                             continue
-                        _check_hash(ctx, hash_line, hash_path)
+                        _check_hash(ctx, hash_line, hash_path, file=file)
             except Exception as e:
                 _echo_error(hash_path, e)
 
