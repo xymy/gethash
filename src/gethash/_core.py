@@ -12,7 +12,7 @@ from tqdm import tqdm
 DEFAULT_CHUNK_SIZE = 0x100000
 
 
-class MissingFile(OSError):
+class MissingFile(FileNotFoundError):
     """For the filename listed in checksum file but the file not exists."""
 
 
@@ -117,7 +117,7 @@ def check_hash(ctx, patterns):
                 _echo_error(hash_path, e)
 
 
-def script_main(command, ctx, suffix, check, files):
+def script_main(command, ctx, suffix, check, files, **kwargs):
     # When no argument, print help.
     if not files:
         sys.argv.append('--help')
