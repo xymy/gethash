@@ -123,7 +123,10 @@ def script_main(command, ctx, suffix, check, files, **kwargs):
         sys.argv.append('--help')
         command()
 
+    no_stdout = kwargs.pop('no_stdout', False)
+    file = open(os.devnull, 'w') if no_stdout else sys.stdout
+
     if check:
-        check_hash(ctx, files)
+        check_hash(ctx, files, file=file)
     else:
-        generate_hash(ctx, files, suffix=suffix)
+        generate_hash(ctx, files, file=file, suffix=suffix)

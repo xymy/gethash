@@ -8,10 +8,12 @@ from ._core import script_main
 @click.command()
 @click.option('-c', '--check', is_flag=True,
               help='read SHA512 from the FILES and check them.')
+@click.option('--no-stdout', is_flag=True,
+              help='Do not output to stdout.')
 @click.version_option()
 @click.argument('files', nargs=-1)
-def main(check, files):
-    script_main(main, hashlib.sha512(), '.sha512', check, files)
+def main(check, files, **kwargs):
+    script_main(main, hashlib.sha512(), '.sha512', check, files, **kwargs)
 
 
 if __name__ == '__main__':
