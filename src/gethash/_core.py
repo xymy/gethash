@@ -9,6 +9,33 @@ from typing import ByteString, Tuple
 import click
 from tqdm import tqdm
 
+_CHUNK_SIZE = 0x100000
+
+
+def calculate_hash(
+    ctx,
+    path: PathLike,
+    *,
+    chunk_size=_CHUNK_SIZE,
+    **tqdm_args
+) -> bytes:
+    """Calculate the hash value of `path` using given hash context `ctx`.
+
+    A tqdm progressbar is also available.
+    """
+    file_size = os.path.getsize(path)
+    leave = tqdm_args.pop('leave', False)
+    ascii = tqdm_args.pop('ascii', True)
+    bar = tqdm(total=file_size, leave=leave, ascii=ascii, **tqdm_args)
+    with bar as bar, open(path, 'rb') as f:
+        while True:
+            chunk = f.read(chunk_size)
+            if not chunk:
+                break
+            ctx.update(chunk)
+            bar.update(len(chunk))
+        return ctx.digest()
+
 
 def fhash(hash_value: ByteString, path: PathLike) -> str:
     """Format `hash_value` and `path` to `hash_line`."""
@@ -31,32 +58,6 @@ class MissingFile(FileNotFoundError):
 def _echo_error(path, exc):
     message = '[ERROR] {}\n\t{}: {}'.format(path, type(exc).__name__, exc)
     click.secho(message, err=True, fg='red')
-
-
-_CHUNK_SIZE = 0x100000
-
-
-def calculate_hash(
-    ctx,
-    path: PathLike,
-    *,
-    chunk_size=_CHUNK_SIZE,
-    **tqdm_args
-) -> bytes:
-    """Calculate the hash value of `path` using given hash context `ctx`.
-
-    A progressbar is available when `file` is a tty and `disable` is `False`.
-    """
-    file_size = os.path.getsize(path)
-    bar = tqdm(total=file_size, leave=False, ascii=True, **tqdm_args)
-    with bar as bar, open(path, 'rb') as f:
-        while True:
-            chunk = f.read(chunk_size)
-            if not chunk:
-                break
-            ctx.update(chunk)
-            bar.update(len(chunk))
-        return ctx.digest()
 
 
 def generate_hash_line(ctx, path, **tqdm_args):
