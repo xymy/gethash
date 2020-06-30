@@ -60,8 +60,8 @@ def calculate_hash(
         return ctx.digest()
 
 
-def _generate_hash_line(ctx, path, *, file=sys.stdout):
-    hash_value = calculate_hash(ctx.copy(), path, file=file)
+def generate_hash_line(ctx, path, **kwargs):
+    hash_value = calculate_hash(ctx.copy(), path, **kwargs)
     return fhash(hash_value, path)
 
 
@@ -69,7 +69,7 @@ def generate_hash(ctx, patterns, *, file=sys.stdout, suffix='.sha'):
     for pattern in patterns:
         for path in map(os.path.normpath, iglob(pattern)):
             try:
-                hash_line = _generate_hash_line(ctx, path, file=file)
+                hash_line = generate_hash_line(ctx, path, file=file)
                 hash_path = path + suffix
                 with open(hash_path, 'w', encoding='utf-8') as f:
                     f.write(hash_line)
@@ -79,12 +79,12 @@ def generate_hash(ctx, patterns, *, file=sys.stdout, suffix='.sha'):
                 click.echo(hash_line, file=file, nl=False)
 
 
-def _check_hash_line(ctx, hash_line, *, file=sys.stdout):
+def check_hash_line(ctx, hash_line, **kwargs):
     hash_value, path = phash(hash_line)
 
     # If we cannot find the file listed in hash line, raise `MissingFile`.
     try:
-        current_hash_value = calculate_hash(ctx.copy(), path, file=file)
+        current_hash_value = calculate_hash(ctx.copy(), path, **kwargs)
     except FileNotFoundError:
         raise MissingFile(path)
 
@@ -94,7 +94,7 @@ def _check_hash_line(ctx, hash_line, *, file=sys.stdout):
 
 def _check_hash(ctx, hash_line, hash_path, *, file=sys.stdout):
     try:
-        is_ok, path = _check_hash_line(ctx, hash_line, file=file)
+        is_ok, path = check_hash_line(ctx, hash_line, file=file)
     except Exception as e:
         _echo_error(hash_path, e)
     else:
