@@ -19,7 +19,8 @@ def calculate_hash(
     chunk_size=_CHUNK_SIZE,
     **tqdm_args
 ) -> bytes:
-    """Calculate the hash value of `path` using given hash context `ctx`.
+    """Calculate the hash value of `path` using the copy of given hash context
+    prototype.
 
     A tqdm progressbar is also available.
     """
