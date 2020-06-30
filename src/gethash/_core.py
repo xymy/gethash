@@ -9,17 +9,6 @@ from typing import ByteString, Tuple
 import click
 from tqdm import tqdm
 
-DEFAULT_CHUNK_SIZE = 0x100000
-
-
-class MissingFile(FileNotFoundError):
-    """For the filename listed in checksum file but the file not exists."""
-
-
-def _echo_error(path, exc):
-    message = '[ERROR] {}\n\t{}: {}'.format(path, type(exc).__name__, exc)
-    click.secho(message, err=True, fg='red')
-
 
 def fhash(hash_value: ByteString, path: PathLike) -> str:
     """Format `hash_value` and `path` to `hash_line`."""
@@ -35,11 +24,23 @@ def phash(hash_line: str) -> Tuple[bytes, str]:
     return bytes.fromhex(hash_value), path
 
 
+class MissingFile(FileNotFoundError):
+    """For the filename listed in checksum file but the file not exists."""
+
+
+def _echo_error(path, exc):
+    message = '[ERROR] {}\n\t{}: {}'.format(path, type(exc).__name__, exc)
+    click.secho(message, err=True, fg='red')
+
+
+_CHUNK_SIZE = 0x100000
+
+
 def calculate_hash(
     ctx,
     path: PathLike,
     *,
-    chunk_size=DEFAULT_CHUNK_SIZE,
+    chunk_size=_CHUNK_SIZE,
     **tqdm_args
 ) -> bytes:
     """Calculate the hash value of `path` using given hash context `ctx`.
