@@ -13,7 +13,7 @@ _CHUNK_SIZE = 0x100000
 
 
 def calculate_hash(
-    ctx,
+    hash_context_prototype,
     path: PathLike,
     *,
     chunk_size=_CHUNK_SIZE,
@@ -23,6 +23,7 @@ def calculate_hash(
 
     A tqdm progressbar is also available.
     """
+    ctx = hash_context_prototype.copy()
     file_size = os.path.getsize(path)
     leave = tqdm_args.pop('leave', False)
     ascii = tqdm_args.pop('ascii', True)
