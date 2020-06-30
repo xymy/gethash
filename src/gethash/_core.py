@@ -60,6 +60,32 @@ def _echo_error(path, exc):
     click.secho(message, err=True, fg='red')
 
 
+class GetHash(object):
+    def __init__(self, ctx, *, file=sys.stdout, suffix='.sha', **kwargs):
+        self.ctx = ctx
+        self.file = file
+        self.suffix = suffix
+        self.tqdm_args = {'file': file, **kwargs}
+
+    def generate_hash_line(self, path):
+        ctx = self.ctx.copy()
+        hash_value = calculate_hash(ctx, path, **self.tqdm_args)
+        return fhash(hash_value, path)
+
+    def check_hash_line(self, hash_line):
+        hash_value, path = phash(hash_line)
+
+        # If we cannot find the file listed in hash line, raise `MissingFile`.
+        try:
+            ctx = self.ctx.copy()
+            current_hash_value = calculate_hash(ctx, path, **self.tqdm_args)
+        except FileNotFoundError:
+            raise MissingFile(path)
+
+        is_ok = compare_digest(hash_value, current_hash_value)
+        return is_ok, path
+
+
 def generate_hash_line(ctx, path, **tqdm_args):
     hash_value = calculate_hash(ctx.copy(), path, **tqdm_args)
     return fhash(hash_value, path)
