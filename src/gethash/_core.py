@@ -40,16 +40,14 @@ def calculate_hash(
     path: PathLike,
     *,
     chunk_size=DEFAULT_CHUNK_SIZE,
-    file=None,
-    disable=False
+    **tqdm_args
 ) -> bytes:
     """Calculate the hash value of `path` using given hash context `ctx`.
 
     A progressbar is available when `file` is a tty and `disable` is `False`.
     """
     file_size = os.path.getsize(path)
-    bar = tqdm(total=file_size, leave=False,
-               file=file, ascii=True, disable=disable)
+    bar = tqdm(total=file_size, leave=False, ascii=True, **tqdm_args)
     with bar as bar, open(path, 'rb') as f:
         while True:
             chunk = f.read(chunk_size)
