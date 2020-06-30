@@ -58,8 +58,8 @@ def calculate_hash(
         return ctx.digest()
 
 
-def generate_hash_line(ctx, path, **kwargs):
-    hash_value = calculate_hash(ctx.copy(), path, **kwargs)
+def generate_hash_line(ctx, path, **tqdm_args):
+    hash_value = calculate_hash(ctx.copy(), path, **tqdm_args)
     return fhash(hash_value, path)
 
 
@@ -77,12 +77,12 @@ def generate_hash(ctx, patterns, *, file=sys.stdout, suffix='.sha'):
                 click.echo(hash_line, file=file, nl=False)
 
 
-def check_hash_line(ctx, hash_line, **kwargs):
+def check_hash_line(ctx, hash_line, **tqdm_args):
     hash_value, path = phash(hash_line)
 
     # If we cannot find the file listed in hash line, raise `MissingFile`.
     try:
-        current_hash_value = calculate_hash(ctx.copy(), path, **kwargs)
+        current_hash_value = calculate_hash(ctx.copy(), path, **tqdm_args)
     except FileNotFoundError:
         raise MissingFile(path)
 
