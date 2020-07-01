@@ -103,6 +103,7 @@ def script_main(command, ctx, suffix, check, files, **kwargs):
         sys.argv.append('--help')
         command()
 
+    # Resolve command-line options.
     no_stdout = kwargs.pop('no_stdout', False)
     file = open(os.devnull, 'w') if no_stdout else sys.stdout
     no_stderr = kwargs.pop('no_stderr', False)
