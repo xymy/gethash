@@ -2,7 +2,7 @@ import hashlib
 
 import click
 
-from ._core import script_main
+from ._script import script_main
 
 
 @click.command()
@@ -10,6 +10,8 @@ from ._core import script_main
               help='read MD5 from the FILES and check them.')
 @click.option('--no-stdout', is_flag=True,
               help='Do not output to stdout.')
+@click.option('--no-stderr', is_flag=True,
+              help='Do not output to stderr.')
 @click.version_option()
 @click.argument('files', nargs=-1)
 def main(check, files, **kwargs):
