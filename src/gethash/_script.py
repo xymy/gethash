@@ -97,19 +97,23 @@ class GetHash(object):
                 self.echo_error(hash_path, e)
 
 
-def script_main(command, ctx, suffix, check, files, **kwargs):
+def script_main(command, ctx, suffix, check, files, **options):
     # When no argument, print help.
     if not files:
         sys.argv.append('--help')
         command()
 
     # Resolve command-line options.
-    no_stdout = kwargs.pop('no_stdout', False)
+
+    no_stdout = options.pop('no_stdout', False)
     file = open(os.devnull, 'w') if no_stdout else sys.stdout
-    no_stderr = kwargs.pop('no_stderr', False)
+
+    no_stderr = options.pop('no_stderr', False)
     errfile = open(os.devnull, 'w') if no_stderr else sys.stderr
 
-    args = {'file': file, 'errfile': errfile}
+    no_glob = options.pop('no_glob', False)
+
+    args = {'file': file, 'errfile': errfile, 'no_glob': no_glob}
     gh = GetHash(ctx, suffix=suffix, **args)
 
     if check:
