@@ -1,5 +1,3 @@
-import hashlib
-
 import click
 
 from ._script import script_main
@@ -12,9 +10,12 @@ from ._script import script_main
               help='Do not output to stdout.')
 @click.option('--no-stderr', is_flag=True,
               help='Do not output to stderr.')
+@click.option('--no-glob', is_flag=True,
+              help='Do not resolve glob patterns.')
 @click.version_option()
 @click.argument('files', nargs=-1)
 def main(check, files, **kwargs):
+    import hashlib
     script_main(main, hashlib.md5(), '.md5', check, files, **kwargs)
 
 
