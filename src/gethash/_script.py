@@ -120,3 +120,22 @@ def script_main(command, ctx, suffix, check, files, **options):
         gh.check_hash(files)
     else:
         gh.generate_hash(files)
+
+
+def gethashcli(name):
+    def decorator(func):
+        @click.command()
+        @click.option('-c', '--check', is_flag=True,
+                      help='read {} from FILES and check them.'.format(name))
+        @click.option('--no-stdout', is_flag=True,
+                      help='Do not output to stdout.')
+        @click.option('--no-stderr', is_flag=True,
+                      help='Do not output to stderr.')
+        @click.option('--no-glob', is_flag=True,
+                      help='Do not resolve glob patterns.')
+        @click.version_option()
+        @click.argument('files', nargs=-1)
+        def wrapper(*args, **kwargs):
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
