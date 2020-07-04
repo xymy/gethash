@@ -17,6 +17,13 @@ class ParseHashLineError(ValueError):
 class CheckHashLineError(ValueError):
     """Raised by function `chl`."""
 
+    def __init__(self, hash_line, hash_value, path, curr_hash_value):
+        super().__init__(hash_line, hash_value, path, curr_hash_value)
+        self.hash_line = hash_line
+        self.hash_value = hash_value
+        self.path = path
+        self.curr_hash_value = curr_hash_value
+
 
 def calc_hash(
     ctx_proto,
@@ -82,5 +89,5 @@ def chl(ctx_proto, hash_line, **tqdm_args):
     hash_value, path = phl(hash_line)
     curr_hash_value = calc_hash(ctx_proto, path, **tqdm_args)
     if not compare_digest(hash_value, curr_hash_value):
-        raise CheckHashLineError(hash_line)
+        raise CheckHashLineError(hash_line, hash_value, path, curr_hash_value)
     return path
