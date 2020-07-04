@@ -12,7 +12,7 @@ class MissingFile(FileNotFoundError):
 
 
 class GetHash(object):
-    """Provide script template."""
+    """Provide script interfaces."""
 
     def __init__(self, ctx, *, suffix='.sha', **kwargs):
         self.ctx = ctx
