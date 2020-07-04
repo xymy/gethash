@@ -11,11 +11,11 @@ _HL_PAT = re.compile(r'([0-9a-fA-F]+) \*(.+)')
 
 
 class ParseHashLineError(ValueError):
-    pass
+    """Raised by function `phl`."""
 
 
 class CheckHashLineError(ValueError):
-    pass
+    """Raised by function `chl`."""
 
 
 def calc_hash(
@@ -45,13 +45,19 @@ def calc_hash(
         return ctx.digest()
 
 
-def fhash(hash_value: ByteString, path: PathLike) -> str:
-    """Format `hash_value` and `path` to `hash_line`."""
+def fhl(hash_value: ByteString, path: PathLike) -> str:
+    """Format hash line.
+
+    Require hash value and path; return hash line.
+    """
     return '{} *{}\n'.format(hash_value.hex(), path)
 
 
-def phash(hash_line: str) -> Tuple[bytes, str]:
-    """Parse `hash_line` to `hash_value` and `path`."""
+def phl(hash_line: str) -> Tuple[bytes, str]:
+    """Parse hash line.
+
+    Require hash line; return hash value and path.
+    """
     m = _HL_PAT.match(hash_line)
     if m is None:
         raise ParseHashLineError(hash_line)
@@ -60,14 +66,20 @@ def phash(hash_line: str) -> Tuple[bytes, str]:
 
 
 def ghl(ctx_proto, path, **tqdm_args):
-    """Generate hash line."""
+    """Generate hash line.
+
+    Require path; return hash line.
+    """
     hash_value = calc_hash(ctx_proto, path, **tqdm_args)
-    return fhash(hash_value, path)
+    return fhl(hash_value, path)
 
 
 def chl(ctx_proto, hash_line, **tqdm_args):
-    """Check hash line."""
-    hash_value, path = phash(hash_line)
+    """Check hash line.
+
+    Require hash line; return path.
+    """
+    hash_value, path = phl(hash_line)
     curr_hash_value = calc_hash(ctx_proto, path, **tqdm_args)
     if not compare_digest(hash_value, curr_hash_value):
         raise CheckHashLineError(hash_line)
