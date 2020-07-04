@@ -1,11 +1,10 @@
 import os
 import sys
 from glob import iglob
-from hmac import compare_digest
 
 import click
 
-from ._core import calc_hash, fhash, phash
+from ._core import CheckHashLineError, chl, ghl
 
 
 class MissingFile(FileNotFoundError):
@@ -33,24 +32,6 @@ class GetHash(object):
         message = '[ERROR] {}\n\t{}: {}'.format(path, type(exc).__name__, exc)
         click.secho(message, file=self.errfile, fg='red')
 
-    def ghl(self, path):
-        """Generate hash line."""
-        hash_value = calc_hash(self.ctx, path, **self.tqdm_args)
-        return fhash(hash_value, path)
-
-    def chl(self, hash_line):
-        """Check hash line."""
-        hash_value, path = phash(hash_line)
-
-        # If we cannot find the file listed in hash line, raise `MissingFile`.
-        try:
-            curr_hash_value = calc_hash(self.ctx, path, **self.tqdm_args)
-        except FileNotFoundError:
-            raise MissingFile(path)
-
-        is_ok = compare_digest(hash_value, curr_hash_value)
-        return is_ok, path
-
     def glob(self, patterns):
         if self.no_glob:
             def glob_func(pattern):
@@ -65,7 +46,7 @@ class GetHash(object):
     def generate_hash(self, patterns):
         for path in self.glob(patterns):
             try:
-                hash_line = self.ghl(path)
+                hash_line = ghl(self.ctx, path, **self.tqdm_args)
                 hash_path = path + self.suffix
                 with open(hash_path, 'w', encoding='utf-8') as f:
                     f.write(hash_line)
@@ -76,14 +57,13 @@ class GetHash(object):
 
     def _check_hash(self, hash_line, hash_path):
         try:
-            is_ok, path = self.chl(hash_line)
+            path = chl(self.ctx, hash_line, **self.tqdm_args)
+        except CheckHashLineError as e:
+            self.secho('[FAILURE] {}'.format(e.path), fg='red')
         except Exception as e:
             self.echo_error(hash_path, e)
         else:
-            if is_ok:
-                self.secho('[SUCCESS] {}'.format(path), fg='green')
-            else:
-                self.secho('[FAILURE] {}'.format(path), fg='red')
+            self.secho('[SUCCESS] {}'.format(path), fg='green')
 
     def check_hash(self, patterns):
         for hash_path in self.glob(patterns):
