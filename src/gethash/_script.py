@@ -4,11 +4,8 @@ from glob import iglob
 
 import click
 
+from . import __version__
 from ._core import CheckHashLineError, chl, ghl
-
-
-class MissingFile(FileNotFoundError):
-    """For the filename listed in checksum file but the file not exists."""
 
 
 class GetHash(object):
@@ -113,7 +110,7 @@ def gethashcli(name):
                       help='Do not output to stderr.')
         @click.option('--no-glob', is_flag=True,
                       help='Do not resolve glob patterns.')
-        @click.version_option()
+        @click.version_option(__version__)
         @click.argument('files', nargs=-1)
         def wrapper(*args, **kwargs):
             return func(*args, **kwargs)
