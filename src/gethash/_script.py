@@ -1,5 +1,6 @@
 import os
 import sys
+from functools import wraps
 from glob import iglob
 
 import click
@@ -112,6 +113,7 @@ def gethashcli(name):
                       help='Do not resolve glob patterns.')
         @click.version_option(__version__)
         @click.argument('files', nargs=-1)
+        @wraps(func)
         def wrapper(*args, **kwargs):
             return func(*args, **kwargs)
         return wrapper
