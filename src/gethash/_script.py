@@ -1,6 +1,6 @@
 import os
 import sys
-from functools import wraps
+from functools import partial, wraps
 from glob import iglob
 
 import click
@@ -15,10 +15,16 @@ class GetHash(object):
     def __init__(self, ctx, *, suffix='.sha', **kwargs):
         self.ctx = ctx
         self.suffix = suffix
+
+        self.inplace = kwargs.pop('inplace', False)
         self.file = kwargs.pop('file', sys.stdout)
         self.errfile = kwargs.pop('errfile', sys.stderr)
         self.no_glob = kwargs.pop('no_glob', False)
         self.tqdm_args = {'file': self.file, **kwargs}
+
+        # The ghl/chl functions with context.
+        self.ghlc = partial(ghl, self.ctx, **self.tqdm_args)
+        self.chlc = partial(chl, self.ctx, **self.tqdm_args)
 
     def echo(self, msg, **kwargs):
         click.echo(msg, file=self.file, **kwargs)
@@ -44,7 +50,7 @@ class GetHash(object):
     def generate_hash(self, patterns):
         for path in self.glob(patterns):
             try:
-                hash_line = ghl(self.ctx, path, **self.tqdm_args)
+                hash_line = self.ghlc(path, inplace=self.inplace)
                 hash_path = path + self.suffix
                 with open(hash_path, 'w', encoding='utf-8') as f:
                     f.write(hash_line)
@@ -55,7 +61,7 @@ class GetHash(object):
 
     def _check_hash(self, hash_line, hash_path):
         try:
-            path = chl(self.ctx, hash_line, **self.tqdm_args)
+            path = self.chlc(hash_line, inplace=hash_path)
         except CheckHashLineError as e:
             self.secho('[FAILURE] {}'.format(e.path), fg='red')
         except Exception as e:
@@ -83,6 +89,8 @@ def script_main(command, ctx, suffix, check, files, **options):
 
     # Resolve command-line options.
 
+    inplace = options.pop('inplace', False)
+
     no_stdout = options.pop('no_stdout', False)
     file = open(os.devnull, 'w') if no_stdout else sys.stdout
 
@@ -91,7 +99,12 @@ def script_main(command, ctx, suffix, check, files, **options):
 
     no_glob = options.pop('no_glob', False)
 
-    args = {'file': file, 'errfile': errfile, 'no_glob': no_glob}
+    args = {
+        'inplace': inplace,
+        'file': file,
+        'errfile': errfile,
+        'no_glob': no_glob
+    }
     gh = GetHash(ctx, suffix=suffix, **args)
 
     if check:
@@ -105,6 +118,8 @@ def gethashcli(name):
         @click.command()
         @click.option('-c', '--check', is_flag=True,
                       help='Read {} from FILES and check them.'.format(name))
+        @click.option('-i', '--inplace', is_flag=True,
+                      help='Use basename in checksum files.')
         @click.option('--no-stdout', is_flag=True,
                       help='Do not output to stdout.')
         @click.option('--no-stderr', is_flag=True,
