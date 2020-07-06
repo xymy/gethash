@@ -72,21 +72,29 @@ def phl(hash_line: str) -> Tuple[bytes, str]:
     return bytes.fromhex(hash_value), path
 
 
-def ghl(ctx_proto, path, **tqdm_args):
+def ghl(ctx_proto, path, *, inplace=False, **tqdm_args):
     """Generate hash line.
 
     Require path; return hash line.
     """
     hash_value = calc_hash(ctx_proto, path, **tqdm_args)
+    if inplace:
+        path = os.path.basename(path)
     return fhl(hash_value, path)
 
 
-def chl(ctx_proto, hash_line, **tqdm_args):
+def chl(ctx_proto, hash_line, *, inplace=False, **tqdm_args):
     """Check hash line.
 
     Require hash line; return path.
     """
     hash_value, path = phl(hash_line)
+    try:
+        hash_path = os.fspath(inplace)
+    except TypeError:
+        pass
+    else:
+        path = os.path.join(os.path.dirname(hash_path), path)
     curr_hash_value = calc_hash(ctx_proto, path, **tqdm_args)
     if not compare_digest(hash_value, curr_hash_value):
         raise CheckHashLineError(hash_line, hash_value, path, curr_hash_value)
