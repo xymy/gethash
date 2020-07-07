@@ -20,7 +20,15 @@ class GetHash(object):
         self.file = kwargs.pop('file', sys.stdout)
         self.errfile = kwargs.pop('errfile', sys.stderr)
         self.no_glob = kwargs.pop('no_glob', False)
-        self.tqdm_args = {'file': self.file, **kwargs}
+
+        leave = kwargs.pop('leave', False)
+        ascii = kwargs.pop('ascii', True)
+        self.tqdm_args = {
+            'file': self.file,
+            'leave': leave,
+            'ascii': ascii,
+            **kwargs
+        }
 
         # The ghl/chl functions with context.
         self.ghlc = partial(ghl, self.ctx, **self.tqdm_args)

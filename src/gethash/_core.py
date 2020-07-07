@@ -39,9 +39,7 @@ def calc_hash(
     """
     ctx = ctx_proto.copy()
     file_size = os.path.getsize(path)
-    leave = tqdm_args.pop('leave', False)
-    ascii = tqdm_args.pop('ascii', True)
-    bar = tqdm(total=file_size, leave=leave, ascii=ascii, **tqdm_args)
+    bar = tqdm(total=file_size, **tqdm_args)
     with bar as bar, open(path, 'rb') as f:
         while True:
             chunk = f.read(chunk_size)
