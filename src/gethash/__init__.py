@@ -1,5 +1,5 @@
 __project__ = 'gethash'
-__version__ = '0.9'
+__version__ = '1.0'
 __author__ = 'xymy'
 
 __all__ = ['ParseHashLineError', 'ParseHashLineError',

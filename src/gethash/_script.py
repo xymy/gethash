@@ -30,7 +30,7 @@ class GetHash(object):
             **kwargs
         }
 
-        # The ghl/chl functions with context.
+        # Bind ghl/chl functions to context.
         self.ghlc = partial(ghl, self.ctx, **self.tqdm_args)
         self.chlc = partial(chl, self.ctx, **self.tqdm_args)
 
