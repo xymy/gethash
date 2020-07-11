@@ -7,7 +7,7 @@ from typing import ByteString, Tuple
 from tqdm import tqdm
 
 _CHUNK_SIZE = 0x100000
-_HL_PAT = re.compile(r'([0-9a-fA-F]+) \*(.+)')
+_HL_PAT = re.compile(r'([0-9a-fA-F]+) (?:\*| )?(.+)')
 
 
 class ParseHashLineError(ValueError):
