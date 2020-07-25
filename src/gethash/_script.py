@@ -22,6 +22,7 @@ class GetHash(object):
         self.file = kwargs.pop('file', sys.stdout)
         self.errfile = kwargs.pop('errfile', sys.stderr)
 
+        # Prepare arguments passed to tqdm.
         leave = kwargs.pop('leave', False)
         ascii = kwargs.pop('ascii', True)
         self.tqdm_args = {
@@ -31,7 +32,7 @@ class GetHash(object):
             **kwargs
         }
 
-        # Bind ghl/chl functions to context.
+        # Bind ghl/chl functions to current context.
         self.ghlc = partial(ghl, self.ctx, **self.tqdm_args)
         self.chlc = partial(chl, self.ctx, **self.tqdm_args)
 
@@ -98,17 +99,15 @@ def script_main(command, ctx, suffix, check, files, **options):
         command()
 
     # Resolve command-line options.
-
     inplace = options.pop('inplace', False)
     no_file = options.pop('no_file', False)
     no_glob = options.pop('no_glob', False)
-
     no_stdout = options.pop('no_stdout', False)
-    file = open(os.devnull, 'w') if no_stdout else sys.stdout
-
     no_stderr = options.pop('no_stderr', False)
-    errfile = open(os.devnull, 'w') if no_stderr else sys.stderr
 
+    # Build GetHash context.
+    file = open(os.devnull, 'w') if no_stdout else sys.stdout
+    errfile = open(os.devnull, 'w') if no_stderr else sys.stderr
     args = {
         'inplace': inplace,
         'no_file': no_file,
