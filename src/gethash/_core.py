@@ -10,6 +10,10 @@ _CHUNK_SIZE = 0x100000
 _HL_PAT = re.compile(r'([0-9a-fA-F]+) (?:\*| )?(.+)')
 
 
+class IsDirectory(OSError):
+    """Raise by function `calc_hash`."""
+
+
 class ParseHashLineError(ValueError):
     """Raised by function `phl`."""
 
@@ -37,6 +41,8 @@ def calc_hash(
 
     A tqdm progressbar is also available.
     """
+    if os.path.isdir(path):
+        raise IsDirectory('"{}" is a directory'.format(path))
     ctx = ctx_proto.copy()
     file_size = os.path.getsize(path)
     bar = tqdm(total=file_size, **tqdm_args)
