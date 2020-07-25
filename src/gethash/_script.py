@@ -17,6 +17,7 @@ class GetHash(object):
         self.suffix = suffix
 
         self.inplace = kwargs.pop('inplace', False)
+        self.no_file = kwargs.pop('no_file', False)
         self.no_glob = kwargs.pop('no_glob', False)
         self.file = kwargs.pop('file', sys.stdout)
         self.errfile = kwargs.pop('errfile', sys.stderr)
@@ -60,8 +61,9 @@ class GetHash(object):
             try:
                 hash_line = self.ghlc(path, inplace=self.inplace)
                 hash_path = path + self.suffix
-                with open(hash_path, 'w', encoding='utf-8') as f:
-                    f.write(hash_line)
+                if not self.no_file:
+                    with open(hash_path, 'w', encoding='utf-8') as f:
+                        f.write(hash_line)
             except Exception as e:
                 self.echo_error(path, e)
             else:
@@ -98,6 +100,7 @@ def script_main(command, ctx, suffix, check, files, **options):
     # Resolve command-line options.
 
     inplace = options.pop('inplace', False)
+    no_file = options.pop('no_file', False)
     no_glob = options.pop('no_glob', False)
 
     no_stdout = options.pop('no_stdout', False)
@@ -108,6 +111,7 @@ def script_main(command, ctx, suffix, check, files, **options):
 
     args = {
         'inplace': inplace,
+        'no_file': no_file,
         'no_glob': no_glob,
         'file': file,
         'errfile': errfile
@@ -127,6 +131,8 @@ def gethashcli(name):
                       help='Read {} from FILES and check them.'.format(name))
         @click.option('-i', '--inplace', is_flag=True,
                       help='Use basename in checksum files.')
+        @click.option('--no-file', is_flag=True,
+                      help='Do not output checksum files.')
         @click.option('--no-glob', is_flag=True,
                       help='Do not resolve glob patterns.')
         @click.option('--no-stdout', is_flag=True,
