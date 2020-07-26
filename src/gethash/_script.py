@@ -93,22 +93,15 @@ class GetHash(object):
 
 
 def script_main(ctx, suffix, check, files, **options):
-    # Resolve command-line options.
-    inplace = options.pop('inplace', False)
-    no_file = options.pop('no_file', False)
-    no_glob = options.pop('no_glob', False)
+    # Build GetHash context.
     no_stdout = options.pop('no_stdout', False)
     no_stderr = options.pop('no_stderr', False)
-
-    # Build GetHash context.
     file = open(os.devnull, 'w') if no_stdout else sys.stdout
     errfile = open(os.devnull, 'w') if no_stderr else sys.stderr
     args = {
-        'inplace': inplace,
-        'no_file': no_file,
-        'no_glob': no_glob,
         'file': file,
-        'errfile': errfile
+        'errfile': errfile,
+        **options
     }
     gh = GetHash(ctx, suffix=suffix, **args)
 
