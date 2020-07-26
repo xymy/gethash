@@ -1,5 +1,5 @@
 __project__ = 'gethash'
-__version__ = '1.1'
+__version__ = '1.2'
 __author__ = 'xymy'
 
 __all__ = ['ParseHashLineError', 'ParseHashLineError',
@@ -7,6 +7,7 @@ __all__ = ['ParseHashLineError', 'ParseHashLineError',
 
 from ._core import (    # noqa: F401
     CheckHashLineError,
+    IsDirectory,
     ParseHashLineError,
     calc_hash,
     chl,
