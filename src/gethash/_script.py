@@ -92,11 +92,11 @@ class GetHash(object):
                 self.echo_error(hash_path, e)
 
 
-def script_main(command, ctx, suffix, check, files, **options):
+def script_main(ctx, suffix, check, files, **options):
     # When no argument, print help.
     if not files:
-        sys.argv.append('--help')
-        command()
+        c = click.globals.get_current_context()
+        click.echo(c.get_help())
 
     # Resolve command-line options.
     inplace = options.pop('inplace', False)
