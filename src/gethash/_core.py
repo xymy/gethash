@@ -11,7 +11,7 @@ _HL_PAT = re.compile(r'([0-9a-fA-F]+) (?:\*| )?(.+)')
 
 
 class IsDirectory(OSError):
-    """Raise by function `calc_hash`."""
+    """Raised by function `calc_hash`."""
 
 
 class ParseHashLineError(ValueError):
