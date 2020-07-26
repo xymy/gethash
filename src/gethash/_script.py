@@ -93,11 +93,6 @@ class GetHash(object):
 
 
 def script_main(ctx, suffix, check, files, **options):
-    # When no argument, print help.
-    if not files:
-        c = click.globals.get_current_context()
-        click.echo(c.get_help())
-
     # Resolve command-line options.
     inplace = options.pop('inplace', False)
     no_file = options.pop('no_file', False)
@@ -125,7 +120,7 @@ def script_main(ctx, suffix, check, files, **options):
 
 def gethashcli(name):
     def decorator(func):
-        @click.command()
+        @click.command(no_args_is_help=True)
         @click.option('-c', '--check', is_flag=True,
                       help='Read {} from FILES and check them.'.format(name))
         @click.option('-i', '--inplace', is_flag=True,
