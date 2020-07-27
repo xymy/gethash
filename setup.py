@@ -4,14 +4,17 @@ from pathlib import Path
 
 from setuptools import find_packages, setup
 
-# Import this package from src directory.
+# Import this package from src directory and fetch metadata.
 sys.path = [str(Path(__file__).with_name('src'))] + sys.path
 package = import_module('gethash')
 project = package.__project__
 version = package.__version__
 author = package.__author__
 
-readme = Path(__file__).with_name('README.md').read_text()
+# Read metadata from files.
+root = Path(__file__).parent
+readme = (root / 'README.md').read_text()
+requirements = (root / 'requirements.txt').read_text().splitlines()
 
 classifiers = [
     'License :: OSI Approved',
@@ -59,10 +62,6 @@ setup(
         ]
     },
 
-    install_requires=[
-        'click>=7.1',
-        'colorama>=0.4; sys_platform == "win32"',
-        'tqdm >= 4.46'
-    ],
+    install_requires=requirements,
     python_requires='>=3.6'
 )
