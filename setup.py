@@ -54,11 +54,15 @@ setup(
             'getsha1 = gethash.getsha1:main',
             'getsha256 = gethash.getsha256:main',
             'getsha512 = gethash.getsha512:main',
+            'getblake2b = gethash.getblake2b:main',
+            'getblake2s = gethash.getblake2s:main',
 
             'md5 = gethash.getmd5:main',
             'sha1 = gethash.getsha1:main',
             'sha256 = gethash.getsha256:main',
             'sha512 = gethash.getsha512:main',
+            'blake2b = gethash.getblake2b:main',
+            'blake2s = gethash.getblake2s:main',
         ]
     },
 
