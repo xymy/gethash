@@ -1,10 +1,13 @@
 from ._script import gethashcli, script_main
 
+NAME = 'SHA256'
+SUFFIX = '.sha256'
 
-@gethashcli('SHA256')
+
+@gethashcli(NAME)
 def main(check, files, **kwargs):
-    import hashlib
-    script_main(hashlib.sha256(), '.sha256', check, files, **kwargs)
+    from hashlib import sha256 as H
+    script_main(H(), SUFFIX, check, files, **kwargs)
 
 
 if __name__ == '__main__':

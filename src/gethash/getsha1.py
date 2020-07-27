@@ -1,10 +1,13 @@
 from ._script import gethashcli, script_main
 
+NAME = 'SHA1'
+SUFFIX = '.sha1'
 
-@gethashcli('SHA1')
+
+@gethashcli(NAME)
 def main(check, files, **kwargs):
-    import hashlib
-    script_main(hashlib.sha1(), '.sha1', check, files, **kwargs)
+    from hashlib import sha1 as H
+    script_main(H(), SUFFIX, check, files, **kwargs)
 
 
 if __name__ == '__main__':
