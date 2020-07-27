@@ -7,9 +7,9 @@ from setuptools import find_packages, setup
 # Import this package from src directory.
 sys.path = [str(Path(__file__).with_name('src'))] + sys.path
 package = import_module('gethash')
-__project__ = package.__project__
-__version__ = package.__version__
-__author__ = package.__author__
+project = package.__project__
+version = package.__version__
+author = package.__author__
 
 readme = Path(__file__).with_name('README.md').read_text()
 
@@ -27,15 +27,15 @@ classifiers = [
 ]
 
 setup(
-    name=__project__,
-    version=__version__,
+    name=project,
+    version=version,
     license='MIT',
 
     description='A command-line tools that can generate or check hash values.',
     long_description=readme,
     long_description_content_type='text/markdown',
 
-    author=__author__,
+    author=author,
     author_email='thyfan@163.com',
     url='https://github.com/xymy/gethash',
 
