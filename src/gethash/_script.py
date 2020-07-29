@@ -22,10 +22,12 @@ class GetHash(object):
         self.file = kwargs.pop('file', sys.stdout)
         self.errfile = kwargs.pop('errfile', sys.stderr)
 
-        # Prepare arguments passed to tqdm.
+        # Prepare arguments passed to underlying functions.
+        dir_ok = kwargs.pop('dir', False)
         leave = kwargs.pop('leave', False)
         ascii = kwargs.pop('ascii', True)
         self.extra = {
+            'dir_ok': dir_ok,
             'file': self.file,
             'leave': leave,
             'ascii': ascii,
