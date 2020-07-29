@@ -25,7 +25,7 @@ class GetHash(object):
         # Prepare arguments passed to tqdm.
         leave = kwargs.pop('leave', False)
         ascii = kwargs.pop('ascii', True)
-        self.tqdm_args = {
+        self.extra = {
             'file': self.file,
             'leave': leave,
             'ascii': ascii,
@@ -33,8 +33,8 @@ class GetHash(object):
         }
 
         # Bind ghl/chl functions to current context.
-        self.ghlc = partial(ghl, self.ctx, **self.tqdm_args)
-        self.chlc = partial(chl, self.ctx, **self.tqdm_args)
+        self.ghlc = partial(ghl, self.ctx, **self.extra)
+        self.chlc = partial(chl, self.ctx, **self.extra)
 
     def echo(self, msg, **kwargs):
         click.echo(msg, file=self.file, **kwargs)
@@ -116,6 +116,8 @@ def gethashcli(name):
         @click.command(no_args_is_help=True)
         @click.option('-c', '--check', is_flag=True,
                       help='Read {} from FILES and check them.'.format(name))
+        @click.option('-d', '--dir', is_flag=True,
+                      help='Allow checksum for directories.')
         @click.option('-i', '--inplace', is_flag=True,
                       help='Use basename in checksum files.')
         @click.option('--no-file', is_flag=True,

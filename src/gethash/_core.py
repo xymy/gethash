@@ -29,20 +29,13 @@ class CheckHashLineError(ValueError):
         self.curr_hash_value = curr_hash_value
 
 
-def calc_hash(
+def calc_hash_f(
     ctx_proto,
     path,
     *,
     chunk_size=_CHUNK_SIZE,
     **tqdm_args
 ) -> bytes:
-    """Calculate the hash value of `path` using the copy of given hash context
-    prototype `ctx_proto`.
-
-    A tqdm progressbar is also available.
-    """
-    if os.path.isdir(path):
-        raise IsDirectory('"{}" is a directory'.format(path))
     ctx = ctx_proto.copy()
     file_size = os.path.getsize(path)
     bar = tqdm(total=file_size, **tqdm_args)
@@ -54,6 +47,47 @@ def calc_hash(
             ctx.update(chunk)
             bar.update(len(chunk))
         return ctx.digest()
+
+
+def calc_hash_d(
+    ctx_proto,
+    path,
+    *,
+    chunk_size=_CHUNK_SIZE,
+    **tqdm_args
+) -> bytes:
+    value = bytes(ctx_proto.digest_size)
+    with os.scandir(path) as it:
+        for entry in it:
+            if entry.is_dir():
+                other = calc_hash_d(
+                    ctx_proto, entry, chunk_size=chunk_size, **tqdm_args)
+            else:
+                other = calc_hash_f(
+                    ctx_proto, entry, chunk_size=chunk_size, **tqdm_args)
+            value = bytes(x ^ y for x, y in zip(value, other))
+    return value
+
+
+def calc_hash(
+    ctx_proto,
+    path,
+    *,
+    chunk_size=_CHUNK_SIZE,
+    dir_ok=False,
+    **tqdm_args
+) -> bytes:
+    """Calculate the hash value of `path` using the copy of given hash context
+    prototype `ctx_proto`.
+
+    A tqdm progressbar is also available.
+    """
+    if os.path.isdir(path):
+        if dir_ok:
+            return calc_hash_d(
+                ctx_proto, path, chunk_size=chunk_size, **tqdm_args)
+        raise IsDirectory('"{}" is a directory'.format(path))
+    return calc_hash_f(ctx_proto, path, chunk_size=chunk_size, **tqdm_args)
 
 
 def fhl(hash_value: ByteString, path: PathLike) -> str:
@@ -76,18 +110,18 @@ def phl(hash_line: str) -> Tuple[bytes, str]:
     return bytes.fromhex(hash_value), path
 
 
-def ghl(ctx_proto, path, *, inplace=False, **tqdm_args):
+def ghl(ctx_proto, path, *, inplace=False, **extra):
     """Generate hash line.
 
     Require path; return hash line.
     """
-    hash_value = calc_hash(ctx_proto, path, **tqdm_args)
+    hash_value = calc_hash(ctx_proto, path, **extra)
     if inplace:
         path = os.path.basename(path)
     return fhl(hash_value, path)
 
 
-def chl(ctx_proto, hash_line, *, inplace=False, **tqdm_args):
+def chl(ctx_proto, hash_line, *, inplace=False, **extra):
     """Check hash line.
 
     Require hash line; return path.
@@ -99,7 +133,7 @@ def chl(ctx_proto, hash_line, *, inplace=False, **tqdm_args):
         pass
     else:
         path = os.path.join(os.path.dirname(hash_path), path)
-    curr_hash_value = calc_hash(ctx_proto, path, **tqdm_args)
+    curr_hash_value = calc_hash(ctx_proto, path, **extra)
     if not compare_digest(hash_value, curr_hash_value):
         raise CheckHashLineError(hash_line, hash_value, path, curr_hash_value)
     return path
