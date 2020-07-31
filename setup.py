@@ -54,6 +54,8 @@ setup(
             'sha1 = gethash.getsha1:main',
             'sha256 = gethash.getsha256:main',
             'sha512 = gethash.getsha512:main',
+            'sha3-256 = gethash.getsha3_256:main',
+            'sha3-512 = gethash.getsha3_512:main',
             'blake2b = gethash.getblake2b:main',
             'blake2s = gethash.getblake2s:main',
         ]
