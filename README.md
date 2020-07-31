@@ -27,6 +27,8 @@ After installation, 6 commands are available:
 - blake2b
 - blake2s
 
+### Generate hash values
+
 ```shell
 $ ls -l
 total 296
@@ -47,7 +49,11 @@ total 299
 -rw-r--r-- 1 User 197610     51 Jun 27 10:44 002.zip.sha1
 -rw-r--r-- 1 User 197610 103064 Jun 27 10:44 003.zip
 -rw-r--r-- 1 User 197610     51 Jun 27 10:44 003.zip.sha1
+```
 
+### Check hash values
+
+```shell
 $ cat *.sha1
 7701133eb84b567362fbf1b9e3883d7620ee8ada *001.zip
 0d6c6cb6908064139f419c1b528f99142a1f2a49 *002.zip
