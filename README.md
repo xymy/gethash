@@ -18,12 +18,14 @@ pip3 install -U gethash
 
 ## Usage
 
-After installation, 6 commands are available:
+After installation, 8 commands are available:
 
 - md5
 - sha1
 - sha256
 - sha512
+- sha3-256
+- sha3-512
 - blake2b
 - blake2s
 
