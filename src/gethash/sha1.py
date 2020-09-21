@@ -1,14 +1,15 @@
 from ._script import gethashcli, script_main
 
-NAME = 'BLAKE2b'
-SUFFIX = '.blake2b'
+NAME = "SHA1"
+SUFFIX = ".sha1"
 
 
 @gethashcli(NAME)
 def main(check, files, **kwargs):
-    from hashlib import blake2b as H
+    from hashlib import sha1 as H
+
     script_main(H(), SUFFIX, check, files, **kwargs)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()  # pylint: disable=no-value-for-parameter

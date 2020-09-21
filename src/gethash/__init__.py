@@ -1,3 +1,3 @@
-__project__ = 'gethash'
-__version__ = '1.4'
-__author__ = 'xymy'
+__project__ = "gethash"
+__version__ = "1.4"
+__author__ = "xymy"

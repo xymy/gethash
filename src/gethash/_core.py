@@ -7,7 +7,7 @@ from typing import ByteString, Tuple
 from tqdm import tqdm
 
 _CHUNK_SIZE = 0x100000
-_HL_PAT = re.compile(r'([0-9a-fA-F]+) (?:\*| )?(.+)')
+_HL_PAT = re.compile(r"([0-9a-fA-F]+) (?:\*| )?(.+)")
 
 
 class IsDirectory(OSError):
@@ -29,17 +29,11 @@ class CheckHashLineError(ValueError):
         self.curr_hash_value = curr_hash_value
 
 
-def calc_hash_f(
-    ctx_proto,
-    path,
-    *,
-    chunk_size=_CHUNK_SIZE,
-    **tqdm_args
-) -> bytes:
+def calc_hash_f(ctx_proto, path, *, chunk_size=_CHUNK_SIZE, **tqdm_args) -> bytes:
     ctx = ctx_proto.copy()
     file_size = os.path.getsize(path)
     bar = tqdm(total=file_size, **tqdm_args)
-    with bar as bar, open(path, 'rb') as f:
+    with bar as bar, open(path, "rb") as f:
         while True:
             chunk = f.read(chunk_size)
             if not chunk:
@@ -49,33 +43,24 @@ def calc_hash_f(
         return ctx.digest()
 
 
-def calc_hash_d(
-    ctx_proto,
-    path,
-    *,
-    chunk_size=_CHUNK_SIZE,
-    **tqdm_args
-) -> bytes:
+def calc_hash_d(ctx_proto, path, *, chunk_size=_CHUNK_SIZE, **tqdm_args) -> bytes:
     value = bytes(ctx_proto.digest_size)
     with os.scandir(path) as it:
         for entry in it:
             if entry.is_dir():
                 other = calc_hash_d(
-                    ctx_proto, entry, chunk_size=chunk_size, **tqdm_args)
+                    ctx_proto, entry, chunk_size=chunk_size, **tqdm_args
+                )
             else:
                 other = calc_hash_f(
-                    ctx_proto, entry, chunk_size=chunk_size, **tqdm_args)
+                    ctx_proto, entry, chunk_size=chunk_size, **tqdm_args
+                )
             value = bytes(x ^ y for x, y in zip(value, other))
     return value
 
 
 def calc_hash(
-    ctx_proto,
-    path,
-    *,
-    chunk_size=_CHUNK_SIZE,
-    dir_ok=False,
-    **tqdm_args
+    ctx_proto, path, *, chunk_size=_CHUNK_SIZE, dir_ok=False, **tqdm_args
 ) -> bytes:
     """Calculate the hash value of `path` using the copy of given hash context
     prototype `ctx_proto`.
@@ -84,8 +69,7 @@ def calc_hash(
     """
     if os.path.isdir(path):
         if dir_ok:
-            return calc_hash_d(
-                ctx_proto, path, chunk_size=chunk_size, **tqdm_args)
+            return calc_hash_d(ctx_proto, path, chunk_size=chunk_size, **tqdm_args)
         raise IsDirectory('"{}" is a directory'.format(path))
     return calc_hash_f(ctx_proto, path, chunk_size=chunk_size, **tqdm_args)
 
@@ -95,7 +79,7 @@ def fhl(hash_value: ByteString, path: PathLike) -> str:
 
     Require hash value and path; return hash line.
     """
-    return '{} *{}\n'.format(hash_value.hex(), path)
+    return "{} *{}\n".format(hash_value.hex(), path)
 
 
 def phl(hash_line: str) -> Tuple[bytes, str]:

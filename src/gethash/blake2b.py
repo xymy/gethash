@@ -1,14 +1,15 @@
 from ._script import gethashcli, script_main
 
-NAME = 'MD5'
-SUFFIX = '.md5'
+NAME = "BLAKE2b"
+SUFFIX = ".blake2b"
 
 
 @gethashcli(NAME)
 def main(check, files, **kwargs):
-    from hashlib import md5 as H
+    from hashlib import blake2b as H
+
     script_main(H(), SUFFIX, check, files, **kwargs)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()  # pylint: disable=no-value-for-parameter
