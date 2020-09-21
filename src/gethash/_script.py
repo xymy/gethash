@@ -19,8 +19,8 @@ class GetHash(object):
         self.inplace = kwargs.pop("inplace", False)
         self.no_file = kwargs.pop("no_file", False)
         self.no_glob = kwargs.pop("no_glob", False)
-        self.file = kwargs.pop("file", sys.stdout)
-        self.errfile = kwargs.pop("errfile", sys.stderr)
+        self.stdout = kwargs.pop("stdout", sys.stdout)
+        self.stderr = kwargs.pop("stderr", sys.stderr)
 
         # Prepare arguments passed to underlying functions.
         dir_ok = kwargs.pop("dir", False)
@@ -28,7 +28,7 @@ class GetHash(object):
         ascii = kwargs.pop("ascii", True)
         self.extra = {
             "dir_ok": dir_ok,
-            "file": self.file,
+            "file": self.stdout,
             "leave": leave,
             "ascii": ascii,
             **kwargs,
@@ -39,14 +39,14 @@ class GetHash(object):
         self.chlc = partial(chl, self.ctx, **self.extra)
 
     def echo(self, msg, **kwargs):
-        click.echo(msg, file=self.file, **kwargs)
+        click.echo(msg, file=self.stdout, **kwargs)
 
     def secho(self, msg, **kwargs):
-        click.secho(msg, file=self.file, **kwargs)
+        click.secho(msg, file=self.stdout, **kwargs)
 
     def echo_error(self, path, exc):
         message = "[ERROR] {}\n\t{}: {}".format(path, type(exc).__name__, exc)
-        click.secho(message, file=self.errfile, fg="red")
+        click.secho(message, file=self.stderr, fg="red")
 
     def glob(self, patterns):
         if self.no_glob:
@@ -102,9 +102,9 @@ def script_main(ctx, suffix, check, files, **options):
     # Build GetHash context.
     no_stdout = options.pop("no_stdout", False)
     no_stderr = options.pop("no_stderr", False)
-    file = open(os.devnull, "w") if no_stdout else sys.stdout
-    errfile = open(os.devnull, "w") if no_stderr else sys.stderr
-    args = {"file": file, "errfile": errfile, **options}
+    stdout = open(os.devnull, "w") if no_stdout else sys.stdout
+    stderr = open(os.devnull, "w") if no_stderr else sys.stderr
+    args = {"stdout": stdout, "stderr": stderr, **options}
     gh = GetHash(ctx, suffix=suffix, **args)
 
     if check:
