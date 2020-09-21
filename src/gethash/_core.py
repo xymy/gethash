@@ -10,10 +10,6 @@ _CHUNK_SIZE = 0x100000
 _HL_PAT = re.compile(r"([0-9a-fA-F]+) (?:\*| )?(.+)")
 
 
-class IsDirectory(OSError):
-    """Raised by function `calc_hash`."""
-
-
 class ParseHashLineError(ValueError):
     """Raised by function `phl`."""
 
@@ -29,11 +25,20 @@ class CheckHashLineError(ValueError):
         self.curr_hash_value = curr_hash_value
 
 
-def calc_hash_f(ctx_proto, path, *, chunk_size=_CHUNK_SIZE, **tqdm_args) -> bytes:
+class IsDirectory(OSError):
+    """Raised by function `calc_hash`."""
+
+
+def calc_hash_f(ctx_proto, filepath, *, chunk_size=_CHUNK_SIZE, **tqdm_args) -> bytes:
+    """Calculate the hash value of a file using the copy of given hash context
+    prototype `ctx_proto`.
+
+    A tqdm progressbar is also available.
+    """
     ctx = ctx_proto.copy()
-    file_size = os.path.getsize(path)
+    file_size = os.path.getsize(filepath)
     bar = tqdm(total=file_size, **tqdm_args)
-    with bar as bar, open(path, "rb") as f:
+    with bar as bar, open(filepath, "rb") as f:
         while True:
             chunk = f.read(chunk_size)
             if not chunk:
@@ -43,9 +48,14 @@ def calc_hash_f(ctx_proto, path, *, chunk_size=_CHUNK_SIZE, **tqdm_args) -> byte
         return ctx.digest()
 
 
-def calc_hash_d(ctx_proto, path, *, chunk_size=_CHUNK_SIZE, **tqdm_args) -> bytes:
+def calc_hash_d(ctx_proto, dirpath, *, chunk_size=_CHUNK_SIZE, **tqdm_args) -> bytes:
+    """Calculate the hash value of a directory using the copy of given hash
+    context prototype `ctx_proto`.
+
+    A tqdm progressbar is also available.
+    """
     value = bytes(ctx_proto.digest_size)
-    with os.scandir(path) as it:
+    with os.scandir(dirpath) as it:
         for entry in it:
             if entry.is_dir():
                 other = calc_hash_d(

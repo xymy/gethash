@@ -97,6 +97,8 @@ class GetHash(object):
 
 
 def script_main(ctx, suffix, check, files, **options):
+    """Generate the main body of the main function."""
+
     # Build GetHash context.
     no_stdout = options.pop("no_stdout", False)
     no_stderr = options.pop("no_stderr", False)
@@ -112,6 +114,8 @@ def script_main(ctx, suffix, check, files, **options):
 
 
 def gethashcli(name):
+    """Generate click decorators for the main function."""
+
     def decorator(func):
         @click.command(no_args_is_help=True)
         @click.option(
