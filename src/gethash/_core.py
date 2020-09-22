@@ -84,7 +84,7 @@ def calc_hash(
     return calc_hash_f(ctx_proto, path, chunk_size=chunk_size, **tqdm_args)
 
 
-def fhl(hash_value: ByteString, path: PathLike) -> str:
+def format_hash_line(hash_value: ByteString, path: PathLike) -> str:
     """Format hash line.
 
     Require hash value and path; return hash line.
@@ -92,7 +92,7 @@ def fhl(hash_value: ByteString, path: PathLike) -> str:
     return "{} *{}\n".format(hash_value.hex(), path)
 
 
-def phl(hash_line: str) -> Tuple[bytes, str]:
+def parse_hash_line(hash_line: str) -> Tuple[bytes, str]:
     """Parse hash line.
 
     Require hash line; return hash value and path.
@@ -104,7 +104,7 @@ def phl(hash_line: str) -> Tuple[bytes, str]:
     return bytes.fromhex(hash_value), path
 
 
-def ghl(ctx_proto, path, *, inplace=False, **extra):
+def generate_hash_line(ctx_proto, path, *, inplace=False, **extra):
     """Generate hash line.
 
     Require path; return hash line.
@@ -112,15 +112,15 @@ def ghl(ctx_proto, path, *, inplace=False, **extra):
     hash_value = calc_hash(ctx_proto, path, **extra)
     if inplace:
         path = os.path.basename(path)
-    return fhl(hash_value, path)
+    return format_hash_line(hash_value, path)
 
 
-def chl(ctx_proto, hash_line, *, inplace=False, **extra):
+def check_hash_line(ctx_proto, hash_line, *, inplace=False, **extra):
     """Check hash line.
 
     Require hash line; return path.
     """
-    hash_value, path = phl(hash_line)
+    hash_value, path = parse_hash_line(hash_line)
     try:
         hash_path = os.fspath(inplace)
     except TypeError:

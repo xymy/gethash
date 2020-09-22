@@ -6,7 +6,7 @@ from glob import iglob
 import click
 
 from . import __version__
-from ._core import CheckHashLineError, chl, ghl
+from ._core import CheckHashLineError, check_hash_line, generate_hash_line
 
 
 class GetHash(object):
@@ -35,8 +35,8 @@ class GetHash(object):
         }
 
         # Bind ghl/chl functions to current context.
-        self.ghlc = partial(ghl, self.ctx, **self.extra)
-        self.chlc = partial(chl, self.ctx, **self.extra)
+        self.ghlc = partial(generate_hash_line, self.ctx, **self.extra)
+        self.chlc = partial(check_hash_line, self.ctx, **self.extra)
 
     def echo(self, msg, **kwargs):
         click.echo(msg, file=self.stdout, **kwargs)
@@ -72,6 +72,7 @@ class GetHash(object):
             except Exception as e:
                 self.echo_error(path, e)
             else:
+                # The hash line already has a newline.
                 self.echo(hash_line, nl=False)
 
     def _check_hash(self, hash_line, hash_path):
