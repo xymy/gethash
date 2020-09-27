@@ -9,9 +9,10 @@ root = Path(__file__).parent
 # Import this package from src directory and fetch metadata.
 sys.path = [str(root / "src")] + sys.path
 package = import_module("gethash")
-project = package.__dict__.get("__project__", None)
-version = package.__dict__.get("__version__", None)
-author = package.__dict__.get("__author__", None)
+project = getattr(package, "__project__", None)
+version = getattr(package, "__version__", None)
+author = getattr(package, "__author__", None)
+email = getattr(package, "__email__", None)
 
 # Read metadata from files.
 readme = (root / "README.md").read_text()
@@ -38,7 +39,7 @@ setup(
     long_description=readme,
     long_description_content_type="text/markdown",
     author=author,
-    author_email="thyfan@163.com",
+    author_email=email,
     url="https://github.com/xymy/gethash",
     classifiers=classifiers,
     package_dir={"": "src"},
