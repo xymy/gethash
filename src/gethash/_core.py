@@ -1,3 +1,4 @@
+import io
 import os
 import re
 from hmac import compare_digest
@@ -27,6 +28,73 @@ class CheckHashLineError(ValueError):
 
 class IsDirectory(OSError):
     """Raised by function `calc_hash`."""
+
+
+class Hasher(object):
+    """Calculate the hash value using the copy of given hash context prototype
+    `ctx_proto`.
+
+    A tqdm progressbar is also available.
+    """
+
+    def __init__(self, ctx_proto, *, chunk_size=None, tqdm_args=None):
+        self.ctx_proto = ctx_proto
+        self.chunk_size = _CHUNK_SIZE if chunk_size is None else chunk_size
+        self.tqdm_args = {} if tqdm_args is None else tqdm_args
+
+    def calc_hash_f(self, filepath, start=None, stop=None) -> bytes:
+        """Calculate the hash value of a file.
+
+        A tqdm progressbar is also available.
+        """
+        ctx = self.ctx_proto.copy()
+        chunk_size = self.chunk_size
+        file_size = os.path.getsize(filepath)
+        # Set the range for current file.
+        if start is None:
+            start = 0
+        if stop is None:
+            stop = file_size
+        # Set the total of progressbar as file range size.
+        total = stop - start
+        bar = tqdm(total=total, **self.tqdm_args)
+        with bar as bar, open(filepath, "rb") as f:
+            count, remain_size = divmod(total, chunk_size)
+            f.seek(start, io.SEEK_SET)
+            for _ in range(count):
+                chunk = f.read(chunk_size)
+                ctx.update(chunk)
+                bar.update(chunk_size)
+            remain = f.read(remain_size)
+            ctx.update(remain)
+            bar.update(remain_size)
+        return ctx.digest()
+
+    def calc_hash_d(self, dirpath, start=None, stop=None) -> bytes:
+        """Calculate the hash value of a directory.
+
+        A tqdm progressbar is also available.
+        """
+        value = bytes(self.ctx_proto.digest_size)
+        with os.scandir(dirpath) as it:
+            for entry in it:
+                if entry.is_dir():
+                    other = self.calc_hash_d(entry, start, stop)
+                else:
+                    other = self.calc_hash_f(entry, start, stop)
+                value = bytes(x ^ y for x, y in zip(value, other))
+        return value
+
+    def calc_hash(self, path, start=None, stop=None, *, dir_ok=False) -> bytes:
+        """Calculate the hash value of `path`.
+
+        A tqdm progressbar is also available.
+        """
+        if os.path.isdir(path):
+            if dir_ok:
+                return self.calc_hash_d(path, start, stop)
+            raise IsDirectory('"{}" is a directory'.format(path))
+        return self.calc_hash_f(path, start, stop)
 
 
 def calc_hash_f(ctx_proto, filepath, *, chunk_size=_CHUNK_SIZE, **tqdm_args) -> bytes:
