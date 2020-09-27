@@ -11,12 +11,16 @@ _CHUNK_SIZE = 0x100000
 _HL_PAT = re.compile(r"([0-9a-fA-F]+) (?:\*| )?(.+)")
 
 
+class IsDirectory(OSError):
+    """Raised by function `calc_hash`."""
+
+
 class ParseHashLineError(ValueError):
-    """Raised by function `phl`."""
+    """Raised by function `parse_hash_line`."""
 
 
 class CheckHashLineError(ValueError):
-    """Raised by function `chl`."""
+    """Raised by function `check_hash_line`."""
 
     def __init__(self, hash_line, hash_value, path, curr_hash_value):
         super().__init__(hash_line, hash_value, path, curr_hash_value)
@@ -24,10 +28,6 @@ class CheckHashLineError(ValueError):
         self.hash_value = hash_value
         self.path = path
         self.curr_hash_value = curr_hash_value
-
-
-class IsDirectory(OSError):
-    """Raised by function `calc_hash`."""
 
 
 class Hasher(object):
