@@ -172,18 +172,18 @@ def parse_hash_line(hash_line: str) -> Tuple[bytes, str]:
     return bytes.fromhex(hash_value), path
 
 
-def generate_hash_line(ctx_proto, path, *, inplace=False, **extra):
+def generate_hash_line(hash_function, path, *, inplace=False):
     """Generate hash line.
 
     Require path; return hash line.
     """
-    hash_value = calc_hash(ctx_proto, path, **extra)
+    hash_value = hash_function(path)
     if inplace:
         path = os.path.basename(path)
     return format_hash_line(hash_value, path)
 
 
-def check_hash_line(ctx_proto, hash_line, *, inplace=False, **extra):
+def check_hash_line(hash_function, hash_line, *, inplace=False):
     """Check hash line.
 
     Require hash line; return path.
@@ -195,7 +195,7 @@ def check_hash_line(ctx_proto, hash_line, *, inplace=False, **extra):
         pass
     else:
         path = os.path.join(os.path.dirname(hash_path), path)
-    curr_hash_value = calc_hash(ctx_proto, path, **extra)
+    curr_hash_value = hash_function(path)
     if not compare_digest(hash_value, curr_hash_value):
         raise CheckHashLineError(hash_line, hash_value, path, curr_hash_value)
     return path

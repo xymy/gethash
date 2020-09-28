@@ -6,13 +6,13 @@ from glob import iglob
 import click
 
 from . import __version__
-from ._core import CheckHashLineError, check_hash_line, generate_hash_line
+from ._core import CheckHashLineError, Hasher, check_hash_line, generate_hash_line
 
 
 class GetHash(object):
     """Provide script interfaces."""
 
-    def __init__(self, ctx, *, suffix=".sha", **kwargs):
+    def __init__(self, ctx, suffix=".sha", **kwargs):
         self.ctx = ctx
         self.suffix = suffix
 
@@ -24,19 +24,17 @@ class GetHash(object):
 
         # Prepare arguments passed to underlying functions.
         dir_ok = kwargs.pop("dir", False)
-        leave = kwargs.pop("leave", False)
-        ascii = kwargs.pop("ascii", True)
-        self.extra = {
-            "dir_ok": dir_ok,
-            "file": self.stdout,
-            "leave": leave,
-            "ascii": ascii,
-            **kwargs,
+        tqdm_args = {
+            "file": self.stderr,
+            "leave": kwargs.pop("tqdm-leave", False),
+            "ascii": kwargs.pop("tqdm-ascii", True),
         }
+        hasher = Hasher(ctx, tqdm_args=tqdm_args)
+        hash_function = partial(hasher.calc_hash, dir_ok=dir_ok)
 
         # Bind ghl/chl functions to current context.
-        self.ghlc = partial(generate_hash_line, self.ctx, **self.extra)
-        self.chlc = partial(check_hash_line, self.ctx, **self.extra)
+        self.ghlc = partial(generate_hash_line, hash_function)
+        self.chlc = partial(check_hash_line, hash_function)
 
     def echo(self, msg, **kwargs):
         click.echo(msg, file=self.stdout, **kwargs)
