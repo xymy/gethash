@@ -97,61 +97,6 @@ class Hasher(object):
         return self.calc_hash_f(path, start, stop)
 
 
-def calc_hash_f(ctx_proto, filepath, *, chunk_size=_CHUNK_SIZE, **tqdm_args) -> bytes:
-    """Calculate the hash value of a file using the copy of given hash context
-    prototype `ctx_proto`.
-
-    A tqdm progressbar is also available.
-    """
-    ctx = ctx_proto.copy()
-    file_size = os.path.getsize(filepath)
-    bar = tqdm(total=file_size, **tqdm_args)
-    with bar as bar, open(filepath, "rb") as f:
-        while True:
-            chunk = f.read(chunk_size)
-            if not chunk:
-                break
-            ctx.update(chunk)
-            bar.update(len(chunk))
-        return ctx.digest()
-
-
-def calc_hash_d(ctx_proto, dirpath, *, chunk_size=_CHUNK_SIZE, **tqdm_args) -> bytes:
-    """Calculate the hash value of a directory using the copy of given hash
-    context prototype `ctx_proto`.
-
-    A tqdm progressbar is also available.
-    """
-    value = bytes(ctx_proto.digest_size)
-    with os.scandir(dirpath) as it:
-        for entry in it:
-            if entry.is_dir():
-                other = calc_hash_d(
-                    ctx_proto, entry, chunk_size=chunk_size, **tqdm_args
-                )
-            else:
-                other = calc_hash_f(
-                    ctx_proto, entry, chunk_size=chunk_size, **tqdm_args
-                )
-            value = bytes(x ^ y for x, y in zip(value, other))
-    return value
-
-
-def calc_hash(
-    ctx_proto, path, *, chunk_size=_CHUNK_SIZE, dir_ok=False, **tqdm_args
-) -> bytes:
-    """Calculate the hash value of `path` using the copy of given hash context
-    prototype `ctx_proto`.
-
-    A tqdm progressbar is also available.
-    """
-    if os.path.isdir(path):
-        if dir_ok:
-            return calc_hash_d(ctx_proto, path, chunk_size=chunk_size, **tqdm_args)
-        raise IsDirectory('"{}" is a directory'.format(path))
-    return calc_hash_f(ctx_proto, path, chunk_size=chunk_size, **tqdm_args)
-
-
 def format_hash_line(hash_value: ByteString, path: PathLike) -> str:
     """Format hash line.
 

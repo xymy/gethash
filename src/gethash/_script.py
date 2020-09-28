@@ -22,7 +22,7 @@ class GetHash(object):
         self.stdout = kwargs.pop("stdout", sys.stdout)
         self.stderr = kwargs.pop("stderr", sys.stderr)
 
-        # Prepare arguments passed to underlying functions.
+        # Prepare arguments and construct the hash function.
         dir_ok = kwargs.pop("dir", False)
         tqdm_args = {
             "file": self.stderr,
@@ -30,11 +30,7 @@ class GetHash(object):
             "ascii": kwargs.pop("tqdm-ascii", True),
         }
         hasher = Hasher(ctx, tqdm_args=tqdm_args)
-        hash_function = partial(hasher.calc_hash, dir_ok=dir_ok)
-
-        # Bind ghl/chl functions to current context.
-        self.ghlc = partial(generate_hash_line, hash_function)
-        self.chlc = partial(check_hash_line, hash_function)
+        self.hash_function = partial(hasher.calc_hash, dir_ok=dir_ok)
 
     def echo(self, msg, **kwargs):
         click.echo(msg, file=self.stdout, **kwargs)
@@ -62,7 +58,9 @@ class GetHash(object):
     def generate_hash(self, patterns):
         for path in self.glob(patterns):
             try:
-                hash_line = self.ghlc(path, inplace=self.inplace)
+                hash_line = generate_hash_line(
+                    self.hash_function, path, inplace=self.inplace
+                )
                 hash_path = path + self.suffix
                 if not self.no_file:
                     with open(hash_path, "w", encoding="utf-8") as f:
@@ -75,7 +73,7 @@ class GetHash(object):
 
     def _check_hash(self, hash_line, hash_path):
         try:
-            path = self.chlc(hash_line, inplace=hash_path)
+            path = check_hash_line(self.hash_function, hash_line, inplace=hash_path)
         except CheckHashLineError as e:
             self.secho("[FAILURE] {}".format(e.path), fg="red")
         except Exception as e:
@@ -87,6 +85,7 @@ class GetHash(object):
         for hash_path in self.glob(patterns):
             try:
                 with open(hash_path, "r", encoding="utf-8") as f:
+                    # This function can process multiple hash lines.
                     for hash_line in f:
                         if hash_line.isspace():
                             continue
@@ -103,8 +102,7 @@ def script_main(ctx, suffix, check, files, **options):
     no_stderr = options.pop("no_stderr", False)
     stdout = open(os.devnull, "w") if no_stdout else sys.stdout
     stderr = open(os.devnull, "w") if no_stderr else sys.stderr
-    args = {"stdout": stdout, "stderr": stderr, **options}
-    gh = GetHash(ctx, suffix=suffix, **args)
+    gh = GetHash(ctx, suffix, stdout=stdout, stderr=stderr, **options)
 
     if check:
         gh.check_hash(files)
