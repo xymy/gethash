@@ -24,13 +24,17 @@ class GetHash(object):
 
         # Prepare arguments and construct the hash function.
         dir_ok = kwargs.pop("dir", False)
+        start = kwargs.pop("start", None)
+        stop = kwargs.pop("stop", None)
         tqdm_args = {
             "file": self.stderr,
             "leave": kwargs.pop("tqdm-leave", False),
             "ascii": kwargs.pop("tqdm-ascii", True),
         }
         hasher = Hasher(ctx, tqdm_args=tqdm_args)
-        self.hash_function = partial(hasher.calc_hash, dir_ok=dir_ok)
+        self.hash_function = partial(
+            hasher.calc_hash, start=start, stop=stop, dir_ok=dir_ok
+        )
 
     def echo(self, msg, **kwargs):
         click.echo(msg, file=self.stdout, **kwargs)
@@ -120,6 +124,12 @@ def gethashcli(name):
             "--check",
             is_flag=True,
             help="Read {} from FILES and check them.".format(name),
+        )
+        @click.option(
+            "-l", "--start", type=click.INT, help="The start offset of file(s)."
+        )
+        @click.option(
+            "-r", "--stop", type=click.INT, help="The stop offset of file(s)."
         )
         @click.option(
             "-d", "--dir", is_flag=True, help="Allow checksum for directories."
