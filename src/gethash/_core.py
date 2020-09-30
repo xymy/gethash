@@ -50,11 +50,13 @@ class Hasher(object):
         ctx = self.ctx_proto.copy()
         chunk_size = self.chunk_size
         file_size = os.path.getsize(filepath)
-        # Set the range for current file.
+        # Set the range of current file.
         if start is None or start < 0:
             start = 0
         if stop is None or stop > file_size:
             stop = file_size
+        if start > stop:
+            raise ValueError("require start <= stop, but {} > {}".format(start, stop))
         # Set the total of progressbar as file range size.
         total = stop - start
         bar = tqdm(total=total, **self.tqdm_args)

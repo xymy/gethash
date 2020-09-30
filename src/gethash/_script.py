@@ -99,7 +99,7 @@ class GetHash(object):
 
 
 def script_main(ctx, suffix, check, files, **options):
-    """Generate the main body of the main function."""
+    """Generate the main body for the main function."""
     no_stdout = options.pop("no_stdout", False)
     no_stderr = options.pop("no_stderr", False)
     stdout = open(os.devnull, "w") if no_stdout else sys.stdout
@@ -139,8 +139,8 @@ def gethashcli(name):
         @click.option("--no-glob", is_flag=True, help="Do not resolve glob patterns.")
         @click.option("--no-stdout", is_flag=True, help="Do not output to stdout.")
         @click.option("--no-stderr", is_flag=True, help="Do not output to stderr.")
-        @click.option('--tqdm-leave', type=click.BOOL, default=False, show_default=True)
-        @click.option('--tqdm-ascii', type=click.BOOL, default=True, show_default=True)
+        @click.option("--tqdm-leave", type=click.BOOL, default=False, show_default=True)
+        @click.option("--tqdm-ascii", type=click.BOOL, default=True, show_default=True)
         @click.version_option(__version__)
         @click.argument("files", nargs=-1)
         @wraps(func)
