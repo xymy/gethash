@@ -3,7 +3,7 @@ import os
 import re
 from hmac import compare_digest
 from os import PathLike
-from typing import ByteString, Tuple
+from typing import ByteString, Callable, Optional, Tuple, Union
 
 from tqdm import tqdm
 
@@ -42,7 +42,12 @@ class Hasher(object):
         self.chunk_size = _CHUNK_SIZE if chunk_size is None else chunk_size
         self.tqdm_args = {} if tqdm_args is None else tqdm_args
 
-    def calc_hash_f(self, filepath, start=None, stop=None) -> bytes:
+    def calc_hash_f(
+        self,
+        filepath: PathLike,
+        start: Optional[int] = None,
+        stop: Optional[int] = None,
+    ) -> bytes:
         """Calculate the hash value of a file.
 
         A tqdm progressbar is also available.
@@ -72,7 +77,9 @@ class Hasher(object):
             bar.update(remain_size)
         return ctx.digest()
 
-    def calc_hash_d(self, dirpath, start=None, stop=None) -> bytes:
+    def calc_hash_d(
+        self, dirpath: PathLike, start: Optional[int] = None, stop: Optional[int] = None
+    ) -> bytes:
         """Calculate the hash value of a directory.
 
         A tqdm progressbar is also available.
@@ -87,7 +94,14 @@ class Hasher(object):
                 value = bytes(x ^ y for x, y in zip(value, other))
         return value
 
-    def calc_hash(self, path, start=None, stop=None, *, dir_ok=False) -> bytes:
+    def calc_hash(
+        self,
+        path: PathLike,
+        start: Optional[int] = None,
+        stop: Optional[int] = None,
+        *,
+        dir_ok: bool = False
+    ) -> bytes:
         """Calculate the hash value of `path`.
 
         A tqdm progressbar is also available.
@@ -107,7 +121,7 @@ def format_hash_line(hash_value: ByteString, path: PathLike) -> str:
     return "{} *{}\n".format(hash_value.hex(), path)
 
 
-def parse_hash_line(hash_line: str) -> Tuple[bytes, str]:
+def parse_hash_line(hash_line: str) -> Tuple[ByteString, PathLike]:
     """Parse hash line.
 
     Require hash line; return hash value and path.
@@ -119,7 +133,12 @@ def parse_hash_line(hash_line: str) -> Tuple[bytes, str]:
     return bytes.fromhex(hash_value), path
 
 
-def generate_hash_line(hash_function, path, *, inplace=False):
+def generate_hash_line(
+    hash_function: Callable[[PathLike], ByteString],
+    path: PathLike,
+    *,
+    inplace: bool = False
+) -> str:
     """Generate hash line.
 
     Require path; return hash line.
@@ -130,7 +149,12 @@ def generate_hash_line(hash_function, path, *, inplace=False):
     return format_hash_line(hash_value, path)
 
 
-def check_hash_line(hash_function, hash_line, *, inplace=False):
+def check_hash_line(
+    hash_function: Callable[[PathLike], ByteString],
+    hash_line: str,
+    *,
+    inplace: Union[bool, PathLike] = False
+) -> PathLike:
     """Check hash line.
 
     Require hash line; return path.
