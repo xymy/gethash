@@ -3,7 +3,7 @@ import os
 import re
 from hmac import compare_digest
 from os import PathLike
-from typing import ByteString, Callable, Optional, Tuple, Union
+from typing import ByteString, Callable, Mapping, Optional, Tuple
 
 from tqdm import tqdm
 
@@ -37,7 +37,13 @@ class Hasher(object):
     A tqdm progressbar is also available.
     """
 
-    def __init__(self, ctx_proto, *, chunk_size=None, tqdm_args=None):
+    def __init__(
+        self,
+        ctx_proto,
+        *,
+        chunk_size: Optional[int] = None,
+        tqdm_args: Optional[Mapping] = None
+    ):
         self.ctx_proto = ctx_proto
         self.chunk_size = _CHUNK_SIZE if chunk_size is None else chunk_size
         self.tqdm_args = {} if tqdm_args is None else tqdm_args
@@ -137,7 +143,7 @@ def generate_hash_line(
     hash_function: Callable[[PathLike], ByteString],
     path: PathLike,
     *,
-    inplace: bool = False
+    inplace: Optional[bool] = None
 ) -> str:
     """Generate hash line.
 
@@ -153,7 +159,7 @@ def check_hash_line(
     hash_function: Callable[[PathLike], ByteString],
     hash_line: str,
     *,
-    inplace: Union[bool, PathLike] = False
+    inplace: Optional[PathLike] = None
 ) -> PathLike:
     """Check hash line.
 
