@@ -3,7 +3,7 @@ import os
 import re
 from hmac import compare_digest
 from os import PathLike
-from typing import ByteString, Callable, Mapping, Optional, Tuple
+from typing import ByteString, Callable, Optional, Tuple
 
 from tqdm import tqdm
 
@@ -42,7 +42,7 @@ class Hasher(object):
         ctx_proto,
         *,
         chunk_size: Optional[int] = None,
-        tqdm_args: Optional[Mapping] = None
+        tqdm_args: Optional[dict] = None
     ):
         self.ctx_proto = ctx_proto
         self.chunk_size = _CHUNK_SIZE if chunk_size is None else chunk_size
