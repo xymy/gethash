@@ -123,12 +123,8 @@ def gethashcli(name):
             is_flag=True,
             help="Read {} from FILES and check them.".format(name),
         )
-        @click.option(
-            "-l", "--start", type=click.INT, help="The start offset of file(s)."
-        )
-        @click.option(
-            "-r", "--stop", type=click.INT, help="The stop offset of file(s)."
-        )
+        @click.option("--start", type=click.INT, help="The start offset of files.")
+        @click.option("--stop", type=click.INT, help="The stop offset of files.")
         @click.option(
             "-d", "--dir", is_flag=True, help="Allow checksum for directories."
         )
