@@ -6,7 +6,12 @@ SUFFIX = ".ripemd160"
 
 @gethashcli(NAME)
 def main(check, files, **kwargs):
-    from Crypto.Hash import RIPEMD160 as H
+    try:
+        from Crypto.Hash import RIPEMD160 as H
+    except ImportError:
+        import sys
+        sys.stderr.write("PyCryptodome is not found.\n")
+        sys.exit(-1)
 
     script_main(H.new(), SUFFIX, check, files, **kwargs)
 
