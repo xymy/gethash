@@ -10,6 +10,7 @@ def main(check, files, **kwargs):
         from Crypto.Hash import RIPEMD160 as H
     except ImportError:
         import sys
+
         sys.stderr.write("PyCryptodome is not found.\n")
         sys.exit(-1)
 
