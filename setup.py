@@ -55,7 +55,7 @@ setup(
             "sha3-512 = gethash.sha3_512:main",
             "blake2b = gethash.blake2b:main",
             "blake2s = gethash.blake2s:main",
-            # Legacy hash functons.
+            # Legacy hash functions.
             "md2 = gethash.md2:main",
             "md4 = gethash.md4:main",
             "ripemd160 = gethash.ripemd160:main",
