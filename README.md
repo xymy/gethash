@@ -29,6 +29,12 @@ After installation, 8 commands are available:
 - blake2b
 - blake2s
 
+If [PyCryptodome](https://www.pycryptodome.org/en/stable/) is installed, additional 3 commands are available:
+
+- md2
+- md4
+- ripemd160
+
 ### Generate hash values
 
 ```shell
