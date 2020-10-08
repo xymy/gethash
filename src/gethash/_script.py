@@ -10,7 +10,7 @@ from ._core import CheckHashLineError, Hasher, check_hash_line, generate_hash_li
 
 
 class GetHash(object):
-    """Provide script interfaces."""
+    """Provide the script interface."""
 
     def __init__(self, ctx, suffix=".sha", **kwargs):
         self.ctx = ctx
@@ -23,9 +23,9 @@ class GetHash(object):
         self.stderr = kwargs.pop("stderr", sys.stderr)
 
         # Prepare arguments and construct the hash function.
-        dir_ok = kwargs.pop("dir", False)
         start = kwargs.pop("start", None)
         stop = kwargs.pop("stop", None)
+        dir_ok = kwargs.pop("dir", False)
         tqdm_args = {
             "file": self.stderr,
             "leave": kwargs.pop("tqdm-leave", False),
@@ -97,6 +97,12 @@ class GetHash(object):
             except Exception as e:
                 self.echo_error(hash_path, e)
 
+    def call(self, check, files):
+        if check:
+            self.check_hash(files)
+        else:
+            self.generate_hash(files)
+
 
 def script_main(ctx, suffix, check, files, **options):
     """Generate the main body for the main function."""
@@ -104,12 +110,7 @@ def script_main(ctx, suffix, check, files, **options):
     no_stderr = options.pop("no_stderr", False)
     stdout = open(os.devnull, "w") if no_stdout else sys.stdout
     stderr = open(os.devnull, "w") if no_stderr else sys.stderr
-    gh = GetHash(ctx, suffix, stdout=stdout, stderr=stderr, **options)
-
-    if check:
-        gh.check_hash(files)
-    else:
-        gh.generate_hash(files)
+    GetHash(ctx, suffix, stdout=stdout, stderr=stderr, **options).call(check, files)
 
 
 def gethashcli(name):
