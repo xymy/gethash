@@ -12,7 +12,7 @@ _HL_PAT = re.compile(r"([0-9a-fA-F]+) (?:\*| )?(.+)")
 
 
 class IsDirectory(OSError):
-    """Raised by function `calc_hash`."""
+    """Raised by method `Hasher.calc_hash`."""
 
 
 class ParseHashLineError(ValueError):
@@ -44,7 +44,7 @@ class Hasher(object):
         chunk_size: Optional[int] = None,
         tqdm_args: Optional[dict] = None,
     ):
-        # We use the copies of parameters for avoiding potential side-effect.
+        # We use the copies of parameters for avoiding potential side-effects.
         self.ctx_proto = ctx_proto.copy()
         self.chunk_size = _CHUNK_SIZE if chunk_size is None else int(chunk_size)
         self.tqdm_args = {} if tqdm_args is None else dict(tqdm_args)
