@@ -97,7 +97,7 @@ class GetHash(object):
             except Exception as e:
                 self.echo_error(hash_path, e)
 
-    def call(self, check, files):
+    def __call__(self, check, files):
         if check:
             self.check_hash(files)
         else:
@@ -106,11 +106,14 @@ class GetHash(object):
 
 def script_main(ctx, suffix, check, files, **options):
     """Generate the main body for the main function."""
+
+    # Convert bool flags to io streams.
     no_stdout = options.pop("no_stdout", False)
     no_stderr = options.pop("no_stderr", False)
     stdout = open(os.devnull, "w") if no_stdout else sys.stdout
     stderr = open(os.devnull, "w") if no_stderr else sys.stderr
-    GetHash(ctx, suffix, stdout=stdout, stderr=stderr, **options).call(check, files)
+    # Initialize and invoke.
+    GetHash(ctx, suffix, stdout=stdout, stderr=stderr, **options)(check, files)
 
 
 def gethashcli(name):
