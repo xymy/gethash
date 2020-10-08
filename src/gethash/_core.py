@@ -42,17 +42,15 @@ class Hasher(object):
         ctx_proto,
         *,
         chunk_size: Optional[int] = None,
-        tqdm_args: Optional[dict] = None
+        tqdm_args: Optional[dict] = None,
     ):
-        self.ctx_proto = ctx_proto
-        self.chunk_size = _CHUNK_SIZE if chunk_size is None else chunk_size
-        self.tqdm_args = {} if tqdm_args is None else tqdm_args
+        # We use the copies of parameters for avoiding potential side-effect.
+        self.ctx_proto = ctx_proto.copy()
+        self.chunk_size = _CHUNK_SIZE if chunk_size is None else int(chunk_size)
+        self.tqdm_args = {} if tqdm_args is None else dict(tqdm_args)
 
     def calc_hash_f(
-        self,
-        filepath: PathLike,
-        start: Optional[int] = None,
-        stop: Optional[int] = None,
+        self, fpath: PathLike, start: Optional[int] = None, stop: Optional[int] = None
     ) -> bytes:
         """Calculate the hash value of a file.
 
@@ -60,7 +58,7 @@ class Hasher(object):
         """
         ctx = self.ctx_proto.copy()
         chunk_size = self.chunk_size
-        file_size = os.path.getsize(filepath)
+        file_size = os.path.getsize(fpath)
         # Set the range of current file.
         if start is None or start < 0:
             start = 0
@@ -71,7 +69,7 @@ class Hasher(object):
         # Set the total of progressbar as file range size.
         total = stop - start
         bar = tqdm(total=total, **self.tqdm_args)
-        with bar as bar, open(filepath, "rb") as f:
+        with bar as bar, open(fpath, "rb") as f:
             count, remain_size = divmod(total, chunk_size)
             f.seek(start, io.SEEK_SET)
             for _ in range(count):
@@ -84,14 +82,14 @@ class Hasher(object):
         return ctx.digest()
 
     def calc_hash_d(
-        self, dirpath: PathLike, start: Optional[int] = None, stop: Optional[int] = None
+        self, dpath: PathLike, start: Optional[int] = None, stop: Optional[int] = None
     ) -> bytes:
         """Calculate the hash value of a directory.
 
         A tqdm progressbar is also available.
         """
         value = bytes(self.ctx_proto.digest_size)
-        with os.scandir(dirpath) as it:
+        with os.scandir(dpath) as it:
             for entry in it:
                 if entry.is_dir():
                     other = self.calc_hash_d(entry, start, stop)
@@ -106,7 +104,7 @@ class Hasher(object):
         start: Optional[int] = None,
         stop: Optional[int] = None,
         *,
-        dir_ok: bool = False
+        dir_ok: bool = False,
     ) -> bytes:
         """Calculate the hash value of `path`.
 
@@ -143,7 +141,7 @@ def generate_hash_line(
     hash_function: Callable[[PathLike], ByteString],
     path: PathLike,
     *,
-    inplace: Optional[bool] = None
+    inplace: Optional[bool] = None,
 ) -> str:
     """Generate hash line.
 
@@ -159,7 +157,7 @@ def check_hash_line(
     hash_function: Callable[[PathLike], ByteString],
     hash_line: str,
     *,
-    inplace: Optional[PathLike] = None
+    inplace: Optional[PathLike] = None,
 ) -> PathLike:
     """Check hash line.
 
