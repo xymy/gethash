@@ -58,28 +58,27 @@ class Hasher(object):
         """
         ctx = self.ctx_proto.copy()
         chunksize = self.chunksize
-        file_size = os.path.getsize(fpath)
+        filesize = os.path.getsize(fpath)
         # Set the range of current file.
         if start is None or start < 0:
             start = 0
-        if stop is None or stop > file_size:
-            stop = file_size
+        if stop is None or stop > filesize:
+            stop = filesize
         if start > stop:
             raise ValueError("require start <= stop, but {} > {}".format(start, stop))
         # Set the total of progressbar as range size.
         total = stop - start
-        bar = tqdm(total=total, **self.tqdm_args)
-        with bar as bar, open(fpath, "rb") as f:
+        with tqdm(total=total, **self.tqdm_args) as bar, open(fpath, "rb") as f:
             # Precompute chunk count and remaining size.
-            count, remain_size = divmod(total, chunksize)
+            count, remainsize = divmod(total, chunksize)
             f.seek(start, io.SEEK_SET)
             for _ in range(count):
                 chunk = f.read(chunksize)
                 ctx.update(chunk)
                 bar.update(chunksize)
-            remain = f.read(remain_size)
+            remain = f.read(remainsize)
             ctx.update(remain)
-            bar.update(remain_size)
+            bar.update(remainsize)
         return ctx.digest()
 
     def calc_hash_d(
@@ -89,6 +88,7 @@ class Hasher(object):
 
         A tqdm progressbar is also available.
         """
+        # The initial hash value is all zeros.
         value = bytes(self.ctx_proto.digest_size)
         with os.scandir(dpath) as it:
             for entry in it:
