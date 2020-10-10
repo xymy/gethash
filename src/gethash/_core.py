@@ -7,8 +7,8 @@ from typing import ByteString, Callable, Optional, Tuple
 
 from tqdm import tqdm
 
-_CHUNK_SIZE = 0x100000
-_HL_PAT = re.compile(r"([0-9a-fA-F]+) (?:\*| )?(.+)")
+_CHUNKSIZE = 0x100000  # 1 MB
+_HASH_LINE_RE = re.compile(r"([0-9a-fA-F]+) (?:\*| )?(.+)")
 
 
 class IsDirectory(OSError):
@@ -41,12 +41,12 @@ class Hasher(object):
         self,
         ctx_proto,
         *,
-        chunk_size: Optional[int] = None,
+        chunksize: Optional[int] = None,
         tqdm_args: Optional[dict] = None,
     ):
         # We use the copies of parameters for avoiding potential side-effects.
         self.ctx_proto = ctx_proto.copy()
-        self.chunk_size = _CHUNK_SIZE if chunk_size is None else int(chunk_size)
+        self.chunksize = _CHUNKSIZE if chunksize is None else int(chunksize)
         self.tqdm_args = {} if tqdm_args is None else dict(tqdm_args)
 
     def calc_hash_f(
@@ -57,7 +57,7 @@ class Hasher(object):
         A tqdm progressbar is also available.
         """
         ctx = self.ctx_proto.copy()
-        chunk_size = self.chunk_size
+        chunksize = self.chunksize
         file_size = os.path.getsize(fpath)
         # Set the range of current file.
         if start is None or start < 0:
@@ -71,12 +71,12 @@ class Hasher(object):
         bar = tqdm(total=total, **self.tqdm_args)
         with bar as bar, open(fpath, "rb") as f:
             # Precompute chunk count and remaining size.
-            count, remain_size = divmod(total, chunk_size)
+            count, remain_size = divmod(total, chunksize)
             f.seek(start, io.SEEK_SET)
             for _ in range(count):
-                chunk = f.read(chunk_size)
+                chunk = f.read(chunksize)
                 ctx.update(chunk)
-                bar.update(chunk_size)
+                bar.update(chunksize)
             remain = f.read(remain_size)
             ctx.update(remain)
             bar.update(remain_size)
@@ -131,7 +131,7 @@ def parse_hash_line(hash_line: str) -> Tuple[ByteString, PathLike]:
 
     Require hash line; return hash value and path.
     """
-    m = _HL_PAT.match(hash_line)
+    m = _HASH_LINE_RE.match(hash_line)
     if m is None:
         raise ParseHashLineError(hash_line)
     hash_value, path = m.groups()
