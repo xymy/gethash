@@ -7,14 +7,14 @@ SUFFIX = ".ripemd160"
 @gethashcli(NAME)
 def main(check, files, **kwargs):
     try:
-        from Crypto.Hash import RIPEMD160 as H
+        from Crypto.Hash.RIPEMD160 import new as H
     except ImportError:
         import sys
 
         sys.stderr.write("PyCryptodome is not found.\n")
         sys.exit(-1)
 
-    script_main(H.new(), SUFFIX, check, files, **kwargs)
+    script_main(H(), SUFFIX, check, files, **kwargs)
 
 
 if __name__ == "__main__":
