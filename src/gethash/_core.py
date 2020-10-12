@@ -52,10 +52,8 @@ class Hasher(object):
     def calc_hash_f(
         self, fpath: PathLike, start: Optional[int] = None, stop: Optional[int] = None
     ) -> bytes:
-        """Calculate the hash value of a file.
+        """Calculate the hash value of a file."""
 
-        A tqdm progressbar is also available.
-        """
         ctx = self.ctx_proto.copy()
         chunksize = self.chunksize
         filesize = os.path.getsize(fpath)
@@ -84,10 +82,8 @@ class Hasher(object):
     def calc_hash_d(
         self, dpath: PathLike, start: Optional[int] = None, stop: Optional[int] = None
     ) -> bytes:
-        """Calculate the hash value of a directory.
+        """Calculate the hash value of a directory."""
 
-        A tqdm progressbar is also available.
-        """
         # The initial hash value is all zeros.
         value = bytes(self.ctx_proto.digest_size)
         with os.scandir(dpath) as it:
@@ -107,10 +103,8 @@ class Hasher(object):
         *,
         dir_ok: bool = False,
     ) -> bytes:
-        """Calculate the hash value of `path`.
+        """Calculate the hash value of `path`."""
 
-        A tqdm progressbar is also available.
-        """
         if os.path.isdir(path):
             if dir_ok:
                 return self.calc_hash_d(path, start, stop)
@@ -123,6 +117,7 @@ def format_hash_line(hash_value: ByteString, path: PathLike) -> str:
 
     Require hash value and path; return hash line.
     """
+
     return "{} *{}\n".format(hash_value.hex(), path)
 
 
@@ -131,6 +126,7 @@ def parse_hash_line(hash_line: str) -> Tuple[ByteString, PathLike]:
 
     Require hash line; return hash value and path.
     """
+
     m = _HASH_LINE_RE.match(hash_line)
     if m is None:
         raise ParseHashLineError(hash_line)
@@ -148,6 +144,7 @@ def generate_hash_line(
 
     Require path; return hash line.
     """
+
     hash_value = hash_function(path)
     if inplace:
         path = os.path.basename(path)
@@ -164,6 +161,7 @@ def check_hash_line(
 
     Require hash line; return path.
     """
+
     hash_value, path = parse_hash_line(hash_line)
     try:
         hash_path = os.fspath(inplace)
