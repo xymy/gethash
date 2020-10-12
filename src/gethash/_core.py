@@ -11,6 +11,19 @@ _CHUNKSIZE = 0x100000  # 1 MB
 _HASH_LINE_RE = re.compile(r"([0-9a-fA-F]+) (?:\*| )?(.+)")
 
 
+def _strxor(term1, term2):
+    return bytes(x ^ y for x, y in zip(term1, term2))
+
+
+# If PyCryptodome exists, use fast XOR for byte strings.
+try:
+    import Crypto.Util.strxor
+except ImportError:
+    strxor = _strxor
+else:
+    strxor = Crypto.Util.strxor.strxor
+
+
 class IsDirectory(OSError):
     """Raised by method `Hasher.calc_hash`."""
 
@@ -92,7 +105,7 @@ class Hasher(object):
                     other = self.calc_hash_d(entry, start, stop)
                 else:
                     other = self.calc_hash_f(entry, start, stop)
-                value = bytes(x ^ y for x, y in zip(value, other))
+                value = strxor(value, other)
         return value
 
     def calc_hash(
