@@ -32,9 +32,7 @@ class GetHash(object):
             "ascii": kwargs.pop("tqdm-ascii", True),
         }
         hasher = Hasher(ctx, tqdm_args=tqdm_args)
-        self.hash_function = partial(
-            hasher.calc_hash, start=start, stop=stop, dir_ok=dir_ok
-        )
+        self.hash_function = partial(hasher, start=start, stop=stop, dir_ok=dir_ok)
 
     def echo(self, msg, **kwargs):
         click.echo(msg, file=self.stdout, **kwargs)

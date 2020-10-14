@@ -105,6 +105,7 @@ class Hasher(object):
                     other = self.calc_hash_d(entry, start, stop)
                 else:
                     other = self.calc_hash_f(entry, start, stop)
+                # Just XOR each byte strings as directory hash.
                 value = strxor(value, other)
         return value
 
@@ -123,6 +124,8 @@ class Hasher(object):
                 return self.calc_hash_d(path, start, stop)
             raise IsDirectory('"{}" is a directory'.format(path))
         return self.calc_hash_f(path, start, stop)
+
+    __call__ = calc_hash
 
 
 def format_hash_line(hash_value: ByteString, path: PathLike) -> str:
