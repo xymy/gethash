@@ -1,12 +1,12 @@
-from ._script import gethashcli, script_main
+from gethash.script import gethashcli, script_main
 
-NAME = "SHA256"
-SUFFIX = ".sha256"
+NAME = "MD5"
+SUFFIX = ".md5"
 
 
 @gethashcli(NAME)
 def main(check, files, **kwargs):
-    from hashlib import sha256 as H
+    from hashlib import md5 as H
 
     script_main(H(), SUFFIX, check, files, **kwargs)
 

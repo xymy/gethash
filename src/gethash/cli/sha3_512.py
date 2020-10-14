@@ -1,12 +1,12 @@
-from ._script import gethashcli, script_main
+from gethash.script import gethashcli, script_main
 
-NAME = "BLAKE2s"
-SUFFIX = ".blake2s"
+NAME = "SHA3-512"
+SUFFIX = ".sha3_512"
 
 
 @gethashcli(NAME)
 def main(check, files, **kwargs):
-    from hashlib import blake2s as H
+    from hashlib import sha3_512 as H
 
     script_main(H(), SUFFIX, check, files, **kwargs)
 

@@ -1,13 +1,13 @@
-from ._script import gethashcli, script_main
+from gethash.script import gethashcli, script_main
 
-NAME = "MD4"
-SUFFIX = ".md4"
+NAME = "MD2"
+SUFFIX = ".md2"
 
 
 @gethashcli(NAME)
 def main(check, files, **kwargs):
     try:
-        from Crypto.Hash.MD4 import new as H
+        from Crypto.Hash.MD2 import new as H
     except ImportError:
         import sys
 

@@ -1,4 +1,4 @@
-from ._script import gethashcli, script_main
+from gethash.script import gethashcli, script_main
 
 NAME = "RIPEMD160"
 SUFFIX = ".ripemd160"
