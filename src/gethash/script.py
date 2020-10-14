@@ -6,7 +6,7 @@ from glob import iglob
 import click
 
 from . import __version__
-from ._core import CheckHashLineError, Hasher, check_hash_line, generate_hash_line
+from .core import CheckHashLineError, Hasher, check_hash_line, generate_hash_line
 
 
 class GetHash(object):
