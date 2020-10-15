@@ -121,14 +121,14 @@ def gethashcli(name):
 
     def decorator(func):
         @click.command(no_args_is_help=True)
+        @click.option("--start", type=click.INT, help="The start offset of files.")
+        @click.option("--stop", type=click.INT, help="The stop offset of files.")
         @click.option(
             "-c",
             "--check",
             is_flag=True,
             help="Read {} from FILES and check them.".format(name),
         )
-        @click.option("--start", type=click.INT, help="The start offset of files.")
-        @click.option("--stop", type=click.INT, help="The stop offset of files.")
         @click.option(
             "-d", "--dir", is_flag=True, help="Allow checksum for directories."
         )
