@@ -1,6 +1,6 @@
+import functools
 import os
 import sys
-from functools import partial, wraps
 from glob import iglob
 
 import click
@@ -32,7 +32,9 @@ class GetHash(object):
             "ascii": kwargs.pop("tqdm-ascii", True),
         }
         hasher = Hasher(ctx, tqdm_args=tqdm_args)
-        self.hash_function = partial(hasher, start=start, stop=stop, dir_ok=dir_ok)
+        self.hash_function = functools.partial(
+            hasher, start=start, stop=stop, dir_ok=dir_ok
+        )
 
     def echo(self, msg, **kwargs):
         click.echo(msg, file=self.stdout, **kwargs)
@@ -141,7 +143,7 @@ def gethashcli(name):
         @click.option("--tqdm-ascii", type=click.BOOL, default=True, show_default=True)
         @click.version_option(__version__)
         @click.argument("files", nargs=-1)
-        @wraps(func)
+        @functools.wraps(func)
         def wrapper(*args, **kwargs):
             return func(*args, **kwargs)
 
