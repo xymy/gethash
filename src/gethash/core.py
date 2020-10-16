@@ -1,9 +1,10 @@
 import io
 import os
 import re
+from collections.abc import ByteString
 from hmac import compare_digest
 from os import PathLike
-from typing import ByteString, Callable, Optional, Tuple
+from typing import Callable, Optional, Tuple
 
 from Cryptodome.Util.strxor import strxor
 from tqdm import tqdm
@@ -125,7 +126,7 @@ def format_hash_line(hash_value: ByteString, path: PathLike) -> str:
     return "{} *{}\n".format(hash_value.hex(), path)
 
 
-def parse_hash_line(hash_line: str) -> Tuple[ByteString, PathLike]:
+def parse_hash_line(hash_line: str) -> Tuple[bytes, str]:
     """Parse hash line.
 
     Require hash line; return hash value and path.
@@ -160,7 +161,7 @@ def check_hash_line(
     hash_line: str,
     *,
     inplace: Optional[PathLike] = None,
-) -> PathLike:
+) -> str:
     """Check hash line.
 
     Require hash line; return path.
