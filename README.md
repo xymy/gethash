@@ -18,9 +18,12 @@ pip3 install -U gethash
 
 ## Usage
 
-After installation, 8 commands are available:
+After installation, 11 commands are available:
 
+- md2
+- md4
 - md5
+- ripemd160
 - sha1
 - sha256
 - sha512
@@ -28,12 +31,6 @@ After installation, 8 commands are available:
 - sha3-512
 - blake2b
 - blake2s
-
-If [PyCryptodome](https://www.pycryptodome.org/en/stable/) is installed, additional 3 commands are available:
-
-- md2
-- md4
-- ripemd160
 
 ### Generate hash values
 
