@@ -6,13 +6,7 @@ SUFFIX = ".md4"
 
 @gethashcli(NAME)
 def main(check, files, **kwargs):
-    try:
-        from Crypto.Hash.MD4 import new as H
-    except ImportError:
-        import sys
-
-        sys.stderr.write("PyCryptodome is not found.\n")
-        sys.exit(-1)
+    from Cryptodome.Hash.MD4 import new as H
 
     script_main(H(), SUFFIX, check, files, **kwargs)
 

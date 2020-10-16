@@ -5,23 +5,11 @@ from hmac import compare_digest
 from os import PathLike
 from typing import ByteString, Callable, Optional, Tuple
 
+from Cryptodome.Util.strxor import strxor
 from tqdm import tqdm
 
 _CHUNKSIZE = 0x100000  # 1 MB
 _HASH_LINE_RE = re.compile(r"([0-9a-fA-F]+) (?:\*| )?(.+)")
-
-
-def _strxor(term1, term2):
-    return bytes(x ^ y for x, y in zip(term1, term2))
-
-
-# If PyCryptodome exists, use fast XOR for byte strings.
-try:
-    import Crypto.Util.strxor
-except ImportError:
-    strxor = _strxor
-else:
-    strxor = Crypto.Util.strxor.strxor
 
 
 class IsDirectory(OSError):
