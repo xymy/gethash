@@ -121,8 +121,6 @@ def gethashcli(name):
 
     def decorator(func):
         @click.command(no_args_is_help=True)
-        @click.option("--start", type=click.INT, help="The start offset of files.")
-        @click.option("--stop", type=click.INT, help="The stop offset of files.")
         @click.option(
             "-c",
             "--check",
@@ -135,6 +133,8 @@ def gethashcli(name):
         @click.option(
             "-i", "--inplace", is_flag=True, help="Use basename in checksum files."
         )
+        @click.option("--start", type=click.INT, help="The start offset of files.")
+        @click.option("--stop", type=click.INT, help="The stop offset of files.")
         @click.option("--no-file", is_flag=True, help="Do not output checksum files.")
         @click.option("--no-glob", is_flag=True, help="Do not resolve glob patterns.")
         @click.option("--no-stdout", is_flag=True, help="Do not output to stdout.")
