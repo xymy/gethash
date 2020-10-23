@@ -33,32 +33,48 @@ class CheckHashLineError(ValueError):
 
 
 class Hasher(object):
-    """Calculate the hash value using the copy of given hash context prototype
-    `ctx_proto`.
+    """General hash value generator.
 
-    A tqdm progressbar is also available.
+    Generate hash values using given hash context prototype. A tqdm progressbar
+    is also available.
+
+    Parameters
+    ----------
+    ctx_proto : hash context
+        The hash context prototype used to generating hash values.
+    chunksize : int, optional
+        The size of data blocks when reading data from files.
+    tqdm_args : dict, optional
+        The arguments passed to the tqdm constructor.
     """
 
-    def __init__(
-        self,
-        ctx_proto,
-        *,
-        chunksize: Optional[int] = None,
-        tqdm_args: Optional[dict] = None,
-    ):
+    def __init__(self, ctx_proto, *, chunksize=None, tqdm_args=None):
         # We use the copies of parameters for avoiding potential side-effects.
         self.ctx_proto = ctx_proto.copy()
         self.chunksize = _CHUNKSIZE if chunksize is None else int(chunksize)
         self.tqdm_args = {} if tqdm_args is None else dict(tqdm_args)
 
-    def calc_hash_f(
-        self, fpath: PathLike, start: Optional[int] = None, stop: Optional[int] = None
-    ) -> bytes:
-        """Calculate the hash value of a file."""
+    def hash_f(self, filepath, start=None, stop=None):
+        """Return the hash value of a file.
+
+        Parameters
+        ----------
+        filepath : str or path-like
+            The path of a file.
+        start : int, optional
+            The start range of the file.
+        stop : int, optional
+            The stop range of the file.
+
+        Returns
+        -------
+        hash_value : bytes
+            The hash value of the file.
+        """
 
         ctx = self.ctx_proto.copy()
         chunksize = self.chunksize
-        filesize = os.path.getsize(fpath)
+        filesize = os.path.getsize(filepath)
         # Set the range of current file.
         if start is None or start < 0:
             start = 0
@@ -68,7 +84,7 @@ class Hasher(object):
             raise ValueError("require start <= stop, but {} > {}".format(start, stop))
         # Set the total of progressbar as range size.
         total = stop - start
-        with tqdm(total=total, **self.tqdm_args) as bar, open(fpath, "rb") as f:
+        with tqdm(total=total, **self.tqdm_args) as bar, open(filepath, "rb") as f:
             # Precompute chunk count and remaining size.
             count, remainsize = divmod(total, chunksize)
             f.seek(start, io.SEEK_SET)
@@ -81,40 +97,63 @@ class Hasher(object):
             bar.update(remainsize)
         return ctx.digest()
 
-    def calc_hash_d(
-        self, dpath: PathLike, start: Optional[int] = None, stop: Optional[int] = None
-    ) -> bytes:
-        """Calculate the hash value of a directory."""
+    def hash_d(self, dirpath, start=None, stop=None):
+        """Return the hash value of a directory.
+
+        Parameters
+        ----------
+        dirpath : str or path-like
+            The path of a directory.
+        start : int, optional
+            The start range of files belonging to the directory.
+        stop : int, optional
+            The stop range of files belonging to the directory.
+
+        Returns
+        -------
+        hash_value : bytes
+            The hash value of the directory.
+        """
 
         # The initial hash value is all zeros.
         value = bytes(self.ctx_proto.digest_size)
-        with os.scandir(dpath) as it:
+        with os.scandir(dirpath) as it:
             for entry in it:
                 if entry.is_dir():
-                    other = self.calc_hash_d(entry, start, stop)
+                    other = self.hash_d(entry, start, stop)
                 else:
-                    other = self.calc_hash_f(entry, start, stop)
+                    other = self.hash_f(entry, start, stop)
                 # Just XOR each byte strings as directory hash.
                 value = strxor(value, other)
         return value
 
-    def calc_hash(
-        self,
-        path: PathLike,
-        start: Optional[int] = None,
-        stop: Optional[int] = None,
-        *,
-        dir_ok: bool = False,
-    ) -> bytes:
-        """Calculate the hash value of `path`."""
+    def hash(self, path, start=None, stop=None, *, dir_ok=False):
+        """Return the hash value of a file or a directory.
+
+        Parameters
+        ----------
+        path : str or path-like
+            The path of a file or a directory.
+        start : int, optional
+            The start range of the file or files belonging to the directory.
+        stop : int, optional
+            The stop range of the file or files belonging to the directory.
+        dir_ok : bool, default=False
+            If ``True``, enable directory hashing.
+
+        Returns
+        -------
+        hash_value : bytes
+            The hash value of the file or the directory.
+        """
 
         if os.path.isdir(path):
             if dir_ok:
-                return self.calc_hash_d(path, start, stop)
+                return self.hash_d(path, start, stop)
             raise IsDirectory('"{}" is a directory'.format(path))
-        return self.calc_hash_f(path, start, stop)
+        return self.hash_f(path, start, stop)
 
-    __call__ = calc_hash
+    __call__ = hash
 
 
 def format_hash_line(hash_value: ByteString, path: PathLike) -> str:
