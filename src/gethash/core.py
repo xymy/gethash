@@ -161,12 +161,12 @@ def format_hash_line(hash_value, path):
     hash_value : bytes-like
         The hash value.
     path : str or path-like
-        The path of a file or a directory.
+        The path of a file or a directory with corresponding hash value.
 
     Returns
     -------
     hash_line : str
-        The formatted hash line with GNU Coreutils style.
+        The formatted `hash_value` and `path` with GNU Coreutils style.
     """
 
     return "{} *{}\n".format(hash_value.hex(), path)
@@ -178,14 +178,14 @@ def parse_hash_line(hash_line):
     Parameters
     ----------
     hash_line : str
-        The formatted hash line with GNU Coreutils style.
+        The formatted `hash_value` and `path` with GNU Coreutils style.
 
     Returns
     -------
     hash_value : bytes
         The hash value.
     path : str
-        The path of a file or a directory.
+        The path of a file or a directory with corresponding hash value.
     """
 
     m = _HASH_LINE_RE.match(hash_line)
@@ -203,14 +203,14 @@ def generate_hash_line(hash_function, path, *, inplace=None):
     hash_function : callable(str or path-like) -> bytes-like
         The function used to generate hash value.
     path : str or path-like
-        The path of a file or a directory.
+        The path of a file or a directory with corresponding hash value.
     inplace : bool, optional
         If ``True``, use basename in hash line.
 
     Returns
     -------
     hash_line : str
-        The formatted hash line with GNU Coreutils style.
+        The formatted `hash_value` and `path` with GNU Coreutils style.
     """
 
     hash_value = hash_function(path)
@@ -227,14 +227,14 @@ def check_hash_line(hash_function, hash_line, *, inplace=None):
     hash_function : callable(str or path-like) -> bytes-like
         The function used to generate hash value.
     hash_line : str
-        The formatted hash line with GNU Coreutils style.
+        The formatted `hash_value` and `path` with GNU Coreutils style.
     inplace : str or path-like, optional
         If given, it should be the filepath conatining the hash line.
 
     Returns
     -------
     path : str
-        The path of a file or a directory.
+        The path of a file or a directory with corresponding hash value.
     """
 
     hash_value, path = parse_hash_line(hash_line)
