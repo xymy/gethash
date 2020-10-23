@@ -7,7 +7,7 @@ from setuptools import find_packages, setup
 root = Path(__file__).parent
 
 # Import this package from src directory and fetch metadata.
-sys.path = [str(root / "src")] + sys.path
+sys.path.insert(0, str(root / "src"))
 package = import_module("gethash")
 project = getattr(package, "__project__", None)
 version = getattr(package, "__version__", None)
