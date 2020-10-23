@@ -1,10 +1,7 @@
 import io
 import os
 import re
-from collections.abc import ByteString
 from hmac import compare_digest
-from os import PathLike
-from typing import Callable, Optional, Tuple
 
 from Cryptodome.Util.strxor import strxor
 from tqdm import tqdm
@@ -41,7 +38,7 @@ class Hasher(object):
     Parameters
     ----------
     ctx_proto : hash context
-        The hash context prototype used to generating hash values.
+        The hash context prototype used to generate hash values.
     chunksize : int, optional
         The size of data blocks when reading data from files.
     tqdm_args : dict, optional
@@ -156,19 +153,39 @@ class Hasher(object):
     __call__ = hash
 
 
-def format_hash_line(hash_value: ByteString, path: PathLike) -> str:
+def format_hash_line(hash_value, path):
     """Format hash line.
 
-    Require hash value and path; return hash line.
+    Parameters
+    ----------
+    hash_value : bytes-like
+        The hash value.
+    path : str or path-like
+        The path of a file or a directory.
+
+    Returns
+    -------
+    hash_line : str
+        The formatted hash line with GNU Coreutils style.
     """
 
     return "{} *{}\n".format(hash_value.hex(), path)
 
 
-def parse_hash_line(hash_line: str) -> Tuple[bytes, str]:
+def parse_hash_line(hash_line):
     """Parse hash line.
 
-    Require hash line; return hash value and path.
+    Parameters
+    ----------
+    hash_line : str
+        The formatted hash line with GNU Coreutils style.
+
+    Returns
+    -------
+    hash_value : bytes
+        The hash value.
+    path : str
+        The path of a file or a directory.
     """
 
     m = _HASH_LINE_RE.match(hash_line)
@@ -178,15 +195,22 @@ def parse_hash_line(hash_line: str) -> Tuple[bytes, str]:
     return bytes.fromhex(hash_value), path
 
 
-def generate_hash_line(
-    hash_function: Callable[[PathLike], ByteString],
-    path: PathLike,
-    *,
-    inplace: Optional[bool] = None,
-) -> str:
+def generate_hash_line(hash_function, path, *, inplace=None):
     """Generate hash line.
 
-    Require path; return hash line.
+    Parameters
+    ----------
+    hash_function : callable(str or path-like) -> bytes-like
+        The function used to generate hash value.
+    path : str or path-like
+        The path of a file or a directory.
+    inplace : bool, optional
+        If ``True``, use basename in hash line.
+
+    Returns
+    -------
+    hash_line : str
+        The formatted hash line with GNU Coreutils style.
     """
 
     hash_value = hash_function(path)
@@ -195,15 +219,22 @@ def generate_hash_line(
     return format_hash_line(hash_value, path)
 
 
-def check_hash_line(
-    hash_function: Callable[[PathLike], ByteString],
-    hash_line: str,
-    *,
-    inplace: Optional[PathLike] = None,
-) -> str:
+def check_hash_line(hash_function, hash_line, *, inplace=None):
     """Check hash line.
 
-    Require hash line; return path.
+    Parameters
+    ----------
+    hash_function : callable(str or path-like) -> bytes-like
+        The function used to generate hash value.
+    hash_line : str
+        The formatted hash line with GNU Coreutils style.
+    inplace : str or path-like, optional
+        If given, it should be the filepath conatining the hash line.
+
+    Returns
+    -------
+    path : str
+        The path of a file or a directory.
     """
 
     hash_value, path = parse_hash_line(hash_line)
