@@ -10,15 +10,20 @@ from .core import CheckHashLineError, Hasher, check_hash_line, generate_hash_lin
 
 
 class GetHash(object):
-    """Provide the script interface."""
+    """Provide uniform interface for cli scripts."""
 
     def __init__(self, ctx, suffix=".sha", **kwargs):
         self.ctx = ctx
         self.suffix = suffix
 
         self.inplace = kwargs.pop("inplace", False)
-        self.no_file = kwargs.pop("no_file", False)
-        self.no_glob = kwargs.pop("no_glob", False)
+        self.glob_flag = kwargs.pop("glob", True)
+        self.out_mode = kwargs.pop("out", "sep")
+        self.agg_file = kwargs.pop("agg", None)
+
+        if self.agg_file is not None:
+            self.out_mode = "agg"
+
         self.stdout = kwargs.pop("stdout", sys.stdout)
         self.stderr = kwargs.pop("stderr", sys.stderr)
 
@@ -46,26 +51,33 @@ class GetHash(object):
         message = "[ERROR] {}\n\t{}: {}".format(path, type(exc).__name__, exc)
         click.secho(message, file=self.stderr, fg="red")
 
-    def output_file(self, hash_line, hash_path):
-        if not self.no_file:
-            with open(hash_path, "w", encoding="utf-8") as f:
-                f.write(hash_line)
+    @property
+    def glob(self):
+        if self.glob_flag:
+            return iglob
 
-    def glob(self, patterns):
-        if self.no_glob:
+        def dummy_glob(pattern):
+            yield pattern
 
-            def glob_func(pattern):
-                yield pattern
+        return dummy_glob
 
-        else:
-            glob_func = iglob
-
+    def scan(self, patterns):
         for pattern in patterns:
-            for path in map(os.path.normpath, glob_func(pattern)):
+            for path in map(os.path.normpath, self.glob(pattern)):
                 yield path
 
+    def output_file(self, hash_line, hash_path):
+        out_mode = self.out_mode
+        if out_mode == "sep":
+            with open(hash_path, "w", encoding="utf-8") as f:
+                f.write(hash_line)
+        elif out_mode == "agg":
+            self.agg_file.write(hash_line)
+        elif out_mode == "null":
+            pass
+
     def generate_hash(self, patterns):
-        for path in self.glob(patterns):
+        for path in self.scan(patterns):
             try:
                 hash_line = generate_hash_line(
                     self.hash_function, path, inplace=self.inplace
@@ -89,7 +101,7 @@ class GetHash(object):
             self.secho("[SUCCESS] {}".format(path), fg="green")
 
     def check_hash(self, patterns):
-        for hash_path in self.glob(patterns):
+        for hash_path in self.scan(patterns):
             try:
                 with open(hash_path, "r", encoding="utf-8") as f:
                     # This function can process multiple hash lines.
@@ -138,8 +150,26 @@ def gethashcli(name):
         )
         @click.option("--start", type=click.INT, help="The start offset of files.")
         @click.option("--stop", type=click.INT, help="The stop offset of files.")
-        @click.option("--no-file", is_flag=True, help="Do not output checksum files.")
-        @click.option("--no-glob", is_flag=True, help="Do not resolve glob patterns.")
+        @click.option(
+            "--glob",
+            type=click.BOOL,
+            default=True,
+            show_default=True,
+            help="Whether resolving glob patterns.",
+        )
+        @click.option(
+            "--out",
+            type=click.Choice(["sep", "agg", "null"]),
+            default="sep",
+            show_default=True,
+            help="Specify the output mode.",
+        )
+        @click.option(
+            "--agg",
+            type=click.File("w", encoding="utf-8"),
+            default=None,
+            help="The aggregate output file. This option will set --out=agg.",
+        )
         @click.option("--no-stdout", is_flag=True, help="Do not output to stdout.")
         @click.option("--no-stderr", is_flag=True, help="Do not output to stderr.")
         @click.option("--tqdm-leave", type=click.BOOL, default=False, show_default=True)
