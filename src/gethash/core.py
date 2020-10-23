@@ -123,7 +123,7 @@ class Hasher(object):
                     other = self.hash_d(entry, start, stop)
                 else:
                     other = self.hash_f(entry, start, stop)
-                # Just XOR each byte strings as directory hash.
+                # Just XOR each byte string as hash value.
                 value = strxor(value, other)
         return value
 
