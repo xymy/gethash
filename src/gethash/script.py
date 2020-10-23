@@ -46,6 +46,11 @@ class GetHash(object):
         message = "[ERROR] {}\n\t{}: {}".format(path, type(exc).__name__, exc)
         click.secho(message, file=self.stderr, fg="red")
 
+    def output_file(self, hash_line, hash_path):
+        if not self.no_file:
+            with open(hash_path, "w", encoding="utf-8") as f:
+                f.write(hash_line)
+
     def glob(self, patterns):
         if self.no_glob:
 
@@ -66,9 +71,7 @@ class GetHash(object):
                     self.hash_function, path, inplace=self.inplace
                 )
                 hash_path = path + self.suffix
-                if not self.no_file:
-                    with open(hash_path, "w", encoding="utf-8") as f:
-                        f.write(hash_line)
+                self.output_file(hash_line, hash_path)
             except Exception as e:
                 self.echo_error(path, e)
             else:
