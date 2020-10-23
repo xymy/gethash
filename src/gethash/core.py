@@ -167,6 +167,13 @@ def format_hash_line(hash_value, path):
     -------
     hash_line : str
         The formatted `hash_value` and `path` with GNU Coreutils style.
+
+    Examples
+    --------
+    >>> hash_value = bytes.fromhex('d41d8cd98f00b204e9800998ecf8427e')
+    >>> path = 'a.txt'
+    >>> format_hash_line(hash_value, path)
+    'd41d8cd98f00b204e9800998ecf8427e *a.txt\n'
     """
 
     return "{} *{}\n".format(hash_value.hex(), path)
@@ -186,6 +193,13 @@ def parse_hash_line(hash_line):
         The hash value.
     path : str
         The path of a file or a directory with corresponding hash value.
+
+    Examples
+    --------
+    >>> hash_line = 'd41d8cd98f00b204e9800998ecf8427e *a.txt\n'
+    >>> hash_value, path = parse_hash_line(hash_line)
+    >>> hash_value.hex(), path
+    ('d41d8cd98f00b204e9800998ecf8427e', 'a.txt')
     """
 
     m = _HASH_LINE_RE.match(hash_line)
