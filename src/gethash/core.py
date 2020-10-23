@@ -59,9 +59,9 @@ class Hasher(object):
         filepath : str or path-like
             The path of a file.
         start : int, optional
-            The start range of the file.
+            The start offset of the file.
         stop : int, optional
-            The stop range of the file.
+            The stop offset of the file.
 
         Returns
         -------
@@ -102,9 +102,9 @@ class Hasher(object):
         dirpath : str or path-like
             The path of a directory.
         start : int, optional
-            The start range of files belonging to the directory.
+            The start offset of files belonging to the directory.
         stop : int, optional
-            The stop range of files belonging to the directory.
+            The stop offset of files belonging to the directory.
 
         Returns
         -------
@@ -132,9 +132,9 @@ class Hasher(object):
         path : str or path-like
             The path of a file or a directory.
         start : int, optional
-            The start range of the file or files belonging to the directory.
+            The start offset of the file or files belonging to the directory.
         stop : int, optional
-            The stop range of the file or files belonging to the directory.
+            The stop offset of the file or files belonging to the directory.
         dir_ok : bool, default=False
             If ``True``, enable directory hashing.
 
