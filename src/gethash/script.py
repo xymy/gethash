@@ -79,8 +79,11 @@ class GetHash(object):
     def generate_hash(self, patterns):
         for path in self.scan(patterns):
             try:
+                root = None
+                if self.inplace:
+                    root = os.path.dirname(path)
                 hash_line = generate_hash_line(
-                    self.hash_function, path, inplace=self.inplace
+                    self.hash_function, path, root=root
                 )
                 hash_path = path + self.suffix
                 self.output_file(hash_line, hash_path)
@@ -92,7 +95,10 @@ class GetHash(object):
 
     def _check_hash(self, hash_line, hash_path):
         try:
-            path = check_hash_line(self.hash_function, hash_line, inplace=hash_path)
+            root = None
+            if self.inplace:
+                root = os.path.dirname(hash_path)
+            path = check_hash_line(self.hash_function, hash_line, root=root)
         except CheckHashLineError as e:
             self.secho("[FAILURE] {}".format(e.path), fg="red")
         except Exception as e:

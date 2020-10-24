@@ -220,7 +220,7 @@ def parse_hash_line(hash_line):
     return bytes.fromhex(hash_value), path
 
 
-def generate_hash_line(hash_function, path, *, inplace=None):
+def generate_hash_line(hash_function, path, *, root=None):
     """Generate hash line.
 
     Parameters
@@ -229,8 +229,8 @@ def generate_hash_line(hash_function, path, *, inplace=None):
         The function used to generate hash value.
     path : str or path-like
         The path of a file or a directory with corresponding hash value.
-    inplace : bool, optional
-        If ``True``, use basename in hash line.
+    root : str or path-like, optional
+        The root directory.
 
     Returns
     -------
@@ -239,12 +239,12 @@ def generate_hash_line(hash_function, path, *, inplace=None):
     """
 
     hash_value = hash_function(path)
-    if inplace:
-        path = os.path.basename(path)
+    if root is not None:
+        path = os.path.normpath(os.path.relpath(path, root))
     return format_hash_line(hash_value, path)
 
 
-def check_hash_line(hash_function, hash_line, *, inplace=None):
+def check_hash_line(hash_function, hash_line, *, root=None):
     """Check hash line.
 
     Parameters
@@ -253,8 +253,8 @@ def check_hash_line(hash_function, hash_line, *, inplace=None):
         The function used to generate hash value.
     hash_line : str
         The formatted `hash_value` and `path` with GNU Coreutils style.
-    inplace : str or path-like, optional
-        If given, it should be the filepath conatining the hash line.
+    root : str or path-like, optional
+        The root directory.
 
     Returns
     -------
@@ -263,12 +263,8 @@ def check_hash_line(hash_function, hash_line, *, inplace=None):
     """
 
     hash_value, path = parse_hash_line(hash_line)
-    try:
-        hash_path = os.fspath(inplace)
-    except TypeError:
-        pass
-    else:
-        path = os.path.join(os.path.dirname(hash_path), path)
+    if root is not None:
+        path = os.path.normpath(os.path.join(root, path))
     curr_hash_value = hash_function(path)
     if not compare_digest(hash_value, curr_hash_value):
         raise CheckHashLineError(hash_line, hash_value, path, curr_hash_value)
