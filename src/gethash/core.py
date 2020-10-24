@@ -6,6 +6,17 @@ from hmac import compare_digest
 from Cryptodome.Util.strxor import strxor
 from tqdm import tqdm
 
+__all__ = [
+    "IsDirectory",
+    "ParseHashLineError",
+    "CheckHashLineError",
+    "Hasher",
+    "format_hash_line",
+    "parse_hash_line",
+    "generate_hash_line",
+    "check_hash_line",
+]
+
 _CHUNKSIZE = 0x100000  # 1 MB
 _HASH_LINE_RE = re.compile(r"([0-9a-fA-F]+) (?:\*| )?(.+)")
 
