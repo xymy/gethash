@@ -230,8 +230,8 @@ def generate_hash_line(hash_function, path, *, root=None):
     path : str or path-like
         The path of a file or a directory with corresponding hash value.
     root : str or path-like, optional
-        The root directory of `path`. The path in `hash_line` is relative to
-        the root directory.
+        The root directory of `path`. The path field in `hash_line` is relative
+        to the root directory.
 
     Returns
     -------
@@ -255,8 +255,8 @@ def check_hash_line(hash_function, hash_line, *, root=None):
     hash_line : str
         The formatted `hash_value` and `path` with GNU Coreutils style.
     root : str or path-like, optional
-        The root directory of `path`. The path in `hash_line` is relative to
-        the root directory.
+        The root directory of `path`. The path field in `hash_line` is relative
+        to the root directory.
 
     Returns
     -------
