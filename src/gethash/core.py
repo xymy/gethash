@@ -154,7 +154,7 @@ class Hasher(object):
 
 
 def format_hash_line(hash_value, path):
-    """Format hash line.
+    r"""Format hash line.
 
     Parameters
     ----------
@@ -180,7 +180,7 @@ def format_hash_line(hash_value, path):
 
 
 def parse_hash_line(hash_line):
-    """Parse hash line.
+    r"""Parse hash line.
 
     Parameters
     ----------
