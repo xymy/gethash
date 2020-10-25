@@ -10,6 +10,8 @@ from .core import CheckHashLineError, Hasher, check_hash_line, generate_hash_lin
 
 
 class Output(object):
+    """Provide and determine the output method."""
+
     def __init__(self, sep, agg, null):
         if (sep and agg) or (sep and null) or (agg and null):
             raise ValueError
@@ -48,6 +50,7 @@ class GetHash(object):
         self.inplace = kwargs.pop("inplace", False)
         self.glob_flag = kwargs.pop("glob", True)
 
+        # Determine the output method.
         sep = kwargs.pop("sep", None)
         agg = kwargs.pop("agg", None)
         null = kwargs.pop("null", None)
