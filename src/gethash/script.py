@@ -9,6 +9,35 @@ from . import __version__
 from .core import CheckHashLineError, Hasher, check_hash_line, generate_hash_line
 
 
+class Output(object):
+    def __init__(self, sep, agg, null):
+        if (sep and agg) or (sep and null) or (agg and null):
+            raise ValueError
+
+        if not (sep or agg or null):
+            sep = True
+
+        if sep:
+            self.dump = self.output_sep
+        elif agg:
+            self.agg_file = agg
+            self.dump = self.output_agg
+        elif null:
+            self.dump = self.output_null
+
+    @staticmethod
+    def output_sep(hash_line, hash_path):
+        with open(hash_path, "w", encoding="utf-8") as f:
+            f.write(hash_line)
+
+    def output_agg(self, hash_line, hash_path):
+        self.agg_file.write(hash_line)
+
+    @staticmethod
+    def output_null(hash_line, hash_path):
+        pass
+
+
 class GetHash(object):
     """Provide uniform interface for cli scripts."""
 
@@ -18,11 +47,11 @@ class GetHash(object):
 
         self.inplace = kwargs.pop("inplace", False)
         self.glob_flag = kwargs.pop("glob", True)
-        self.out_mode = kwargs.pop("out", "sep")
-        self.agg_file = kwargs.pop("agg", None)
 
-        if self.agg_file is not None:
-            self.out_mode = "agg"
+        sep = kwargs.pop("sep", None)
+        agg = kwargs.pop("agg", None)
+        null = kwargs.pop("null", None)
+        self.output = Output(sep, agg, null)
 
         self.stdout = kwargs.pop("stdout", sys.stdout)
         self.stderr = kwargs.pop("stderr", sys.stderr)
@@ -66,27 +95,15 @@ class GetHash(object):
             for path in map(os.path.normpath, self.glob(pattern)):
                 yield path
 
-    def output_file(self, hash_line, hash_path):
-        out_mode = self.out_mode
-        if out_mode == "sep":
-            with open(hash_path, "w", encoding="utf-8") as f:
-                f.write(hash_line)
-        elif out_mode == "agg":
-            self.agg_file.write(hash_line)
-        elif out_mode == "null":
-            pass
-
     def generate_hash(self, patterns):
         for path in self.scan(patterns):
             try:
                 root = None
                 if self.inplace:
                     root = os.path.dirname(path)
-                hash_line = generate_hash_line(
-                    self.hash_function, path, root=root
-                )
+                hash_line = generate_hash_line(self.hash_function, path, root=root)
                 hash_path = path + self.suffix
-                self.output_file(hash_line, hash_path)
+                self.output.dump(hash_line, hash_path)
             except Exception as e:
                 self.echo_error(path, e)
             else:
@@ -163,19 +180,14 @@ def gethashcli(name):
             show_default=True,
             help="Whether resolving glob patterns.",
         )
-        @click.option(
-            "--out",
-            type=click.Choice(["sep", "agg", "null"]),
-            default="sep",
-            show_default=True,
-            help="Specify the output mode.",
-        )
+        @click.option("--sep", is_flag=True)
         @click.option(
             "--agg",
             type=click.File("w", encoding="utf-8"),
             default=None,
             help="The aggregate output file. This option will set --out=agg.",
         )
+        @click.option("--null", is_flag=True)
         @click.option("--no-stdout", is_flag=True, help="Do not output to stdout.")
         @click.option("--no-stderr", is_flag=True, help="Do not output to stderr.")
         @click.option("--tqdm-leave", type=click.BOOL, default=False, show_default=True)
