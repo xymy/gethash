@@ -184,14 +184,14 @@ def gethashcli(name):
             show_default=True,
             help="Whether resolving glob patterns.",
         )
-        @click.option("--sep", is_flag=True)
+        @click.option("--sep", is_flag=True, help="Separate output files.")
         @click.option(
             "--agg",
             type=click.File("w", encoding="utf-8"),
             default=None,
-            help="The aggregate output file. This option will set --out=agg.",
+            help="Specify the aggregate output file.",
         )
-        @click.option("--null", is_flag=True)
+        @click.option("--null", is_flag=True, help="Disable output files.")
         @click.option("--no-stdout", is_flag=True, help="Do not output to stdout.")
         @click.option("--no-stderr", is_flag=True, help="Do not output to stderr.")
         @click.option("--tqdm-leave", type=click.BOOL, default=False, show_default=True)
