@@ -43,8 +43,8 @@ class CheckHashLineError(ValueError):
 class Hasher(object):
     """General hash value generator.
 
-    Generate hash values using given hash context prototype. A tqdm progressbar
-    is also available.
+    Generate hash values using given hash context prototype. A progressbar
+    based on `tqdm` is also available.
 
     Parameters
     ----------
@@ -53,7 +53,7 @@ class Hasher(object):
     chunksize : int, optional
         The size of data blocks when reading data from files.
     tqdm_args : dict, optional
-        The arguments passed to the tqdm constructor.
+        The arguments passed to the underlying `tqdm` constructor.
     """
 
     def __init__(self, ctx_proto, *, chunksize=None, tqdm_args=None):
