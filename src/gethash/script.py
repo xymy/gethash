@@ -105,7 +105,7 @@ class GetHash(object):
                 root = None
                 if self.inplace:
                     root = os.path.dirname(path)
-                hash_line = generate_hash_line(self.hash_function, path, root=root)
+                hash_line = generate_hash_line(path, self.hash_function, root=root)
                 hash_path = path + self.suffix
                 self.output.dump(hash_line, hash_path)
             except Exception as e:
@@ -119,7 +119,7 @@ class GetHash(object):
             root = None
             if self.inplace:
                 root = os.path.dirname(hash_path)
-            path = check_hash_line(self.hash_function, hash_line, root=root)
+            path = check_hash_line(hash_line, self.hash_function, root=root)
         except CheckHashLineError as e:
             self.secho("[FAILURE] {}".format(e.path), fg="red")
         except Exception as e:

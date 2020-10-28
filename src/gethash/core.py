@@ -220,15 +220,15 @@ def parse_hash_line(hash_line):
     return bytes.fromhex(hash_value), path
 
 
-def generate_hash_line(hash_function, path, *, root=None):
+def generate_hash_line(path, hash_function, *, root=None):
     """Generate hash line.
 
     Parameters
     ----------
-    hash_function : callable(str or path-like) -> bytes-like
-        The function used to generate hash value.
     path : str or path-like
         The path of a file or a directory with corresponding hash value.
+    hash_function : callable(str or path-like) -> bytes-like
+        A function for generating hash value.
     root : str or path-like, optional
         The root directory of `path`. The path field in `hash_line` is relative
         to the root directory.
@@ -245,15 +245,15 @@ def generate_hash_line(hash_function, path, *, root=None):
     return format_hash_line(hash_value, path)
 
 
-def check_hash_line(hash_function, hash_line, *, root=None):
+def check_hash_line(hash_line, hash_function, *, root=None):
     """Check hash line.
 
     Parameters
     ----------
-    hash_function : callable(str or path-like) -> bytes-like
-        The function used to generate hash value.
     hash_line : str
         The formatted `hash_value` and `path` with GNU Coreutils style.
+    hash_function : callable(str or path-like) -> bytes-like
+        A function for generating hash value.
     root : str or path-like, optional
         The root directory of `path`. The path field in `hash_line` is relative
         to the root directory.
