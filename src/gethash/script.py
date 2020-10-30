@@ -10,7 +10,7 @@ from .core import CheckHashLineError, Hasher, check_hash_line, generate_hash_lin
 
 
 class Output(object):
-    """Provide and determine the output mode."""
+    """Determine the output mode and provide the output interface."""
 
     def __init__(self, sep, agg, null):
         if (sep and agg) or (sep and null) or (agg and null):
@@ -149,7 +149,7 @@ class GetHash(object):
 def script_main(ctx, suffix, check, files, **options):
     """Generate the main body for the main function."""
 
-    # Convert bool flags to io streams.
+    # Convert bool flags to streams.
     no_stdout = options.pop("no_stdout", False)
     no_stderr = options.pop("no_stderr", False)
     stdout = open(os.devnull, "w") if no_stdout else sys.stdout
