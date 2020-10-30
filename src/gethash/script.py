@@ -4,6 +4,7 @@ import sys
 from glob import iglob
 
 import click
+from click_option_group import MutuallyExclusiveOptionGroup
 
 from . import __version__
 from .core import CheckHashLineError, Hasher, check_hash_line, generate_hash_line
@@ -162,6 +163,8 @@ def gethashcli(name):
     """Generate click decorators for the main function."""
 
     def decorator(func):
+        output_mode = MutuallyExclusiveOptionGroup("Output Mode")
+
         @click.command(no_args_is_help=True)
         @click.option(
             "-c",
@@ -184,14 +187,14 @@ def gethashcli(name):
             show_default=True,
             help="Whether resolving glob patterns.",
         )
-        @click.option("--sep", is_flag=True, help="Separate output files.")
-        @click.option(
+        @output_mode.option("--sep", is_flag=True, help="Separate output files.")
+        @output_mode.option(
             "--agg",
             type=click.File("w", encoding="utf-8"),
             default=None,
             help="Specify the aggregate output file.",
         )
-        @click.option("--null", is_flag=True, help="Disable output files.")
+        @output_mode.option("--null", is_flag=True, help="Disable output files.")
         @click.option("--no-stdout", is_flag=True, help="Do not output to stdout.")
         @click.option("--no-stderr", is_flag=True, help="Do not output to stderr.")
         @click.option("--tqdm-leave", type=click.BOOL, default=False, show_default=True)
