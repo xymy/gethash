@@ -52,17 +52,19 @@ class GetHash(object):
         self.ctx = ctx
         self.suffix = suffix
 
-        self.inplace = kwargs.pop("inplace", False)
         self.glob_flag = kwargs.pop("glob", True)
+
+        self.stdout = kwargs.pop("stdout", sys.stdout)
+        self.stderr = kwargs.pop("stderr", sys.stderr)
+
+        self.inplace = kwargs.pop("inplace", False)
+        self.root = kwargs.pop("root", None)
 
         # Determine the output mode.
         sep = kwargs.pop("sep", None)
         agg = kwargs.pop("agg", None)
         null = kwargs.pop("null", None)
         self.dump = Output(sep, agg, null).dump
-
-        self.stdout = kwargs.pop("stdout", sys.stdout)
-        self.stderr = kwargs.pop("stderr", sys.stderr)
 
         # Prepare arguments and construct the hash function.
         start = kwargs.pop("start", None)
@@ -103,12 +105,17 @@ class GetHash(object):
             for path in map(os.path.normpath, self.glob(pattern)):
                 yield path
 
+    def check_root(self, path):
+        if self.root is not None:
+            return self.root
+        if self.inplace:
+            return os.path.dirname(path)
+        return None
+
     def generate_hash(self, patterns):
         for path in self.scan(patterns):
             try:
-                root = None
-                if self.inplace:
-                    root = os.path.dirname(path)
+                root = self.check_root(path)
                 hash_line = generate_hash_line(path, self.hash_function, root=root)
                 hash_path = path + self.suffix
                 self.dump(hash_line, hash_path)
@@ -120,9 +127,7 @@ class GetHash(object):
 
     def _check_hash(self, hash_line, hash_path):
         try:
-            root = None
-            if self.inplace:
-                root = os.path.dirname(hash_path)
+            root = self.check_root(hash_path)
             path = check_hash_line(hash_line, self.hash_function, root=root)
         except CheckHashLineError as e:
             self.secho("[FAILURE] {}".format(e.path), fg="red")
@@ -166,6 +171,7 @@ def gethashcli(name):
     """Generate click decorators for the main function."""
 
     def decorator(func):
+        path_format = MutuallyExclusiveOptionGroup("Path Format")
         output_mode = MutuallyExclusiveOptionGroup(
             "Output Mode", help="Ignored when -c is set."
         )
@@ -180,9 +186,6 @@ def gethashcli(name):
         @click.option(
             "-d", "--dir", is_flag=True, help="Allow checksum for directories."
         )
-        @click.option(
-            "-i", "--inplace", is_flag=True, help="Use basename in checksum files."
-        )
         @click.option("--start", type=click.INT, help="The start offset of files.")
         @click.option("--stop", type=click.INT, help="The stop offset of files.")
         @click.option(
@@ -190,6 +193,12 @@ def gethashcli(name):
             type=click.BOOL,
             default=True,
             help="Whether resolving glob patterns.",
+        )
+        @path_format.option(
+            "-i", "--inplace", is_flag=True, help="Use basename in checksum files."
+        )
+        @path_format.option(
+            "--root", default=None, help="Relative to root in checksum files."
         )
         @output_mode.option("--sep", is_flag=True, help="Separate output files.")
         @output_mode.option(
