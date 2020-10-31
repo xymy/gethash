@@ -163,7 +163,9 @@ def gethashcli(name):
     """Generate click decorators for the main function."""
 
     def decorator(func):
-        output_mode = MutuallyExclusiveOptionGroup("Output Mode")
+        output_mode = MutuallyExclusiveOptionGroup(
+            "Output Mode", help="Ignored when -c is set."
+        )
 
         @click.command(no_args_is_help=True)
         @click.option(
@@ -184,7 +186,6 @@ def gethashcli(name):
             "--glob",
             type=click.BOOL,
             default=True,
-            show_default=True,
             help="Whether resolving glob patterns.",
         )
         @output_mode.option("--sep", is_flag=True, help="Separate output files.")
