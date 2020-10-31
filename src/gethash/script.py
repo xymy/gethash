@@ -22,12 +22,12 @@ class Output(object):
             sep = True
 
         if sep:
-            self.dump = self.output_sep
+            self._dump = self.output_sep
         elif agg:
             self.agg_file = agg
-            self.dump = self.output_agg
+            self._dump = self.output_agg
         elif null:
-            self.dump = self.output_null
+            self._dump = self.output_null
 
     @staticmethod
     def output_sep(hash_line, hash_path):
@@ -40,6 +40,9 @@ class Output(object):
     @staticmethod
     def output_null(hash_line, hash_path):
         pass
+
+    def dump(self, hash_line, hash_path):
+        self._dump(hash_line, hash_path)
 
 
 class GetHash(object):
@@ -56,7 +59,7 @@ class GetHash(object):
         sep = kwargs.pop("sep", None)
         agg = kwargs.pop("agg", None)
         null = kwargs.pop("null", None)
-        self.output = Output(sep, agg, null)
+        self.dump = Output(sep, agg, null).dump
 
         self.stdout = kwargs.pop("stdout", sys.stdout)
         self.stderr = kwargs.pop("stderr", sys.stderr)
@@ -108,7 +111,7 @@ class GetHash(object):
                     root = os.path.dirname(path)
                 hash_line = generate_hash_line(path, self.hash_function, root=root)
                 hash_path = path + self.suffix
-                self.output.dump(hash_line, hash_path)
+                self.dump(hash_line, hash_path)
             except Exception as e:
                 self.echo_error(path, e)
             else:
