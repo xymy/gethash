@@ -1,13 +1,13 @@
 import functools
 import os
 import sys
-from glob import iglob
 
 import click
 from click_option_group import MutuallyExclusiveOptionGroup
 
 from . import __version__
 from .core import CheckHashLineError, Hasher, check_hash_line, generate_hash_line
+from .utils import glob_scanner
 
 
 class Output(object):
@@ -52,7 +52,7 @@ class GetHash(object):
         self.ctx = ctx
         self.suffix = suffix
 
-        self.glob_flag = kwargs.pop("glob", True)
+        self.glob_mode = int(kwargs.pop("glob", 1))
 
         self.stdout = kwargs.pop("stdout", sys.stdout)
         self.stderr = kwargs.pop("stderr", sys.stderr)
@@ -90,21 +90,6 @@ class GetHash(object):
         message = "[ERROR] {}\n\t{}: {}".format(path, type(exc).__name__, exc)
         click.secho(message, file=self.stderr, fg="red")
 
-    @property
-    def glob(self):
-        if self.glob_flag:
-            return iglob
-
-        def dummy_glob(pattern):
-            yield pattern
-
-        return dummy_glob
-
-    def scan(self, patterns):
-        for pattern in patterns:
-            for path in map(os.path.normpath, self.glob(pattern)):
-                yield path
-
     def check_root(self, path):
         if self.root is not None:
             return self.root
@@ -113,7 +98,7 @@ class GetHash(object):
         return None
 
     def generate_hash(self, patterns):
-        for path in self.scan(patterns):
+        for path in glob_scanner(patterns, mode=self.glob_mode):
             try:
                 root = self.check_root(path)
                 hash_line = generate_hash_line(path, self.hash_function, root=root)
@@ -137,7 +122,7 @@ class GetHash(object):
             self.secho("[SUCCESS] {}".format(path), fg="green")
 
     def check_hash(self, patterns):
-        for hash_path in self.scan(patterns):
+        for hash_path in glob_scanner(patterns, mode=self.glob_mode):
             try:
                 with open(hash_path, "r", encoding="utf-8") as f:
                     # This function can process multiple hash lines.
@@ -190,9 +175,10 @@ def gethashcli(name):
         @click.option("--stop", type=click.INT, help="The stop offset of files.")
         @click.option(
             "--glob",
-            type=click.BOOL,
-            default=True,
-            help="Whether resolving glob patterns.",
+            type=click.Choice(["0", "1", "2"]),
+            default="1",
+            show_default=True,
+            help="Set glob mode.",
         )
         @path_format.option(
             "-i", "--inplace", is_flag=True, help="Use basename in checksum files."
