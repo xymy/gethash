@@ -77,6 +77,25 @@ def wrap_stream(stream, *, convert=None, strip=None, autoreset=False):
 
 
 def glob_resolver(pathname, *, mode=0, recursive=False):
+    """Resolve glob pathname.
+
+    Parameters
+    ----------
+    pathname : str or path-like
+        A pathname with glob pattern.
+    mode : int
+        The mode of glob. If ``0``, disable glob pathname pattern; if ``1``,
+        resolve * and ?; if ``2``, resolve *, ? and [].
+    recursive : bool
+        If ``True``, the pattern ** will match any files and zero or more
+        directories, subdirectories and symbolic links to directories.
+
+    Yields
+    ------
+    path : str
+        The matched path.
+    """
+
     pathname = os.fspath(pathname)
     if mode == 0:
         yield pathname
@@ -90,5 +109,24 @@ def glob_resolver(pathname, *, mode=0, recursive=False):
 
 
 def glob_scanner(pathnames, *, mode=0, recursive=False):
+    """Resolve a list of glob pathnames.
+
+    Parameters
+    ----------
+    pathnames : str or path-like
+        A list of pathnames with glob pattern.
+    mode : int
+        The mode of glob. If ``0``, disable glob pathname pattern; if ``1``,
+        resolve * and ?; if ``2``, resolve *, ? and [].
+    recursive : bool
+        If ``True``, the pattern ** will match any files and zero or more
+        directories, subdirectories and symbolic links to directories.
+
+    Yields
+    ------
+    path : str
+        The matched path.
+    """
+
     for pathname in pathnames:
         yield from glob_resolver(pathname, mode=mode, recursive=recursive)
