@@ -2,6 +2,8 @@ import glob
 import os
 import sys
 
+__all__ = ["wrap_stream", "cwrite", "glob_resolver", "glob_scanner"]
+
 ANSI_COLORS_FORE = {
     "black": "\x1b[30m",
     "red": "\x1b[31m",
@@ -45,23 +47,20 @@ ANSI_COLORS_BACK = {
 ANSI_RESET_ALL = "\033[0m"
 
 
-def glob_resolver(pathname, *, mode=0, recursive=False):
-    pathname = os.fspath(pathname)
-    if mode == 0:
-        yield pathname
-    elif mode == 1:
-        pathname = pathname.replace("[", glob.escape("["))
-        yield from glob.iglob(pathname, recursive=recursive)
-    elif mode == 2:
-        yield from glob.iglob(pathname, recursive=recursive)
-    else:
-        raise ValueError("invalid mode {}".format(mode))
+def cwrite(obj, *, file=sys.stdout, fg=None, bg=None):
+    if fg:
+        try:
+            obj = ANSI_COLORS_FORE[fg] + obj
+        except KeyError:
+            raise ValueError("invalid foreground color '{}'".format(fg))
 
+    if bg:
+        try:
+            obj = ANSI_COLORS_BACK[bg] + obj
+        except KeyError:
+            raise ValueError("invalid background color '{}'".format(bg))
 
-def glob_scanner(pathnames, *, mode=0, recursive=False):
-    for pathname in pathnames:
-        for path in glob_resolver(pathname, mode=mode, recursive=recursive):
-            yield path
+    file.write(obj + ANSI_RESET_ALL)
 
 
 def wrap_stream(stream, *, convert=None, strip=None, autoreset=False):
@@ -77,17 +76,19 @@ def wrap_stream(stream, *, convert=None, strip=None, autoreset=False):
     return stream
 
 
-def cwrite(obj, *, file=sys.stdout, fg=None, bg=None):
-    if fg:
-        try:
-            obj = ANSI_COLORS_FORE[fg] + obj
-        except KeyError:
-            raise ValueError("invalid foreground color '{}'".format(fg))
+def glob_resolver(pathname, *, mode=0, recursive=False):
+    pathname = os.fspath(pathname)
+    if mode == 0:
+        yield pathname
+    elif mode == 1:
+        pathname = pathname.replace("[", glob.escape("["))
+        yield from glob.iglob(pathname, recursive=recursive)
+    elif mode == 2:
+        yield from glob.iglob(pathname, recursive=recursive)
+    else:
+        raise ValueError("invalid mode {}".format(mode))
 
-    if bg:
-        try:
-            obj = ANSI_COLORS_BACK[bg] + obj
-        except KeyError:
-            raise ValueError("invalid background color '{}'".format(bg))
 
-    file.write(obj + ANSI_RESET_ALL)
+def glob_scanner(pathnames, *, mode=0, recursive=False):
+    for pathname in pathnames:
+        yield from glob_resolver(pathname, mode=mode, recursive=recursive)

@@ -158,7 +158,7 @@ class Hasher(object):
         if os.path.isdir(path):
             if dir_ok:
                 return self.hash_d(path, start, stop)
-            raise IsDirectory('"{}" is a directory'.format(path))
+            raise IsDirectory("'{}' is a directory".format(path))
         return self.hash_f(path, start, stop)
 
     __call__ = hash
