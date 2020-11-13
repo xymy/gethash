@@ -2,7 +2,7 @@ import glob
 import os
 import sys
 
-__all__ = ["wrap_stream", "cwrite", "glob_resolver", "glob_scanner"]
+__all__ = ["cwrite", "wrap_stream", "glob_resolver", "glob_scanner"]
 
 ANSI_COLORS_FORE = {
     "black": "\x1b[30m",
@@ -48,13 +48,13 @@ ANSI_RESET_ALL = "\033[0m"
 
 
 def cwrite(obj, *, file=sys.stdout, fg=None, bg=None):
-    if fg:
+    if fg is not None:
         try:
             obj = ANSI_COLORS_FORE[fg] + obj
         except KeyError:
             raise ValueError("invalid foreground color '{}'".format(fg))
 
-    if bg:
+    if bg is not None:
         try:
             obj = ANSI_COLORS_BACK[bg] + obj
         except KeyError:
@@ -64,7 +64,7 @@ def cwrite(obj, *, file=sys.stdout, fg=None, bg=None):
 
 
 def wrap_stream(stream, *, convert=None, strip=None, autoreset=False):
-    if os.name == "nt":
+    if sys.platform == "win32":
         # Use lazy loading so that colorama is only required on Windows.
         import colorama
 
@@ -85,9 +85,9 @@ def glob_resolver(pathname, *, mode=0, recursive=False):
         A pathname with glob pattern.
     mode : int
         The mode of glob. If ``0``, disable glob pathname pattern; if ``1``,
-        resolve * and ?; if ``2``, resolve *, ? and [].
+        resolve ``*`` and ``?``; if ``2``, resolve ``*``, ``?`` and ``[]``.
     recursive : bool
-        If ``True``, the pattern ** will match any files and zero or more
+        If ``True``, the pattern ``**`` will match any files and zero or more
         directories, subdirectories and symbolic links to directories.
 
     Yields
@@ -117,9 +117,9 @@ def glob_scanner(pathnames, *, mode=0, recursive=False):
         A list of pathnames with glob pattern.
     mode : int
         The mode of glob. If ``0``, disable glob pathname pattern; if ``1``,
-        resolve * and ?; if ``2``, resolve *, ? and [].
+        resolve ``*`` and ``?``; if ``2``, resolve ``*``, ``?`` and ``[]``.
     recursive : bool
-        If ``True``, the pattern ** will match any files and zero or more
+        If ``True``, the pattern ``**`` will match any files and zero or more
         directories, subdirectories and symbolic links to directories.
 
     Yields
