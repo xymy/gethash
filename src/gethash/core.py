@@ -7,7 +7,7 @@ from Cryptodome.Util.strxor import strxor
 from tqdm import tqdm
 
 __all__ = [
-    "IsDirectory",
+    "IsADirectory",
     "ParseHashLineError",
     "CheckHashLineError",
     "Hasher",
@@ -21,7 +21,7 @@ _CHUNKSIZE = 0x100000  # 1 MB
 _HASH_LINE_RE = re.compile(r"([0-9a-fA-F]+) (?:\*| )?(.+)")
 
 
-class IsDirectory(OSError):
+class IsADirectory(OSError):
     """Raised by method `Hasher.calc_hash`."""
 
 
@@ -158,7 +158,7 @@ class Hasher(object):
         if os.path.isdir(path):
             if dir_ok:
                 return self.hash_d(path, start, stop)
-            raise IsDirectory("'{}' is a directory".format(path))
+            raise IsADirectory("'{}' is a directory".format(path))
         return self.hash_f(path, start, stop)
 
     __call__ = hash
