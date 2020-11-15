@@ -7,7 +7,7 @@ from click_option_group import MutuallyExclusiveOptionGroup
 
 from . import __version__
 from .core import CheckHashLineError, Hasher, check_hash_line, generate_hash_line
-from .utils import glob_scanner
+from .utils import cwrite, glob_scanner, wrap_stream
 
 
 class Output(object):
@@ -54,8 +54,8 @@ class GetHash(object):
 
         self.glob_mode = int(kwargs.pop("glob", 1))
 
-        self.stdout = kwargs.pop("stdout", sys.stdout)
-        self.stderr = kwargs.pop("stderr", sys.stderr)
+        self.stdout = wrap_stream(kwargs.pop("stdout", sys.stdout))
+        self.stderr = wrap_stream(kwargs.pop("stderr", sys.stderr))
 
         self.inplace = kwargs.pop("inplace", False)
         self.root = kwargs.pop("root", None)
@@ -81,14 +81,11 @@ class GetHash(object):
         )
 
     def echo(self, msg, **kwargs):
-        click.echo(msg, file=self.stdout, **kwargs)
-
-    def secho(self, msg, **kwargs):
-        click.secho(msg, file=self.stdout, **kwargs)
+        cwrite(msg, file=self.stdout, **kwargs)
 
     def echo_error(self, path, exc):
-        message = "[ERROR] {}\n\t{}: {}".format(path, type(exc).__name__, exc)
-        click.secho(message, file=self.stderr, fg="red")
+        msg = "[ERROR] {}\n\t{}: {}".format(path, type(exc).__name__, exc)
+        cwrite(msg, file=self.stderr, fg="red")
 
     def check_root(self, path):
         if self.root is not None:
@@ -108,18 +105,18 @@ class GetHash(object):
                 self.echo_error(path, e)
             else:
                 # The hash line already has a newline.
-                self.echo(hash_line, nl=False)
+                self.echo(hash_line)
 
     def _check_hash(self, hash_line, hash_path):
         try:
             root = self.check_root(hash_path)
             path = check_hash_line(hash_line, self.hash_function, root=root)
         except CheckHashLineError as e:
-            self.secho("[FAILURE] {}".format(e.path), fg="red")
+            self.echo("[FAILURE] {}".format(e.path), fg="red")
         except Exception as e:
             self.echo_error(hash_path, e)
         else:
-            self.secho("[SUCCESS] {}".format(path), fg="green")
+            self.echo("[SUCCESS] {}".format(path), fg="green")
 
     def check_hash(self, patterns):
         for hash_path in glob_scanner(patterns, mode=self.glob_mode):
