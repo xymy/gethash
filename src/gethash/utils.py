@@ -2,7 +2,7 @@ import glob
 import os
 import sys
 
-__all__ = ["cwrite", "wrap_stream", "glob_resolver", "glob_scanner"]
+__all__ = ["color", "cprint", "wrap_stream", "glob_resolver", "glob_scanner"]
 
 ANSI_COLORS_FORE = {
     "black": "\x1b[30m",
@@ -47,20 +47,44 @@ ANSI_COLORS_BACK = {
 ANSI_RESET_ALL = "\033[0m"
 
 
-def cwrite(obj, *, file=sys.stdout, fg=None, bg=None):
+def color(msg, *, fg=None, bg=None):
+    """Add ANSI color sequence to message.
+
+    Parameters
+    ----------
+    msg : str
+        A message.
+    fg : str, optional
+        The foreground color.
+    bg : str, optional
+        The background color.
+
+    Returns
+    -------
+    cmsg : A message with colors.
+    """
+
     if fg is not None:
         try:
-            obj = ANSI_COLORS_FORE[fg] + obj
+            msg = ANSI_COLORS_FORE[fg] + msg
         except KeyError:
             raise ValueError("invalid foreground color '{}'".format(fg))
 
     if bg is not None:
         try:
-            obj = ANSI_COLORS_BACK[bg] + obj
+            msg = ANSI_COLORS_BACK[bg] + msg
         except KeyError:
             raise ValueError("invalid background color '{}'".format(bg))
 
-    file.write(obj + ANSI_RESET_ALL)
+    return msg + ANSI_RESET_ALL
+
+
+def cprint(*objs, sep=" ", end="\n", file=sys.stdout, flush=False, fg=None, bg=None):
+    msg = sep.join(str(obj) for obj in objs) + end
+    msg = color(msg, fg=fg, bg=bg)
+    file.write(msg)
+    if flush:
+        file.flush()
 
 
 def wrap_stream(stream, *, convert=None, strip=None, autoreset=False):

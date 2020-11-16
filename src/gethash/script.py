@@ -7,7 +7,7 @@ from click_option_group import MutuallyExclusiveOptionGroup
 
 from . import __version__
 from .core import CheckHashLineError, Hasher, check_hash_line, generate_hash_line
-from .utils import cwrite, glob_scanner, wrap_stream
+from .utils import cprint, glob_scanner, wrap_stream
 
 
 class Output(object):
@@ -81,11 +81,11 @@ class GetHash(object):
         )
 
     def echo(self, msg, **kwargs):
-        cwrite(msg, file=self.stdout, **kwargs)
+        cprint(msg, file=self.stdout, **kwargs)
 
     def echo_error(self, path, exc):
         msg = "[ERROR] {}\n\t{}: {}".format(path, type(exc).__name__, exc)
-        cwrite(msg, file=self.stderr, fg="red")
+        cprint(msg, file=self.stderr, fg="red")
 
     def check_root(self, path):
         if self.root is not None:
@@ -105,7 +105,7 @@ class GetHash(object):
                 self.echo_error(path, e)
             else:
                 # The hash line already has a newline.
-                self.echo(hash_line)
+                self.echo(hash_line, end='')
 
     def _check_hash(self, hash_line, hash_path):
         try:
