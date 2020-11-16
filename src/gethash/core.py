@@ -80,7 +80,7 @@ class Hasher(object):
             The hash value of the file.
         """
 
-        # Set the range of current file, default (0, filesize).
+        # Decide the range of current file, default (0, filesize).
         # The (start, stop) will be shrinked to (0, filesize) if necessary.
         filesize = os.path.getsize(filepath)
         if start is None or start < 0:
@@ -92,8 +92,6 @@ class Hasher(object):
 
         ctx = self.ctx_proto.copy()
         chunksize = self.chunksize
-
-        # Set the total of progressbar as range size.
         total = stop - start
         with tqdm(total=total, **self.tqdm_args) as bar, open(filepath, "rb") as f:
             # Precompute chunk count and remaining size.
