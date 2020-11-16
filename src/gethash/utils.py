@@ -64,6 +64,8 @@ def color(msg, *, fg=None, bg=None):
     cmsg : A message with colors.
     """
 
+    _check_str(msg, "msg")
+
     if fg is not None:
         try:
             msg = ANSI_COLORS_FORE[fg] + msg
@@ -80,6 +82,11 @@ def color(msg, *, fg=None, bg=None):
 
 
 def cprint(*objs, sep=" ", end="\n", file=sys.stdout, flush=False, fg=None, bg=None):
+    sep = " " if sep is None else sep
+    end = "\n" if end is None else end
+    _check_str_opt(sep, "sep")
+    _check_str_opt(end, "end")
+
     msg = sep.join(str(obj) for obj in objs) + end
     msg = color(msg, fg=fg, bg=bg)
     file.write(msg)
@@ -154,3 +161,15 @@ def glob_scanner(pathnames, *, mode=0, recursive=False):
 
     for pathname in pathnames:
         yield from glob_resolver(pathname, mode=mode, recursive=recursive)
+
+
+def _check_str(obj, name):
+    if not isinstance(obj, str):
+        tname = type(obj).__name__
+        raise TypeError("{} must be a string, not {}".format(name, tname))
+
+
+def _check_str_opt(obj, name):
+    if not isinstance(obj, str):
+        tname = type(obj).__name__
+        raise TypeError("{} must be None or a string, not {}".format(name, tname))
