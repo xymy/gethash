@@ -42,9 +42,10 @@ setup(
     author=author,
     author_email=email,
     url="https://github.com/xymy/gethash",
+    download_url="https://pypi.org/project/gethash/",
     classifiers=classifiers,
-    package_dir={"": "src"},
     packages=find_packages("src"),
+    package_dir={"": "src"},
     include_package_data=True,
     entry_points={
         "console_scripts": [
