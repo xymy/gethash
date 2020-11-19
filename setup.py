@@ -58,11 +58,14 @@ setup(
             "blake2b = gethash.cli.blake2b:main",
             "blake2s = gethash.cli.blake2s:main",
             # Legacy hash functions.
-            "md2 = gethash.cli.md2:main",
-            "md4 = gethash.cli.md4:main",
-            "ripemd160 = gethash.cli.ripemd160:main",
+            "md2 = gethash.cli.md2:main [all]",
+            "md4 = gethash.cli.md4:main [all]",
+            "ripemd160 = gethash.cli.ripemd160:main [all]",
         ]
     },
     install_requires=requirements,
+    extras_require={
+        "all": ["pycryptodomex>=3.9"],
+    },
     python_requires=">=3.6",
 )
