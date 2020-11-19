@@ -1,6 +1,0 @@
-setuptools
-wheel
-pylint
-flake8
-black
-isort

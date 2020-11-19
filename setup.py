@@ -14,9 +14,7 @@ version = getattr(package, "__version__", None)
 author = getattr(package, "__author__", None)
 email = getattr(package, "__email__", None)
 
-# Read metadata from files.
 readme = (root / "README.md").read_text()
-requirements = (root / "requirements.txt").read_text().splitlines()
 
 classifiers = [
     "License :: OSI Approved",
@@ -63,7 +61,12 @@ setup(
             "ripemd160 = gethash.cli.ripemd160:main [all]",
         ]
     },
-    install_requires=requirements,
+    install_requires=[
+        "click>=7.1",
+        "click-option-group>=0.5",
+        'colorama>=0.4; sys_platform == "win32"',
+        "tqdm>=4.51",
+    ],
     extras_require={
         "all": ["pycryptodomex>=3.9"],
     },
