@@ -57,9 +57,9 @@ class Hasher(object):
     ----------
     ctx_proto : hash context
         The hash context prototype used to generate hash values.
-    chunksize : int, optional
+    chunksize : int or None, optional (default: None)
         The size of data blocks when reading data from files.
-    tqdm_args : dict, optional
+    tqdm_args : dict or None, optional (default: None)
         The arguments passed to the underlying `tqdm` constructor.
     """
 
@@ -76,9 +76,9 @@ class Hasher(object):
         ----------
         filepath : str or path-like
             The path of a file.
-        start : int, optional
+        start : int or None, optional (default: None)
             The start offset of the file.
-        stop : int, optional
+        stop : int or None, optional (default: None)
             The stop offset of the file.
 
         Returns
@@ -120,9 +120,9 @@ class Hasher(object):
         ----------
         dirpath : str or path-like
             The path of a directory.
-        start : int, optional
+        start : int or None, optional (default: None)
             The start offset of files belonging to the directory.
-        stop : int, optional
+        stop : int or None, optional (default: None)
             The stop offset of files belonging to the directory.
 
         Returns
@@ -150,11 +150,11 @@ class Hasher(object):
         ----------
         path : str or path-like
             The path of a file or a directory.
-        start : int, optional
+        start : int or None, optional (default: None)
             The start offset of the file or files belonging to the directory.
-        stop : int, optional
+        stop : int or None, optional (default: None)
             The stop offset of the file or files belonging to the directory.
-        dir_ok : bool, default=False
+        dir_ok : bool, optional (default: False)
             If ``True``, enable directory hashing.
 
         Returns
@@ -237,7 +237,7 @@ def generate_hash_line(path, hash_function, *, root=None):
         The path of a file or a directory with corresponding hash value.
     hash_function : callable(str or path-like) -> bytes-like
         A function for generating hash value.
-    root : str or path-like, optional
+    root : str, path-like or None, optional (default: None)
         The root directory of `path`. The path field in `hash_line` is relative
         to the root directory.
 
@@ -262,7 +262,7 @@ def check_hash_line(hash_line, hash_function, *, root=None):
         The formatted `hash_value` and `path` with GNU Coreutils style.
     hash_function : callable(str or path-like) -> bytes-like
         A function for generating hash value.
-    root : str or path-like, optional
+    root : str, path-like or None, optional (default: None)
         The root directory of `path`. The path field in `hash_line` is relative
         to the root directory.
 

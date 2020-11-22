@@ -94,7 +94,7 @@ def cprint(*objs, sep=" ", end="\n", file=sys.stdout, flush=False, fg=None, bg=N
         The same as builtin `print`.
     file : file-like or None, optional (default: sys.stdout)
         The same as builtin `print`.
-    flush : bool or None, optional (default: False)
+    flush : bool, optional (default: False)
         The same as builtin `print`.
     fg : str or None, optional (default: None)
         The foreground color.
