@@ -54,9 +54,9 @@ def color(msg, *, fg=None, bg=None):
     ----------
     msg : str
         A message.
-    fg : str, optional
+    fg : str or None, optional (default: None)
         The foreground color.
-    bg : str, optional
+    bg : str or None, optional (default: None)
         The background color.
 
     Returns
@@ -88,17 +88,17 @@ def cprint(*objs, sep=" ", end="\n", file=sys.stdout, flush=False, fg=None, bg=N
     ----------
     objs : any
         Any objects.
-    sep : str, optional
+    sep : str or None, optional (default: " ")
         The same as builtin `print`.
-    end : str, optional
+    end : str or None, optional (default: "\n")
         The same as builtin `print`.
-    file : file-like, optional
+    file : file-like or None, optional (default: sys.stdout)
         The same as builtin `print`.
-    flush : bool, optional
+    flush : bool or None, optional (default: False)
         The same as builtin `print`.
-    fg : str, optional
+    fg : str or None, optional (default: None)
         The foreground color.
-    bg : str, optional
+    bg : str or None, optional (default: None)
         The background color.
     """
 
