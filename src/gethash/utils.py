@@ -82,8 +82,30 @@ def color(msg, *, fg=None, bg=None):
 
 
 def cprint(*objs, sep=" ", end="\n", file=sys.stdout, flush=False, fg=None, bg=None):
+    """Print with color.
+
+    Parameters
+    ----------
+    objs : any
+        Any objects.
+    sep : str, optional
+        The same as builtin `print`.
+    end : str, optional
+        The same as builtin `print`.
+    file : file-like, optional
+        The same as builtin `print`.
+    flush : bool, optional
+        The same as builtin `print`.
+    fg : str, optional
+        The foreground color.
+    bg : str, optional
+        The background color.
+    """
+
     sep = _check_str_opt(sep, "sep", " ")
     end = _check_str_opt(end, "end", "\n")
+    if file is None:
+        file = sys.stdout
 
     msg = sep.join(str(obj) for obj in objs) + end
     msg = color(msg, fg=fg, bg=bg)
