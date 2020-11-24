@@ -7,7 +7,8 @@ from click_option_group import MutuallyExclusiveOptionGroup
 
 from . import __version__
 from .core import CheckHashLineError, Hasher, check_hash_line, generate_hash_line
-from .utils import cprint, glob_scanner, wrap_stream
+from .utils.colorama import cprint, wrap_stream
+from .utils.glob import glob_scanner
 
 
 class Output(object):
@@ -105,7 +106,7 @@ class GetHash(object):
                 self.echo_error(path, e)
             else:
                 # The hash line already has a newline.
-                self.echo(hash_line, end='')
+                self.echo(hash_line, end="")
 
     def _check_hash(self, hash_line, hash_path):
         try:

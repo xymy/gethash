@@ -1,8 +1,8 @@
-import glob
-import os
 import sys
 
-__all__ = ["color", "cprint", "wrap_stream", "glob_resolver", "glob_scanner"]
+from . import _check_str, _check_str_opt
+
+__all__ = ["color", "cprint", "wrap_stream"]
 
 ANSI_COLORS_FORE = {
     "black": "\x1b[30m",
@@ -48,20 +48,26 @@ ANSI_RESET_ALL = "\033[0m"
 
 
 def color(msg, *, fg=None, bg=None):
-    """Add ANSI color sequence to message.
+    """Add ANSI color sequence to a message.
 
     Parameters
     ----------
     msg : str
         A message.
     fg : str or None, optional (default: None)
-        The foreground color.
+        The foreground color in ``{'black', 'red', 'green', 'yellow', 'blue',
+        'magenta', 'cyan', 'white', 'reset', 'bright_black', 'bright_red',
+        'bright_green', 'bright_yellow', 'bright_blue', 'bright_magenta',
+        'bright_cyan', 'bright_white'}``.
     bg : str or None, optional (default: None)
-        The background color.
+        The background color in ``{'black', 'red', 'green', 'yellow', 'blue',
+        'magenta', 'cyan', 'white', 'reset', 'bright_black', 'bright_red',
+        'bright_green', 'bright_yellow', 'bright_blue', 'bright_magenta',
+        'bright_cyan', 'bright_white'}``.
 
     Returns
     -------
-    cmsg : A message with colors.
+    cmsg : A colorful message.
     """
 
     _check_str(msg, "msg")
@@ -82,7 +88,7 @@ def color(msg, *, fg=None, bg=None):
 
 
 def cprint(*objs, sep=" ", end="\n", file=sys.stdout, flush=False, fg=None, bg=None):
-    """Print with color.
+    """Print a colorful message.
 
     Parameters
     ----------
@@ -97,9 +103,15 @@ def cprint(*objs, sep=" ", end="\n", file=sys.stdout, flush=False, fg=None, bg=N
     flush : bool, optional (default: False)
         The same as builtin `print`.
     fg : str or None, optional (default: None)
-        The foreground color.
+        The foreground color in ``{'black', 'red', 'green', 'yellow', 'blue',
+        'magenta', 'cyan', 'white', 'reset', 'bright_black', 'bright_red',
+        'bright_green', 'bright_yellow', 'bright_blue', 'bright_magenta',
+        'bright_cyan', 'bright_white'}``.
     bg : str or None, optional (default: None)
-        The background color.
+        The background color in ``{'black', 'red', 'green', 'yellow', 'blue',
+        'magenta', 'cyan', 'white', 'reset', 'bright_black', 'bright_red',
+        'bright_green', 'bright_yellow', 'bright_blue', 'bright_magenta',
+        'bright_cyan', 'bright_white'}``.
     """
 
     sep = _check_str_opt(sep, "sep", " ")
@@ -115,6 +127,8 @@ def cprint(*objs, sep=" ", end="\n", file=sys.stdout, flush=False, fg=None, bg=N
 
 
 def wrap_stream(stream, *, convert=None, strip=None, autoreset=False):
+    """Wrap stream using colorama on Windows. No effect on other platforms."""
+
     if sys.platform == "win32":
         # Use lazy loading so that colorama is only required on Windows.
         import colorama
@@ -125,75 +139,3 @@ def wrap_stream(stream, *, convert=None, strip=None, autoreset=False):
         if wrapper.should_wrap():
             stream = wrapper.stream
     return stream
-
-
-def glob_resolver(pathname, *, mode=1, recursive=False):
-    """Resolve glob pathname.
-
-    Parameters
-    ----------
-    pathname : str or path-like
-        A pathname with glob pattern.
-    mode : int, optional (default: 1)
-        The mode of glob. If ``0``, disable glob pathname pattern; if ``1``,
-        resolve ``*`` and ``?``; if ``2``, resolve ``*``, ``?`` and ``[]``.
-    recursive : bool, optional (default: False)
-        If ``True``, the pattern ``**`` will match any files and zero or more
-        directories, subdirectories and symbolic links to directories.
-
-    Yields
-    ------
-    path : str
-        The matched path.
-    """
-
-    pathname = os.fspath(pathname)
-    if mode == 0:
-        yield pathname
-    elif mode == 1:
-        pathname = pathname.replace("[", glob.escape("["))
-        yield from glob.iglob(pathname, recursive=recursive)
-    elif mode == 2:
-        yield from glob.iglob(pathname, recursive=recursive)
-    else:
-        raise ValueError("invalid mode {}".format(mode))
-
-
-def glob_scanner(pathnames, *, mode=1, recursive=False):
-    """Resolve a list of glob pathnames.
-
-    Parameters
-    ----------
-    pathnames : str or path-like
-        A list of pathnames with glob pattern.
-    mode : int, optional (default: 1)
-        The mode of glob. If ``0``, disable glob pathname pattern; if ``1``,
-        resolve ``*`` and ``?``; if ``2``, resolve ``*``, ``?`` and ``[]``.
-    recursive : bool, optional (default: False)
-        If ``True``, the pattern ``**`` will match any files and zero or more
-        directories, subdirectories and symbolic links to directories.
-
-    Yields
-    ------
-    path : str
-        The matched path.
-    """
-
-    for pathname in pathnames:
-        yield from glob_resolver(pathname, mode=mode, recursive=recursive)
-
-
-def _check_str(obj, name):
-    if not isinstance(obj, str):
-        tname = type(obj).__name__
-        raise TypeError("{} must be a string, not {}".format(name, tname))
-
-
-def _check_str_opt(obj, name, default):
-    if obj is None:
-        return default
-
-    if not isinstance(obj, str):
-        tname = type(obj).__name__
-        raise TypeError("{} must be None or a string, not {}".format(name, tname))
-    return obj
