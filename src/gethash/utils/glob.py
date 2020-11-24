@@ -1,7 +1,24 @@
 import glob
 import os
 
+from . import _check_int
+
 __all__ = ["glob_resolver", "glob_scanner"]
+
+_ESCAPE_SQUARE = glob.escape("[")
+
+
+def _glob(pathname, *, mode=1, recursive=False):
+    pathname = os.fspath(pathname)
+    if mode == 0:
+        yield pathname
+    elif mode == 1:
+        pathname = pathname.replace("[", _ESCAPE_SQUARE)
+        yield from glob.iglob(pathname, recursive=recursive)
+    elif mode == 2:
+        yield from glob.iglob(pathname, recursive=recursive)
+    else:
+        raise ValueError("invalid mode {}".format(mode))
 
 
 def glob_resolver(pathname, *, mode=1, recursive=False):
@@ -24,16 +41,8 @@ def glob_resolver(pathname, *, mode=1, recursive=False):
         The matched path.
     """
 
-    pathname = os.fspath(pathname)
-    if mode == 0:
-        yield pathname
-    elif mode == 1:
-        pathname = pathname.replace("[", glob.escape("["))
-        yield from glob.iglob(pathname, recursive=recursive)
-    elif mode == 2:
-        yield from glob.iglob(pathname, recursive=recursive)
-    else:
-        raise ValueError("invalid mode {}".format(mode))
+    _check_int(mode, "mode")
+    yield from _glob(pathname, mode=mode, recursive=recursive)
 
 
 def glob_scanner(pathnames, *, mode=1, recursive=False):
@@ -56,5 +65,6 @@ def glob_scanner(pathnames, *, mode=1, recursive=False):
         The matched path.
     """
 
+    _check_int(mode, "mode")
     for pathname in pathnames:
-        yield from glob_resolver(pathname, mode=mode, recursive=recursive)
+        yield from _glob(pathname, mode=mode, recursive=recursive)

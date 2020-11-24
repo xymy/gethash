@@ -1,3 +1,9 @@
+def _check_int(obj, name):
+    if not isinstance(obj, int):
+        tname = type(obj).__name__
+        raise TypeError("{} must be a integer, not {}".format(name, tname))
+
+
 def _check_str(obj, name):
     if not isinstance(obj, str):
         tname = type(obj).__name__
