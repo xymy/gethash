@@ -5,13 +5,7 @@ from hmac import compare_digest
 
 from tqdm import tqdm
 
-try:
-    from Cryptodome.Util.strxor import strxor
-except ImportError:
-
-    def strxor(b1, b2):
-        return (x1 ^ x2 for x1, x2 in zip(b1, b2))
-
+from .utils.strxor import strxor
 
 __all__ = [
     "IsADirectory",
