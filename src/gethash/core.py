@@ -45,7 +45,7 @@ class Hasher(object):
     """General hash value generator.
 
     Generate hash values using given hash context prototype. A progressbar
-    based on `tqdm` is also available.
+    based on ``tqdm`` is also available.
 
     Parameters
     ----------
@@ -54,7 +54,7 @@ class Hasher(object):
     chunksize : int or None, optional (default: None)
         The size of data blocks when reading data from files.
     tqdm_args : dict or None, optional (default: None)
-        The arguments passed to the underlying `tqdm` constructor.
+        The arguments passed to the underlying ``tqdm`` constructor.
     """
 
     def __init__(self, ctx_proto, *, chunksize=None, tqdm_args=None):
@@ -81,7 +81,7 @@ class Hasher(object):
             The hash value of the file.
         """
 
-        # Decide the range of current file, default (0, filesize).
+        # Decide the range of current file. Use (0, filesize) by default.
         # The (start, stop) will be shrinked to (0, filesize) if necessary.
         filesize = os.path.getsize(filepath)
         if start is None or start < 0:
