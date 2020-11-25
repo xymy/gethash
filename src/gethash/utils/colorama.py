@@ -127,10 +127,11 @@ def cprint(*objs, sep=" ", end="\n", file=sys.stdout, flush=False, fg=None, bg=N
 
 
 def wrap_stream(stream, *, convert=None, strip=None, autoreset=False):
-    """Wrap stream using colorama on Windows. No effect on other platforms."""
+    """Wrap stream using ``colorama`` package on Windows. No effect on other
+    platforms."""
 
     if sys.platform == "win32":
-        # Use lazy loading so that colorama is only required on Windows.
+        # Use lazy loading so that ``colorama`` is only required on Windows.
         import colorama
 
         wrapper = colorama.AnsiToWin32(
