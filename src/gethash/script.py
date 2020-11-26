@@ -47,7 +47,7 @@ class Output(object):
 
 
 class GetHash(object):
-    """Provide uniform interface for cli scripts."""
+    """Provide uniform interface for CLI scripts."""
 
     def __init__(self, ctx, suffix=".sha", **kwargs):
         self.ctx = ctx
