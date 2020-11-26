@@ -18,9 +18,9 @@ class Output(object):
         if (sep and agg) or (sep and null) or (agg and null):
             raise ValueError
 
-        # Use the sep mode by default.
+        # Use the null mode by default.
         if not (sep or agg or null):
-            sep = True
+            null = True
 
         if sep:
             self._dump = self.output_sep
@@ -154,7 +154,9 @@ def gethashcli(name):
     """Generate click decorators for the main function."""
 
     def decorator(func):
-        path_format = MutuallyExclusiveOptionGroup("Path Format")
+        path_format = MutuallyExclusiveOptionGroup(
+            "Path Format", help="Set the path format in checksum files."
+        )
         output_mode = MutuallyExclusiveOptionGroup(
             "Output Mode", help="Ignored when -c is set."
         )
@@ -177,23 +179,24 @@ def gethashcli(name):
             metavar="{0, 1, 2}",
             default="1",
             show_default=True,
-            help="Set glob mode. If ``0``, disable glob pathname pattern; if ``1``,"
+            help="Set glob mode. If ``0``, disable glob pathname pattern; if ``1``, "
             "resolve ``*`` and ``?``; if ``2``, resolve ``*``, ``?`` and ``[]``.",
         )
         @path_format.option(
             "-i", "--inplace", is_flag=True, help="Use basename in checksum files."
         )
         @path_format.option(
-            "--root", default=None, help="Relative to root in checksum files."
+            "-z", "--root", default=None, help="Relative to root in checksum files."
         )
-        @output_mode.option("--sep", is_flag=True, help="Separate output files.")
+        @output_mode.option("-s", "--sep", is_flag=True, help="Separate output files.")
         @output_mode.option(
+            "-o",
             "--agg",
             type=click.File("w", encoding="utf-8"),
             default=None,
-            help="Specify the aggregate output file.",
+            help="Set the aggregate output file.",
         )
-        @output_mode.option("--null", is_flag=True, help="Disable output files.")
+        @output_mode.option("-n", "--null", is_flag=True, help="Disable output files.")
         @click.option("--no-stdout", is_flag=True, help="Do not output to stdout.")
         @click.option("--no-stderr", is_flag=True, help="Do not output to stderr.")
         @click.option("--tqdm-leave", type=click.BOOL, default=False, show_default=True)
