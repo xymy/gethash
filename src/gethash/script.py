@@ -53,7 +53,7 @@ class GetHash(object):
         self.ctx = ctx
         self.suffix = suffix
 
-        self.glob_mode = int(kwargs.pop("glob", 1))
+        self.glob_mode = kwargs.pop("glob", 1)
 
         self.stdout = wrap_stream(kwargs.pop("stdout", sys.stdout))
         self.stderr = wrap_stream(kwargs.pop("stderr", sys.stderr))
@@ -173,10 +173,12 @@ def gethashcli(name):
         @click.option("--stop", type=click.INT, help="The stop offset of files.")
         @click.option(
             "--glob",
-            type=click.Choice(["0", "1", "2"]),
+            type=click.IntRange(0, 2),
+            metavar="{0, 1, 2}",
             default="1",
             show_default=True,
-            help="Set glob mode.",
+            help="Set glob mode. If ``0``, disable glob pathname pattern; if ``1``,"
+            "resolve ``*`` and ``?``; if ``2``, resolve ``*``, ``?`` and ``[]``.",
         )
         @path_format.option(
             "-i", "--inplace", is_flag=True, help="Use basename in checksum files."
