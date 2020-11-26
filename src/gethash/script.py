@@ -58,6 +58,7 @@ class GetHash(object):
         self.stdout = wrap_stream(kwargs.pop("stdout", sys.stdout))
         self.stderr = wrap_stream(kwargs.pop("stderr", sys.stderr))
 
+        # Determine the path format.
         self.inplace = kwargs.pop("inplace", False)
         self.root = kwargs.pop("root", None)
 
