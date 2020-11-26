@@ -10,20 +10,17 @@ Require Python 3.6+.
 pip install -U gethash
 ```
 
-or
+or (if you need legacy hash algorithms)
 
 ```shell
-pip3 install -U gethash
+pip install -U gethash[all]
 ```
 
 ## Usage
 
-After installation, 11 commands are available:
+After installation, 8 commands are available:
 
-- md2
-- md4
 - md5
-- ripemd160
 - sha1
 - sha256
 - sha512
@@ -31,6 +28,12 @@ After installation, 11 commands are available:
 - sha3-512
 - blake2b
 - blake2s
+
+If you use `[all]`, 3 additional commands are available:
+
+- md2
+- md4
+- ripemd160
 
 ### Generate hash values
 
@@ -41,7 +44,7 @@ total 296
 -rw-r--r-- 1 User 197610 126717 Jun 27 10:43 002.zip
 -rw-r--r-- 1 User 197610 103064 Jun 27 10:44 003.zip
 
-$ sha1 *.zip
+$ sha1 -s *.zip
 7701133eb84b567362fbf1b9e3883d7620ee8ada *001.zip
 0d6c6cb6908064139f419c1b528f99142a1f2a49 *002.zip
 10e2c0d8aa85add2ba495393f7f7f0b0baaf34a6 *003.zip
