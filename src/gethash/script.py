@@ -49,14 +49,11 @@ class Output(object):
 class GetHash(object):
     """Provide uniform interface for CLI scripts."""
 
-    def __init__(self, ctx, suffix=".sha", **kwargs):
+    def __init__(self, ctx, **kwargs):
         self.ctx = ctx
-        self.suffix = suffix
 
+        self.suffix = kwargs.pop("suffix", ".sha")
         self.glob_mode = kwargs.pop("glob", 1)
-
-        self.stdout = wrap_stream(kwargs.pop("stdout", sys.stdout))
-        self.stderr = wrap_stream(kwargs.pop("stderr", sys.stderr))
 
         # Determine the path format.
         self.inplace = kwargs.pop("inplace", False)
@@ -67,6 +64,9 @@ class GetHash(object):
         agg = kwargs.pop("agg", None)
         null = kwargs.pop("null", None)
         self.dump = Output(sep, agg, null).dump
+
+        self.stdout = wrap_stream(kwargs.pop("stdout", sys.stdout))
+        self.stderr = wrap_stream(kwargs.pop("stderr", sys.stderr))
 
         # Prepare arguments and construct the hash function.
         start = kwargs.pop("start", None)
@@ -148,7 +148,7 @@ def script_main(ctx, suffix, check, files, **options):
     stdout = open(os.devnull, "w") if no_stdout else sys.stdout
     stderr = open(os.devnull, "w") if no_stderr else sys.stderr
     # Initialize and invoke.
-    GetHash(ctx, suffix, stdout=stdout, stderr=stderr, **options)(check, files)
+    GetHash(ctx, suffix=suffix, stdout=stdout, stderr=stderr, **options)(check, files)
 
 
 def gethashcli(name):
