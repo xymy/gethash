@@ -47,6 +47,8 @@ setup(
     include_package_data=True,
     entry_points={
         "console_scripts": [
+            "gethash = gethash.__main__:main",
+            # Common hash functions.
             "md5 = gethash.cli.md5:main",
             "sha1 = gethash.cli.sha1:main",
             "sha256 = gethash.cli.sha256:main",
