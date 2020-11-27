@@ -1,24 +1,47 @@
 from importlib import import_module
-from pathlib import Path
 
 import click
 
-PLUGINS_DIR = Path(__file__).parent / "cli"
+PYCRYPTODOMEX_INSTALLED = True
+try:
+    import Cryptodome
+except ImportError:
+    PYCRYPTODOMEX_INSTALLED = False
+else:
+    del Cryptodome
+
+PLUGINS = (
+    "md5",
+    "sha1",
+    "sha256",
+    "sha512",
+    "sha3-256",
+    "sha3-512",
+    "blake2b",
+    "blake2s",
+)
+
+LEGACY_PLUGINS = ("md2", "md4", "ripemd160")
 
 
 class Cli(click.MultiCommand):
     def list_commands(self, ctx):
-        scripts = PLUGINS_DIR.glob("[!_]*.py")
-        return sorted(script.stem for script in scripts)
+        plugins = list(PLUGINS)
+        if PYCRYPTODOMEX_INSTALLED:
+            plugins.extend(LEGACY_PLUGINS)
+        return plugins
 
     def get_command(self, ctx, name):
+        name = name.replace("-", "_")  # fix dash to underline
         entry_point = None
-        try:  # import from plugins directory
-            module = import_module(f".{name}", "gethash.cli")
+        try:
+            # Import from plugins directory.
+            module = import_module("gethash.cli.{}".format(name))
         except ImportError:
             pass
         else:
-            try:  # get `main` function as entry point
+            try:
+                # Get `main` function as entry point.
                 main = module.main
             except AttributeError:
                 pass
