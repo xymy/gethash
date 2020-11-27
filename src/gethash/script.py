@@ -139,7 +139,7 @@ class GetHash(object):
             self.generate_hash(files)
 
 
-def script_main(ctx, suffix, check, files, **options):
+def script_main(ctx, check, files, **options):
     """Generate the main body for the main function."""
 
     # Convert bool flags to streams.
@@ -148,10 +148,10 @@ def script_main(ctx, suffix, check, files, **options):
     stdout = open(os.devnull, "w") if no_stdout else sys.stdout
     stderr = open(os.devnull, "w") if no_stderr else sys.stderr
     # Initialize and invoke.
-    GetHash(ctx, suffix=suffix, stdout=stdout, stderr=stderr, **options)(check, files)
+    GetHash(ctx, stdout=stdout, stderr=stderr, **options)(check, files)
 
 
-def gethashcli(name):
+def gethashcli(name, suffix):
     """Generate click decorators for the main function."""
 
     def decorator(func):
@@ -159,7 +159,7 @@ def gethashcli(name):
             "Path Format", help="Set the path format in checksum files."
         )
         output_mode = MutuallyExclusiveOptionGroup(
-            "Output Mode", help="Ignored when -c is set."
+            "Output Mode", help="Ignored when -c is set. --null by default."
         )
 
         @click.command(no_args_is_help=True)
@@ -174,6 +174,11 @@ def gethashcli(name):
         )
         @click.option("--start", type=click.INT, help="The start offset of files.")
         @click.option("--stop", type=click.INT, help="The stop offset of files.")
+        @click.option(
+            "--suffix",
+            default=suffix,
+            help="Set the filename extension of checksum files.",
+        )
         @click.option(
             "--glob",
             type=click.IntRange(0, 2),

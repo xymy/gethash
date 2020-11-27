@@ -4,13 +4,13 @@ NAME = "MD4"
 SUFFIX = ".md4"
 
 
-@gethashcli(NAME)
+@gethashcli(NAME, SUFFIX)
 def main(check, files, **kwargs):
     """Generate and check MD4."""
 
     from Cryptodome.Hash.MD4 import new as H
 
-    script_main(H(), SUFFIX, check, files, **kwargs)
+    script_main(H(), check, files, **kwargs)
 
 
 if __name__ == "__main__":

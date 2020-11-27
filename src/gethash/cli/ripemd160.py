@@ -4,13 +4,13 @@ NAME = "RIPEMD160"
 SUFFIX = ".ripemd160"
 
 
-@gethashcli(NAME)
+@gethashcli(NAME, SUFFIX)
 def main(check, files, **kwargs):
     """Generate and check RIPEMD160."""
 
     from Cryptodome.Hash.RIPEMD160 import new as H
 
-    script_main(H(), SUFFIX, check, files, **kwargs)
+    script_main(H(), check, files, **kwargs)
 
 
 if __name__ == "__main__":
