@@ -169,21 +169,27 @@ def gethashcli(name, suffix):
             is_flag=True,
             help="Read {} from FILES and check them.".format(name),
         )
-        @click.option(
-            "-d", "--dir", is_flag=True, help="Allow checksum for directories."
-        )
         @click.option("--start", type=click.INT, help="The start offset of files.")
         @click.option("--stop", type=click.INT, help="The stop offset of files.")
         @click.option(
+            "-d",
+            "--dir",
+            is_flag=True,
+            help="Allow checksum for directories. "
+            "Just xor each checksum of files in a given directory.",
+        )
+        @click.option(
             "--suffix",
+            metavar="SUFFIX",
             default=suffix,
+            show_default=True,
             help="Set the filename extension of checksum files.",
         )
         @click.option(
             "--glob",
             type=click.IntRange(0, 2),
             metavar="{0, 1, 2}",
-            default="1",
+            default=1,
             show_default=True,
             help="Set glob mode. If ``0``, disable glob pathname pattern; if ``1``, "
             "resolve ``*`` and ``?``; if ``2``, resolve ``*``, ``?`` and ``[]``.",
@@ -192,7 +198,11 @@ def gethashcli(name, suffix):
             "-i", "--inplace", is_flag=True, help="Use basename in checksum files."
         )
         @path_format.option(
-            "-z", "--root", default=None, help="Relative to root in checksum files."
+            "-z",
+            "--root",
+            type=click.Path(exists=True, file_okay=False, dir_okay=True),
+            default=None,
+            help="The path field in checksum files is relative to the root directory.",
         )
         @output_mode.option("-s", "--sep", is_flag=True, help="Separate output files.")
         @output_mode.option(
