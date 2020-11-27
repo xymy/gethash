@@ -24,7 +24,7 @@ def strxor(b1, b2):
     Returns
     -------
     result : bytes
-        The result of b1 xor b2.
+        The result of `b1` xor `b2`.
     """
 
     return _strxor(b1, b2)
