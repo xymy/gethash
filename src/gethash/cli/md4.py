@@ -6,6 +6,8 @@ SUFFIX = ".md4"
 
 @gethashcli(NAME)
 def main(check, files, **kwargs):
+    """Generate and check MD4."""
+
     from Cryptodome.Hash.MD4 import new as H
 
     script_main(H(), SUFFIX, check, files, **kwargs)

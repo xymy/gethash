@@ -6,6 +6,8 @@ SUFFIX = ".blake2s"
 
 @gethashcli(NAME)
 def main(check, files, **kwargs):
+    """Generate and check BLAKE2s."""
+
     from hashlib import blake2s as H
 
     script_main(H(), SUFFIX, check, files, **kwargs)

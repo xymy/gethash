@@ -6,6 +6,8 @@ SUFFIX = ".sha256"
 
 @gethashcli(NAME)
 def main(check, files, **kwargs):
+    """Generate and check SHA256."""
+
     from hashlib import sha256 as H
 
     script_main(H(), SUFFIX, check, files, **kwargs)
