@@ -2,7 +2,7 @@ __all__ = ["strxor"]
 
 
 def _strxor(b1, b2):
-    return (x1 ^ x2 for x1, x2 in zip(b1, b2))
+    return bytes(x1 ^ x2 for x1, x2 in zip(b1, b2))
 
 
 try:
