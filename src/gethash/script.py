@@ -52,8 +52,8 @@ class GetHash(object):
     def __init__(self, ctx, **kwargs):
         self.ctx = ctx
 
-        self.suffix = kwargs.pop("suffix", ".sha")
         self.glob_mode = kwargs.pop("glob", 1)
+        self.suffix = kwargs.pop("suffix", ".sha")
 
         # Determine the path format.
         self.inplace = kwargs.pop("inplace", False)
@@ -179,13 +179,6 @@ def gethashcli(name, suffix):
             "Just xor each checksum of files in a given directory.",
         )
         @click.option(
-            "--suffix",
-            metavar="SUFFIX",
-            default=suffix,
-            show_default=True,
-            help="Set the filename extension of checksum files.",
-        )
-        @click.option(
             "--glob",
             type=click.IntRange(0, 2),
             metavar="{0, 1, 2}",
@@ -193,6 +186,13 @@ def gethashcli(name, suffix):
             show_default=True,
             help="Set glob mode. If ``0``, disable glob pathname pattern; if ``1``, "
             "resolve ``*`` and ``?``; if ``2``, resolve ``*``, ``?`` and ``[]``.",
+        )
+        @click.option(
+            "--suffix",
+            metavar="SUFFIX",
+            default=suffix,
+            show_default=True,
+            help="Set the filename extension of checksum files.",
         )
         @path_format.option(
             "-i", "--inplace", is_flag=True, help="Use basename in checksum files."
