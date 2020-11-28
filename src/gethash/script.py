@@ -159,7 +159,7 @@ def gethashcli(name, suffix):
             "Path Format", help="Set the path format in checksum files."
         )
         output_mode = MutuallyExclusiveOptionGroup(
-            "Output Mode", help="Ignored when -c is set. --null by default."
+            "Output Mode", help="Ignored when -c is set."
         )
 
         @click.command(no_args_is_help=True)
@@ -212,7 +212,12 @@ def gethashcli(name, suffix):
             default=None,
             help="Set the aggregate output file.",
         )
-        @output_mode.option("-n", "--null", is_flag=True, help="Disable output files.")
+        @output_mode.option(
+            "-n",
+            "--null",
+            is_flag=True,
+            help="Do not output to files. This is the default output mode.",
+        )
         @click.option("--no-stdout", is_flag=True, help="Do not output to stdout.")
         @click.option("--no-stderr", is_flag=True, help="Do not output to stderr.")
         @click.option("--tqdm-leave", type=click.BOOL, default=False, show_default=True)
