@@ -88,7 +88,9 @@ def color(msg, *, fg=None, bg=None):
     return msg + ANSI_RESET_ALL
 
 
-def cprint(*objs, sep=" ", end="\n", file=sys.stdout, flush=False, fg=None, bg=None):
+def cprint(
+    *objs, sep=" ", end="\n", file=sys.stdout, flush=False, fg=None, bg=None, tty=False
+):
     """Print a colorful message.
 
     Parameters
@@ -113,6 +115,9 @@ def cprint(*objs, sep=" ", end="\n", file=sys.stdout, flush=False, fg=None, bg=N
         'magenta', 'cyan', 'white', 'reset', 'bright_black', 'bright_red',
         'bright_green', 'bright_yellow', 'bright_blue', 'bright_magenta',
         'bright_cyan', 'bright_white'}``.
+    tty : bool, optional (default: False)
+        If ``True``, always add ANSI color sequence. If ``False``, add ANSI
+        color sequence if and only if `file` is a tty.
     """
 
     sep = _check_str_opt(sep, "sep", " ")
@@ -121,7 +126,8 @@ def cprint(*objs, sep=" ", end="\n", file=sys.stdout, flush=False, fg=None, bg=N
         file = sys.stdout
 
     msg = sep.join(str(obj) for obj in objs) + end
-    msg = color(msg, fg=fg, bg=bg)
+    if tty or file.isatty():
+        msg = color(msg, fg=fg, bg=bg)
     file.write(msg)
     if flush:
         file.flush()
