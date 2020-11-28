@@ -76,6 +76,7 @@ class GetHash(object):
             "file": self.stderr,
             "leave": kwargs.pop("tqdm-leave", False),
             "ascii": kwargs.pop("tqdm-ascii", True),
+            "disable": kwargs.pop("tqdm-disable", False),
         }
         hasher = Hasher(ctx, tqdm_args=tqdm_args)
         self.hash_function = functools.partial(
@@ -222,6 +223,9 @@ def gethashcli(name, suffix):
         @click.option("--no-stderr", is_flag=True, help="Do not output to stderr.")
         @click.option("--tqdm-leave", type=click.BOOL, default=False, show_default=True)
         @click.option("--tqdm-ascii", type=click.BOOL, default=True, show_default=True)
+        @click.option(
+            "--tqdm-disable", type=click.BOOL, default=False, show_default=True
+        )
         @click.version_option(__version__)
         @click.argument("files", nargs=-1)
         @functools.wraps(func)

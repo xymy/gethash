@@ -62,6 +62,10 @@ class Hasher(object):
         self.ctx_proto = ctx_proto.copy()
         self.chunksize = _CHUNKSIZE if chunksize is None else int(chunksize)
         self.tqdm_args = {} if tqdm_args is None else dict(tqdm_args)
+        # Set the unit of iterations as byte.
+        self.tqdm_args.setdefault("unit", "B")
+        self.tqdm_args.setdefault("unit_scale", True)
+        self.tqdm_args.setdefault("unit_divisor", 1024)
 
     def hash_f(self, filepath, start=None, stop=None):
         """Return the hash value of a file.
