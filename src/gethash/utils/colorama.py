@@ -152,7 +152,8 @@ def wrap_stream(stream):
         # Use lazy loading so that ``colorama`` is only required on Windows.
         import colorama
 
-        wrapper = colorama.AnsiToWin32(stream)
+        # Disable auto strip for file stream.
+        wrapper = colorama.AnsiToWin32(stream, strip=False)
         if wrapper.should_wrap():
             stream = wrapper.stream
     return stream
