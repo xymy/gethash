@@ -67,7 +67,7 @@ setup(
         "click>=7.1",
         "click-option-group>=0.5",
         'colorama>=0.4; sys_platform == "win32"',
-        "tqdm>=4.51",
+        "tqdm>=4.54",
     ],
     extras_require={
         "all": ["pycryptodomex>=3.9"],
