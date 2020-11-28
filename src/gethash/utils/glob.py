@@ -13,6 +13,7 @@ def _glob(pathname, *, mode=1, recursive=False):
     if mode == 0:
         yield pathname
     elif mode == 1:
+        # Escape all square brackets to prevent glob from resolving them.
         pathname = pathname.replace("[", _ESCAPE_SQUARE)
         yield from glob.iglob(pathname, recursive=recursive)
     elif mode == 2:
