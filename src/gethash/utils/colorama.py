@@ -4,7 +4,7 @@ from . import _check_str, _check_str_opt
 
 __all__ = ["color", "cprint", "wrap_stream"]
 
-ANSI_COLORS_FORE = {
+_ANSI_COLORS_FORE = {
     "black": "\x1b[30m",
     "red": "\x1b[31m",
     "green": "\x1b[32m",
@@ -24,7 +24,7 @@ ANSI_COLORS_FORE = {
     "bright_white": "\x1b[97m",
 }
 
-ANSI_COLORS_BACK = {
+_ANSI_COLORS_BACK = {
     "black": "\x1b[40m",
     "red": "\x1b[41m",
     "green": "\x1b[42m",
@@ -44,7 +44,7 @@ ANSI_COLORS_BACK = {
     "bright_white": "\x1b[107m",
 }
 
-ANSI_RESET_ALL = "\033[0m"
+_ANSI_RESET_ALL = "\033[0m"
 
 
 def color(msg, *, fg=None, bg=None):
@@ -75,17 +75,17 @@ def color(msg, *, fg=None, bg=None):
 
     if fg is not None:
         try:
-            msg = ANSI_COLORS_FORE[fg] + msg
+            msg = _ANSI_COLORS_FORE[fg] + msg
         except KeyError:
             raise ValueError("invalid foreground color '{}'".format(fg))
 
     if bg is not None:
         try:
-            msg = ANSI_COLORS_BACK[bg] + msg
+            msg = _ANSI_COLORS_BACK[bg] + msg
         except KeyError:
             raise ValueError("invalid background color '{}'".format(bg))
 
-    return msg + ANSI_RESET_ALL
+    return msg + _ANSI_RESET_ALL
 
 
 def cprint(
