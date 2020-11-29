@@ -133,23 +133,33 @@ class GetHash(object):
             except Exception as e:
                 self.echo_error(hash_path, e)
 
+    def close(self):
+        pass
+
     def __call__(self, check, files):
         if check:
             self.check_hash(files)
         else:
             self.generate_hash(files)
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.close()
+
 
 def script_main(ctx, check, files, **options):
-    """Generate the main body for the main function."""
+    """Generate the body for the main function."""
 
     # Convert bool flags to streams.
     no_stdout = options.pop("no_stdout", False)
     no_stderr = options.pop("no_stderr", False)
     stdout = open(os.devnull, "w") if no_stdout else sys.stdout
     stderr = open(os.devnull, "w") if no_stderr else sys.stderr
-    # Initialize and invoke.
-    GetHash(ctx, stdout=stdout, stderr=stderr, **options)(check, files)
+
+    with GetHash(ctx, stdout=stdout, stderr=stderr, **options) as gh:
+        gh(check, files)
 
 
 def gethashcli(name, suffix):
