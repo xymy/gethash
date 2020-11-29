@@ -91,10 +91,10 @@ class GetHash(object):
         cprint(msg, file=self.stderr, fg="red")
 
     def check_root(self, path):
-        if self.root is not None:
-            return self.root
         if self.inplace:
             return os.path.dirname(path)
+        if self.root is not None:
+            return self.root
         return None
 
     def generate_hash(self, patterns):
