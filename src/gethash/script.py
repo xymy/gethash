@@ -74,9 +74,9 @@ class GetHash(object):
         dir_ok = kwargs.pop("dir", False)
         tqdm_args = {
             "file": self.stderr,
-            "leave": kwargs.pop("tqdm-leave", False),
             "ascii": kwargs.pop("tqdm-ascii", True),
             "disable": kwargs.pop("tqdm-disable", False),
+            "leave": kwargs.pop("tqdm-leave", False),
         }
         hasher = Hasher(ctx, tqdm_args=tqdm_args)
         self.hash_function = functools.partial(
@@ -229,13 +229,13 @@ def gethashcli(name, suffix):
             is_flag=True,
             help="Do not output to files. This is the default output mode.",
         )
-        @click.option("--no-stdout", is_flag=True, help="Do not output to stdout.")
-        @click.option("--no-stderr", is_flag=True, help="Do not output to stderr.")
-        @click.option("--tqdm-leave", type=click.BOOL, default=False, show_default=True)
         @click.option("--tqdm-ascii", type=click.BOOL, default=True, show_default=True)
         @click.option(
             "--tqdm-disable", type=click.BOOL, default=False, show_default=True
         )
+        @click.option("--tqdm-leave", type=click.BOOL, default=False, show_default=True)
+        @click.option("--no-stdout", is_flag=True, help="Do not output to stdout.")
+        @click.option("--no-stderr", is_flag=True, help="Do not output to stderr.")
         @click.version_option(__version__)
         @click.argument("files", nargs=-1)
         @functools.wraps(func)
