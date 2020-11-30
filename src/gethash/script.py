@@ -211,7 +211,13 @@ def gethashcli(name, suffix):
         @path_format.option(
             "-z",
             "--root",
-            type=click.Path(exists=True, file_okay=False, dir_okay=True),
+            type=click.Path(
+                exists=True,
+                file_okay=False,
+                dir_okay=True,
+                writable=False,
+                readable=False,
+            ),
             default=None,
             help="The path field in checksum files is relative to the root directory.",
         )
