@@ -14,7 +14,7 @@ from .utils.glob import glob_scanner
 class Output(object):
     """Determine the output mode and provide the output interface."""
 
-    def __init__(self, sep, agg, null):
+    def __init__(self, sep, agg, null, *, suffix=".sha"):
         if (sep and agg) or (sep and null) or (agg and null):
             raise ValueError
 
@@ -22,17 +22,35 @@ class Output(object):
         if not (sep or agg or null):
             null = True
 
+        self.suffix = suffix
+
         if sep:
             self._dump = self.output_sep
         elif agg:
-            self.agg_path = agg
+            self.agg_path = self.check_suffix(agg)
             self.agg_file = open(self.agg_path, "w", encoding="utf-8")
             self._dump = self.output_agg
         elif null:
             self._dump = self.output_null
 
-    @staticmethod
-    def output_sep(hash_line, hash_path):
+    def check_suffix(self, path):
+        if not path.endswith(self.suffix):
+            path += self.suffix
+        return path
+
+    def close(self):
+        try:
+            agg_file = self.agg_file
+        except AttributeError:
+            pass
+        else:
+            agg_file.close()
+
+    def dump(self, hash_line, hash_path):
+        self._dump(hash_line, hash_path)
+
+    def output_sep(self, hash_line, hash_path):
+        hash_path = self.check_suffix(hash_path)
         with open(hash_path, "w", encoding="utf-8") as f:
             f.write(hash_line)
 
@@ -42,17 +60,6 @@ class Output(object):
     @staticmethod
     def output_null(hash_line, hash_path):
         pass
-
-    def dump(self, hash_line, hash_path):
-        self._dump(hash_line, hash_path)
-
-    def close(self):
-        try:
-            agg_file = self.agg_file
-        except AttributeError:
-            pass
-        else:
-            agg_file.close()
 
 
 class GetHash(object):
@@ -72,7 +79,7 @@ class GetHash(object):
         sep = kwargs.pop("sep", None)
         agg = kwargs.pop("agg", None)
         null = kwargs.pop("null", None)
-        self.output = Output(sep, agg, null)
+        self.output = Output(sep, agg, null, suffix=self.suffix)
         self.dump = self.output.dump
 
         self.stdout = wrap_stream(kwargs.pop("stdout", sys.stdout))
