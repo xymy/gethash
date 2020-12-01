@@ -25,7 +25,8 @@ class Output(object):
         if sep:
             self._dump = self.output_sep
         elif agg:
-            self.agg_file = agg
+            self.agg_path = agg
+            self.agg_file = open(self.agg_path, "w", encoding="utf-8")
             self._dump = self.output_agg
         elif null:
             self._dump = self.output_null
@@ -45,6 +46,14 @@ class Output(object):
     def dump(self, hash_line, hash_path):
         self._dump(hash_line, hash_path)
 
+    def close(self):
+        try:
+            agg_file = self.agg_file
+        except AttributeError:
+            pass
+        else:
+            agg_file.close()
+
 
 class GetHash(object):
     """Provide uniform interface for CLI scripts."""
@@ -63,7 +72,8 @@ class GetHash(object):
         sep = kwargs.pop("sep", None)
         agg = kwargs.pop("agg", None)
         null = kwargs.pop("null", None)
-        self.dump = Output(sep, agg, null).dump
+        self.output = Output(sep, agg, null)
+        self.dump = self.output.dump
 
         self.stdout = wrap_stream(kwargs.pop("stdout", sys.stdout))
         self.stderr = wrap_stream(kwargs.pop("stderr", sys.stderr))
@@ -134,7 +144,7 @@ class GetHash(object):
                 self.echo_error(hash_path, e)
 
     def close(self):
-        pass
+        self.output.close()
 
     def __call__(self, check, files):
         if check:
@@ -225,7 +235,13 @@ def gethashcli(name, suffix):
         @output_mode.option(
             "-o",
             "--agg",
-            type=click.File("w", encoding="utf-8"),
+            type=click.Path(
+                exists=False,
+                file_okay=True,
+                dir_okay=False,
+                writable=False,
+                readable=False,
+            ),
             default=None,
             help="Set the aggregate output file.",
         )
