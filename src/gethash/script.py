@@ -11,6 +11,35 @@ from .utils.colorama import cprint, wrap_stream
 from .utils.glob import glob_scanner
 
 
+class FilePath(click.Path):
+    def __init__(
+        self,
+        exists=False,
+        writable=False,
+        readable=False,
+        resolve_path=False,
+        allow_dash=False,
+        path_type=None,
+        suffix=".sha",
+    ):
+        super().__init__(
+            exists=exists,
+            file_okay=True,
+            dir_okay=False,
+            writable=writable,
+            readable=readable,
+            resolve_path=resolve_path,
+            allow_dash=allow_dash,
+            path_type=path_type,
+        )
+        self.suffix = suffix
+
+    def convert(self, value, param, ctx):
+        if value is not None and not value.endswith(self.suffix):
+            value += self.suffix
+        return super().convert(value, param, ctx)
+
+
 class Output(object):
     """Determine the output mode and provide the output interface."""
 
@@ -242,13 +271,7 @@ def gethashcli(name, suffix):
         @output_mode.option(
             "-o",
             "--agg",
-            type=click.Path(
-                exists=False,
-                file_okay=True,
-                dir_okay=False,
-                writable=False,
-                readable=False,
-            ),
+            type=FilePath(suffix=suffix),
             default=None,
             help="Set the aggregate output file.",
         )
