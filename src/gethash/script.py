@@ -35,15 +35,17 @@ class FilePath(click.Path):
         self.suffix = suffix
 
     def convert(self, value, param, ctx):
-        if value is not None and not value.endswith(self.suffix):
-            value += self.suffix
+        suffix = self.suffix
+        # Add suffix automatically.
+        if value is not None and value[-len(suffix) :].lower() != suffix.lower():
+            value += suffix
         return super().convert(value, param, ctx)
 
 
 class Output(object):
     """Determine the output mode and provide the output interface."""
 
-    def __init__(self, sep, agg, null, *, suffix=".sha"):
+    def __init__(self, sep, agg, null):
         if (sep and agg) or (sep and null) or (agg and null):
             raise ValueError
 
@@ -51,21 +53,13 @@ class Output(object):
         if not (sep or agg or null):
             null = True
 
-        self.suffix = suffix
-
         if sep:
             self._dump = self.output_sep
         elif agg:
-            self.agg_path = self.check_suffix(agg)
-            self.agg_file = open(self.agg_path, "w", encoding="utf-8")
+            self.agg_file = open(agg, "w", encoding="utf-8")
             self._dump = self.output_agg
         elif null:
             self._dump = self.output_null
-
-    def check_suffix(self, path):
-        if not path.endswith(self.suffix):
-            path += self.suffix
-        return path
 
     def close(self):
         try:
@@ -79,7 +73,6 @@ class Output(object):
         self._dump(hash_line, hash_path)
 
     def output_sep(self, hash_line, hash_path):
-        hash_path = self.check_suffix(hash_path)
         with open(hash_path, "w", encoding="utf-8") as f:
             f.write(hash_line)
 
@@ -108,7 +101,7 @@ class GetHash(object):
         sep = kwargs.pop("sep", None)
         agg = kwargs.pop("agg", None)
         null = kwargs.pop("null", None)
-        self.output = Output(sep, agg, null, suffix=self.suffix)
+        self.output = Output(sep, agg, null)
         self.dump = self.output.dump
 
         self.stdout = wrap_stream(kwargs.pop("stdout", sys.stdout))
