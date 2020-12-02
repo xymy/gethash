@@ -290,7 +290,7 @@ class HashFileReader(object):
     def read_hash_line(self):
         while True:
             line = self.file.readline()
-            if line.startswith["#"]:
+            if line.startswith("#"):
                 continue
             # A empty string means EOF and will not give rise to infinite loop
             # since `''.isspace() == False`.
