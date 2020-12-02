@@ -6,7 +6,13 @@ import click
 from click_option_group import MutuallyExclusiveOptionGroup
 
 from . import __version__
-from .core import CheckHashLineError, Hasher, check_hash_line, generate_hash_line
+from .core import (
+    CheckHashLineError,
+    Hasher,
+    HashFileReader,
+    check_hash_line,
+    generate_hash_line,
+)
 from .utils.colorama import cprint, wrap_stream
 from .utils.glob import glob_scanner
 
@@ -149,26 +155,22 @@ class GetHash(object):
                 # The hash line already has a newline.
                 self.echo(hash_line, end="")
 
-    def _check_hash(self, hash_line, hash_path):
-        try:
-            root = self.check_root(hash_path)
-            path = check_hash_line(hash_line, self.hash_function, root=root)
-        except CheckHashLineError as e:
-            self.echo("[FAILURE] {}".format(e.path), fg="red")
-        except Exception as e:
-            self.echo_error(hash_path, e)
-        else:
-            self.echo("[SUCCESS] {}".format(path), fg="green")
+    def _check_hash(self, hash_path):
+        for hash_line in HashFileReader(hash_path):
+            try:
+                root = self.check_root(hash_path)
+                path = check_hash_line(hash_line, self.hash_function, root=root)
+            except CheckHashLineError as e:
+                self.echo("[FAILURE] {}".format(e.path), fg="red")
+            except Exception as e:
+                self.echo_error(hash_path, e)
+            else:
+                self.echo("[SUCCESS] {}".format(path), fg="green")
 
     def check_hash(self, patterns):
         for hash_path in glob_scanner(patterns, mode=self.glob_mode):
             try:
-                with open(hash_path, "r", encoding="utf-8") as f:
-                    # This function can process multiple hash lines.
-                    for hash_line in f:
-                        if hash_line.isspace():
-                            continue
-                        self._check_hash(hash_line, hash_path)
+                self._check_hash(hash_path)
             except Exception as e:
                 self.echo_error(hash_path, e)
 
