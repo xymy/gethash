@@ -277,3 +277,38 @@ def check_hash_line(hash_line, hash_function, *, root=None):
     if not compare_digest(hash_value, curr_hash_value):
         raise CheckHashLineError(hash_line, hash_value, path, curr_hash_value)
     return path
+
+
+class HashFileReader(object):
+    def __init__(self, filepath):
+        self.name = filepath
+        self.file = open(filepath, "r", encoding="utf-8")
+
+    def close(self):
+        self.file.close()
+
+    def read_hash_line(self):
+        while True:
+            line = self.file.readline()
+            if line.startswith["#"]:
+                continue
+            # A empty string means EOF and will not give rise to infinite loop
+            # since `''.isspace() == False`.
+            if line.isspace():
+                continue
+            break
+        return line
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.close()
+
+    def __iter__(self):
+        with self as f:
+            while True:
+                hash_line = f.read_hash_line()
+                if not hash_line:
+                    break
+                yield hash_line
