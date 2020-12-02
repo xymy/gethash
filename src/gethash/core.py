@@ -312,3 +312,21 @@ class HashFileReader(object):
                 if not hash_line:
                     break
                 yield hash_line
+
+
+class HashFileWriter(object):
+    def __init__(self, filepath):
+        self.name = filepath
+        self.file = open(filepath, "w", encoding="utf-8")
+
+    def close(self):
+        self.file.close()
+
+    def write_hash_line(self, hash_line):
+        self.file.write(hash_line)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.close()
