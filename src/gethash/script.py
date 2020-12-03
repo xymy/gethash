@@ -10,6 +10,7 @@ from .core import (
     CheckHashLineError,
     Hasher,
     HashFileReader,
+    HashFileWriter,
     check_hash_line,
     generate_hash_line,
 )
@@ -51,18 +52,19 @@ class FilePath(click.Path):
 class Output(object):
     """Determine the output mode and provide the output interface."""
 
-    def __init__(self, sep, agg, null):
+    def __init__(self, sep=None, agg=None, null=None):
         if (sep and agg) or (sep and null) or (agg and null):
-            raise ValueError
+            raise ValueError("require exactly one argument")
 
         # Use the null mode by default.
         if not (sep or agg or null):
             null = True
 
+        # Determine the output mode and dump method.
         if sep:
             self._dump = self.output_sep
         elif agg:
-            self.agg_file = open(agg, "w", encoding="utf-8")
+            self.agg_file = HashFileWriter(agg)
             self._dump = self.output_agg
         elif null:
             self._dump = self.output_null
@@ -79,11 +81,11 @@ class Output(object):
         self._dump(hash_line, hash_path)
 
     def output_sep(self, hash_line, hash_path):
-        with open(hash_path, "w", encoding="utf-8") as f:
-            f.write(hash_line)
+        with HashFileWriter(hash_path) as f:
+            f.write_hash_line(hash_line)
 
     def output_agg(self, hash_line, hash_path):
-        self.agg_file.write(hash_line)
+        self.agg_file.write_hash_line(hash_line)
 
     @staticmethod
     def output_null(hash_line, hash_path):
