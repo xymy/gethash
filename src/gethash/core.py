@@ -309,9 +309,6 @@ class HashFileReader(object):
             break
         return line
 
-    def __del__(self):
-        self.close()
-
     def __enter__(self):
         return self
 
@@ -345,9 +342,6 @@ class HashFileWriter(object):
         """
 
         self.file.write(hash_line)
-
-    def __del__(self):
-        self.close()
 
     def __enter__(self):
         return self
