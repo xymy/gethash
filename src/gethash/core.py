@@ -16,6 +16,8 @@ __all__ = [
     "parse_hash_line",
     "generate_hash_line",
     "check_hash_line",
+    "HashFileReader",
+    "HashFileWriter",
 ]
 
 _CHUNKSIZE = 0x100000  # 1 MB
@@ -288,6 +290,14 @@ class HashFileReader(object):
         self.file.close()
 
     def read_hash_line(self):
+        """Read hash line.
+
+        Returns
+        -------
+        hash_line : str
+            The formatted `hash_value` and `path` with GNU Coreutils style.
+        """
+
         while True:
             line = self.file.readline()
             if line.startswith("#"):
@@ -298,6 +308,9 @@ class HashFileReader(object):
                 continue
             break
         return line
+
+    def __del__(self):
+        self.close()
 
     def __enter__(self):
         return self
@@ -323,7 +336,18 @@ class HashFileWriter(object):
         self.file.close()
 
     def write_hash_line(self, hash_line):
+        """Write hash line.
+
+        Parameters
+        ----------
+        hash_line : str
+            The formatted `hash_value` and `path` with GNU Coreutils style.
+        """
+
         self.file.write(hash_line)
+
+    def __del__(self):
+        self.close()
 
     def __enter__(self):
         return self
