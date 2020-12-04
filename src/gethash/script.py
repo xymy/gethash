@@ -278,7 +278,12 @@ def gethashcli(name, suffix):
             is_flag=True,
             help="Do not output to files. This is the default output mode.",
         )
-        @click.option("--tqdm-ascii", type=click.BOOL, default=True, show_default=True)
+        @click.option(
+            "--tqdm-ascii",
+            type=click.BOOL,
+            default=(sys.platform == "win32"),
+            show_default=True,
+        )
         @click.option(
             "--tqdm-disable", type=click.BOOL, default=False, show_default=True
         )
