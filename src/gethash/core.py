@@ -322,8 +322,8 @@ def parse_hash_line(hash_line):
     m = _HASH_LINE_RE.match(hash_line)
     if m is None:
         raise ParseHashLineError(hash_line)
-    hash_value, path = m.groups()
-    return bytes.fromhex(hash_value), path
+    hex_hash_value, path = m.groups()
+    return bytes.fromhex(hex_hash_value), path
 
 
 def generate_hash_line(path, hash_function, *, root=None):
@@ -377,3 +377,25 @@ def check_hash_line(hash_line, hash_function, *, root=None):
     if not compare_digest(hash_value, curr_hash_value):
         raise CheckHashLineError(hash_line, hash_value, path, curr_hash_value)
     return path
+
+
+def _real_parse(hash_line, *, root=None):
+    m = _HASH_LINE_RE.match(hash_line)
+    if m is None:
+        raise ParseHashLineError(hash_line)
+    hex_hash_value, real_path = m.groups()
+    if root is not None:
+        real_path = os.path.normpath(os.path.join(root, real_path))
+    return hex_hash_value, real_path
+
+
+def re_name_to_hash(hash_line, *, root=None):
+    hex_hash_value, nameing_path = _real_parse(hash_line, root=root)
+    hashing_path = os.path.join(os.path.dirname(nameing_path), hex_hash_value)
+    os.rename(nameing_path, hashing_path)
+
+
+def re_hash_to_name(hash_line, *, root=None):
+    hex_hash_value, nameing_path = _real_parse(hash_line, root=root)
+    hashing_path = os.path.join(os.path.dirname(nameing_path), hex_hash_value)
+    os.rename(hashing_path, nameing_path)
