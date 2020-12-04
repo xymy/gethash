@@ -270,13 +270,13 @@ class HashFileWriter(object):
         self.close()
 
 
-def format_hash_line(hash_value, path_repr):
+def format_hash_line(hex_hash_value, path_repr):
     r"""Format hash line.
 
     Parameters
     ----------
-    hash_value : bytes-like
-        The hash value.
+    hex_hash_value : str
+        The hex hash value string.
     path_repr : str or path-like
         The certain path representation of a file or a directory with
         corresponding hash value.
@@ -287,17 +287,15 @@ def format_hash_line(hash_value, path_repr):
     Returns
     -------
     hash_line : str
-        The formatted `hash_value` and `path_repr` with GNU Coreutils style.
+        The formatted `hex_hash_value` and `path_repr` with GNU Coreutils style.
 
     Examples
     --------
-    >>> hash_value = bytes.fromhex('d41d8cd98f00b204e9800998ecf8427e')
-    >>> path_repr = 'a.txt'
-    >>> format_hash_line(hash_value, path_repr)
+    >>> format_hash_line('d41d8cd98f00b204e9800998ecf8427e', 'a.txt')
     'd41d8cd98f00b204e9800998ecf8427e *a.txt\n'
     """
 
-    return "{} *{}\n".format(hash_value.hex(), path_repr)
+    return "{} *{}\n".format(hex_hash_value, path_repr)
 
 
 def parse_hash_line(hash_line):
@@ -306,12 +304,12 @@ def parse_hash_line(hash_line):
     Parameters
     ----------
     hash_line : str
-        The formatted `hash_value` and `path_repr` with GNU Coreutils style.
+        The formatted `hex_hash_value` and `path_repr` with GNU Coreutils style.
 
     Returns
     -------
-    hash_value : bytes
-        The hash value.
+    hex_hash_value : str
+        The hex hash value string.
     path_repr : str
         The certain path representation of a file or a directory with
         corresponding hash value.
@@ -321,17 +319,14 @@ def parse_hash_line(hash_line):
 
     Examples
     --------
-    >>> hash_line = 'd41d8cd98f00b204e9800998ecf8427e *a.txt\n'
-    >>> hash_value, path_repr = parse_hash_line(hash_line)
-    >>> hash_value.hex(), path_repr
+    >>> parse_hash_line('d41d8cd98f00b204e9800998ecf8427e *a.txt\n')
     ('d41d8cd98f00b204e9800998ecf8427e', 'a.txt')
     """
 
     m = _HASH_LINE_RE.match(hash_line)
     if m is None:
         raise ParseHashLineError(hash_line)
-    hex_hash_value, path_repr = m.groups()
-    return bytes.fromhex(hex_hash_value), path_repr
+    return m.groups()
 
 
 def generate_hash_line(path, hash_function, *, root=None):
@@ -356,7 +351,7 @@ def generate_hash_line(path, hash_function, *, root=None):
     hash_value = hash_function(path)
     if root is not None:
         path = os.path.normpath(os.path.relpath(path, root))
-    return format_hash_line(hash_value, path)
+    return format_hash_line(hash_value.hex(), path)
 
 
 def check_hash_line(hash_line, hash_function, *, root=None):
@@ -378,7 +373,8 @@ def check_hash_line(hash_line, hash_function, *, root=None):
         The path of a file or a directory with corresponding hash value.
     """
 
-    hash_value, path = parse_hash_line(hash_line)
+    hex_hash_value, path = parse_hash_line(hash_line)
+    hash_value = bytes.fromhex(hex_hash_value)
     if root is not None:
         path = os.path.normpath(os.path.join(root, path))
     curr_hash_value = hash_function(path)
