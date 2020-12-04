@@ -282,6 +282,14 @@ def check_hash_line(hash_line, hash_function, *, root=None):
 
 
 class HashFileReader(object):
+    """General hash file reader.
+
+    Parameters
+    ----------
+    filepath : str or path-like
+        The path of a hash file.
+    """
+
     def __init__(self, filepath):
         self.name = filepath
         self.file = open(filepath, "r", encoding="utf-8")
@@ -325,6 +333,14 @@ class HashFileReader(object):
 
 
 class HashFileWriter(object):
+    """General hash file writer.
+
+    Parameters
+    ----------
+    filepath : str or path-like
+        The path of a hash file.
+    """
+
     def __init__(self, filepath):
         self.name = filepath
         self.file = open(filepath, "w", encoding="utf-8")
@@ -342,6 +358,19 @@ class HashFileWriter(object):
         """
 
         self.file.write(hash_line)
+
+    def write_comment(self, comment):
+        """Write comment.
+
+        Parameters
+        ----------
+        comment : str
+            A comment without newline.
+        """
+
+        self.file.write("# ")
+        self.file.write(comment)
+        self.file.write("\n")
 
     def __enter__(self):
         return self
