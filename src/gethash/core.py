@@ -305,8 +305,7 @@ def format_hash_line_real(hash_value, path, *, root=None):
     path_repr = path
     if root is not None:
         path_repr = os.path.normpath(os.path.relpath(path, root))
-    hash_line = format_hash_line(hex_hash_value, path_repr)
-    return hash_line
+    return format_hash_line(hex_hash_value, path_repr)
 
 
 def parse_hash_line(hash_line):
