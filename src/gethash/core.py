@@ -402,10 +402,32 @@ def _parse_for_re(hash_line, *, root=None):
 
 
 def re_name_to_hash(hash_line, *, root=None):
+    """Re name to hash.
+
+    Parameters
+    ----------
+    hash_line : str
+        A line of *hash* and *filename* with GNU Coreutils style.
+    root : str, path-like or None, optional (default: None)
+        The root directory of `path`. The path field in `hash_line` is relative
+        to the root directory.
+    """
+
     hashing_path, nameing_path = _parse_for_re(hash_line, root=root)
     os.rename(nameing_path, hashing_path)
 
 
 def re_hash_to_name(hash_line, *, root=None):
+    """Re hash to name.
+
+    Parameters
+    ----------
+    hash_line : str
+        A line of *hash* and *filename* with GNU Coreutils style.
+    root : str, path-like or None, optional (default: None)
+        The root directory of `path`. The path field in `hash_line` is relative
+        to the root directory.
+    """
+
     hashing_path, nameing_path = _parse_for_re(hash_line, root=root)
     os.rename(hashing_path, nameing_path)
