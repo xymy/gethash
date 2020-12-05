@@ -256,7 +256,7 @@ class HashFileWriter(object):
         Parameters
         ----------
         comment : str
-            A comment without newline.
+            A comment without leading # and tailing newline.
         """
 
         self.file.write("# ")
