@@ -298,16 +298,6 @@ def format_hash_line(hex_hash_value, path_repr):
     return "{} *{}\n".format(hex_hash_value, path_repr)
 
 
-def format_hash_line_real(hash_value, path, *, root=None):
-    # Do convert bytes to hex string.
-    hex_hash_value = hash_value.hex()
-    # Do generate path representation.
-    path_repr = path
-    if root is not None:
-        path_repr = os.path.normpath(os.path.relpath(path, root))
-    return format_hash_line(hex_hash_value, path_repr)
-
-
 def parse_hash_line(hash_line):
     r"""Parse hash line.
 
@@ -339,15 +329,16 @@ def parse_hash_line(hash_line):
     return m.groups()
 
 
-def parse_hash_line_real(hash_line, *, root=None):
-    hex_hash_value, path_repr = parse_hash_line(hash_line)
-    # Do convert hex string to bytes.
-    hash_value = bytes.fromhex(hex_hash_value)
-    # Do resolve path representation.
-    path = path_repr
-    if root is not None:
-        path = os.path.normpath(os.path.join(root, path_repr))
-    return hash_value, path
+def _generate_path_repr(path, *, root=None):
+    if root is None:
+        return os.path.normpath(path)
+    return os.path.normpath(os.path.relpath(path, root))
+
+
+def _resolve_path_repr(path_repr, *, root=None):
+    if root is None:
+        return os.path.normpath(path_repr)
+    return os.path.normpath(os.path.join(root, path_repr))
 
 
 def generate_hash_line(path, hash_function, *, root=None):
@@ -370,7 +361,9 @@ def generate_hash_line(path, hash_function, *, root=None):
     """
 
     hash_value = hash_function(path)
-    return format_hash_line_real(hash_value, path, root=root)
+    hex_hash_value = hash_value.hex()
+    path_repr = _generate_path_repr(path, root=root)
+    return format_hash_line(hex_hash_value, path_repr)
 
 
 def check_hash_line(hash_line, hash_function, *, root=None):
@@ -392,20 +385,27 @@ def check_hash_line(hash_line, hash_function, *, root=None):
         The path of a file or a directory with corresponding hash value.
     """
 
-    hash_value, path = parse_hash_line_real(hash_line, root=root)
+    hex_hash_value, path_repr = parse_hash_line(hash_line)
+    hash_value = bytes.fromhex(hex_hash_value)
+    path = _resolve_path_repr(path_repr, root=root)
     curr_hash_value = hash_function(path)
     if not compare_digest(hash_value, curr_hash_value):
         raise CheckHashLineError(hash_line, hash_value, path, curr_hash_value)
     return path
 
 
+def _parse_for_re(hash_line, *, root=None):
+    hex_hash_value, path_repr = parse_hash_line(hash_line)
+    nameing_path = _resolve_path_repr(path_repr, root=root)
+    hashing_path = os.path.join(os.path.dirname(nameing_path), hex_hash_value)
+    return hashing_path, nameing_path
+
+
 def re_name_to_hash(hash_line, *, root=None):
-    hash_value, nameing_path = parse_hash_line_real(hash_line, root=root)
-    hashing_path = os.path.join(os.path.dirname(nameing_path), hash_value.hex())
+    hashing_path, nameing_path = _parse_for_re(hash_line, root=root)
     os.rename(nameing_path, hashing_path)
 
 
 def re_hash_to_name(hash_line, *, root=None):
-    hash_value, nameing_path = parse_hash_line_real(hash_line, root=root)
-    hashing_path = os.path.join(os.path.dirname(nameing_path), hash_value.hex())
+    hashing_path, nameing_path = _parse_for_re(hash_line, root=root)
     os.rename(hashing_path, nameing_path)
