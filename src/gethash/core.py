@@ -46,8 +46,8 @@ class CheckHashLineError(ValueError):
 class Hasher(object):
     """General hash value generator.
 
-    Generate hash values using given hash context prototype. A progressbar
-    based on ``tqdm`` is also available.
+    Generate hash values using given hash context prototype. Note that a
+    ``tqdm`` progressbar is also available.
 
     Parameters
     ----------
@@ -194,7 +194,7 @@ class HashFileReader(object):
         Returns
         -------
         hash_line : str
-            The formatted `hex_hash_value` and `path_repr` with GNU Coreutils style.
+            A line of *hash* and *filename* with GNU Coreutils style.
         """
 
         while True:
@@ -245,7 +245,7 @@ class HashFileWriter(object):
         Parameters
         ----------
         hash_line : str
-            The formatted `hex_hash_value` and `path_repr` with GNU Coreutils style.
+            A line of *hash* and *filename* with GNU Coreutils style.
         """
 
         self.file.write(hash_line)
@@ -287,7 +287,7 @@ def format_hash_line(hex_hash_value, path_repr):
     Returns
     -------
     hash_line : str
-        The formatted `hex_hash_value` and `path_repr` with GNU Coreutils style.
+        A line of *hash* and *filename* with GNU Coreutils style.
 
     Examples
     --------
@@ -304,7 +304,7 @@ def parse_hash_line(hash_line):
     Parameters
     ----------
     hash_line : str
-        The formatted `hex_hash_value` and `path_repr` with GNU Coreutils style.
+        A line of *hash* and *filename* with GNU Coreutils style.
 
     Returns
     -------
@@ -357,7 +357,7 @@ def generate_hash_line(path, hash_function, *, root=None):
     Returns
     -------
     hash_line : str
-        The formatted `hash_value` and `path` with GNU Coreutils style.
+        A line of *hash* and *filename* with GNU Coreutils style.
     """
 
     hash_value = hash_function(path)
@@ -372,7 +372,7 @@ def check_hash_line(hash_line, hash_function, *, root=None):
     Parameters
     ----------
     hash_line : str
-        The formatted `hash_value` and `path` with GNU Coreutils style.
+        A line of *hash* and *filename* with GNU Coreutils style.
     hash_function : callable(str or path-like) -> bytes-like
         A function for generating hash value.
     root : str, path-like or None, optional (default: None)
