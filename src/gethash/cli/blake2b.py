@@ -5,12 +5,12 @@ SUFFIX = ".blake2b"
 
 
 @gethashcli(NAME, SUFFIX)
-def main(check, files, **kwargs):
+def main(files, **kwargs):
     """Generate and check BLAKE2b."""
 
     from hashlib import blake2b as H
 
-    script_main(H(), check, files, **kwargs)
+    script_main(H(), files, **kwargs)
 
 
 if __name__ == "__main__":

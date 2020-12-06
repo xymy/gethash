@@ -415,6 +415,7 @@ def re_name_to_hash(hash_line, *, root=None):
 
     hashing_path, nameing_path = _parse_for_re(hash_line, root=root)
     os.rename(nameing_path, hashing_path)
+    return nameing_path, hashing_path
 
 
 def re_hash_to_name(hash_line, *, root=None):
@@ -431,3 +432,4 @@ def re_hash_to_name(hash_line, *, root=None):
 
     hashing_path, nameing_path = _parse_for_re(hash_line, root=root)
     os.rename(hashing_path, nameing_path)
+    return hashing_path, nameing_path
