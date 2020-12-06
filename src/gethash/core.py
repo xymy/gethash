@@ -329,16 +329,16 @@ def parse_hash_line(hash_line):
     return m.groups()
 
 
-def _generate_path_repr(path, *, root=None):
-    if root is None:
-        return os.path.normpath(path)
-    return os.path.normpath(os.path.relpath(path, root))
+def _format_path_repr(path, *, root=None):
+    if root is not None:
+        path = os.path.relpath(path, root)
+    return os.path.normpath(path)
 
 
-def _resolve_path_repr(path_repr, *, root=None):
-    if root is None:
-        return os.path.normpath(path_repr)
-    return os.path.normpath(os.path.join(root, path_repr))
+def _parse_path_repr(path_repr, *, root=None):
+    if root is not None:
+        path_repr = os.path.join(root, path_repr)
+    return os.path.normpath(path_repr)
 
 
 def generate_hash_line(path, hash_function, *, root=None):
@@ -362,7 +362,7 @@ def generate_hash_line(path, hash_function, *, root=None):
 
     hash_value = hash_function(path)
     hex_hash_value = hash_value.hex()
-    path_repr = _generate_path_repr(path, root=root)
+    path_repr = _format_path_repr(path, root=root)
     return format_hash_line(hex_hash_value, path_repr)
 
 
@@ -387,7 +387,7 @@ def check_hash_line(hash_line, hash_function, *, root=None):
 
     hex_hash_value, path_repr = parse_hash_line(hash_line)
     hash_value = bytes.fromhex(hex_hash_value)
-    path = _resolve_path_repr(path_repr, root=root)
+    path = _parse_path_repr(path_repr, root=root)
     curr_hash_value = hash_function(path)
     if not compare_digest(hash_value, curr_hash_value):
         raise CheckHashLineError(hash_line, hash_value, path, curr_hash_value)
@@ -396,7 +396,7 @@ def check_hash_line(hash_line, hash_function, *, root=None):
 
 def _parse_for_re(hash_line, *, root=None):
     hex_hash_value, path_repr = parse_hash_line(hash_line)
-    nameing_path = _resolve_path_repr(path_repr, root=root)
+    nameing_path = _parse_path_repr(path_repr, root=root)
     hashing_path = os.path.join(os.path.dirname(nameing_path), hex_hash_value)
     return hashing_path, nameing_path
 
