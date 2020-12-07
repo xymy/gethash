@@ -222,7 +222,7 @@ class HashFileReader(object):
             return hex_hash_value, path
         return None
 
-    def iter(self, mode=3):
+    def iter(self, mode=3, **kwargs):
         if mode == 1:
             read = self.read_hash_line
         elif mode == 2:
@@ -232,7 +232,7 @@ class HashFileReader(object):
 
         with self:
             while True:
-                hash_line = read()
+                hash_line = read(**kwargs)
                 if not hash_line:
                     break
                 yield hash_line
