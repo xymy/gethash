@@ -1,4 +1,4 @@
 __project__ = "gethash"
-__version__ = "2.8"
+__version__ = "2.9"
 __author__ = "xymy"
 __email__ = "thyfan@163.com"
