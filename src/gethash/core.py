@@ -206,7 +206,36 @@ class HashFileReader(object):
             if line.isspace():
                 continue
             break
-        return line
+        return line  # empty string for EOF
+
+    def read_hash_line_2(self):
+        hash_line = self.read_hash_line()
+        if hash_line:
+            return parse_hash_line(hash_line)
+        return None  # None for EOF
+
+    def read_hash_line_3(self, *, root=None):
+        result = self.read_hash_line_2()
+        if result:
+            hex_hash_value, path_repr = result
+            path = _parse_path_repr(path_repr, root=root)
+            return hex_hash_value, path
+        return None
+
+    def iter(self, mode=3):
+        if mode == 1:
+            read = self.read_hash_line
+        elif mode == 2:
+            read = self.read_hash_line_2
+        else:
+            read = self.read_hash_line_3
+
+        with self:
+            while True:
+                hash_line = read()
+                if not hash_line:
+                    break
+                yield hash_line
 
     def __enter__(self):
         return self
@@ -249,6 +278,14 @@ class HashFileWriter(object):
         """
 
         self.file.write(hash_line)
+
+    def write_hash_line_2(self, hex_hash_value, path_repr):
+        hash_line = format_hash_line(hex_hash_value, path_repr)
+        self.write_hash_line(hash_line)
+
+    def write_hash_line_3(self, hex_hash_value, path, *, root=None):
+        path_repr = _format_path_repr(path, root=root)
+        self.write_hash_line_2(hex_hash_value, path_repr)
 
     def write_comment(self, comment):
         """Write comment.
