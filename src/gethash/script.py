@@ -192,9 +192,10 @@ class GetHash(object):
         self.close()
 
 
-def script_main(ctx, check, files, **options):
+def script_main(ctx, files, **options):
     """Generate the body for the main function."""
 
+    check = options.pop("check", False)
     # Convert bool flags to streams.
     no_stdout = options.pop("no_stdout", False)
     no_stderr = options.pop("no_stderr", False)
