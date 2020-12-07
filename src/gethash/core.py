@@ -220,15 +220,17 @@ class HashFileReader(object):
             hex_hash_value, path_repr = result
             path = _parse_path_repr(path_repr, root=root)
             return hex_hash_value, path
-        return None
+        return None  # None for EOF
 
     def iter(self, mode=3, **kwargs):
         if mode == 1:
             read = self.read_hash_line
         elif mode == 2:
             read = self.read_hash_line_2
-        else:
+        elif mode == 3:
             read = self.read_hash_line_3
+        else:
+            ValueError("mode must in {{1, 2, 3}}, got {}".format(mode))
 
         with self:
             while True:
