@@ -208,29 +208,19 @@ class HashFileReader(object):
             break
         return line  # empty string for EOF
 
-    def read_hash_line_2(self):
+    def read_hash_line_2(self, *, root=None):
         hash_line = self.read_hash_line()
         if hash_line:
-            return parse_hash_line(hash_line)
+            return parse_hash_line(hash_line, root=root)
         return None  # None for EOF
 
-    def read_hash_line_3(self, *, root=None):
-        result = self.read_hash_line_2()
-        if result:
-            hex_hash_value, path_repr = result
-            path = _parse_path_repr(path_repr, root=root)
-            return hex_hash_value, path
-        return None  # None for EOF
-
-    def iter(self, mode=3, **kwargs):
+    def iter(self, mode=2, **kwargs):
         if mode == 1:
             read = self.read_hash_line
         elif mode == 2:
             read = self.read_hash_line_2
-        elif mode == 3:
-            read = self.read_hash_line_3
         else:
-            ValueError("mode must in {{1, 2, 3}}, got {}".format(mode))
+            raise ValueError("mode must in {{1, 2}}, got {}".format(mode))
 
         with self:
             while True:
@@ -281,13 +271,9 @@ class HashFileWriter(object):
 
         self.file.write(hash_line)
 
-    def write_hash_line_2(self, hex_hash_value, path_repr):
-        hash_line = format_hash_line(hex_hash_value, path_repr)
+    def write_hash_line_2(self, hex_hash_value, path, root=None):
+        hash_line = format_hash_line(hex_hash_value, path, root=root)
         self.write_hash_line(hash_line)
-
-    def write_hash_line_3(self, hex_hash_value, path, *, root=None):
-        path_repr = _format_path_repr(path, root=root)
-        self.write_hash_line_2(hex_hash_value, path_repr)
 
     def write_comment(self, comment):
         """Write comment.
@@ -309,19 +295,22 @@ class HashFileWriter(object):
         self.close()
 
 
-def format_hash_line(hex_hash_value, path_repr):
+def format_hash_line(hex_hash_value, path, *, root=None):
     r"""Format hash line.
 
     Parameters
     ----------
     hex_hash_value : str
-        The hex hash value string.
-    path_repr : str or path-like
-        The certain path representation of a file or a directory with
-        corresponding hash value.
-        (1) A absolute path;
-        (2) A relative path;
-        (3) A path relative to a given root directory.
+        The hexadecimal hash value string.
+    path : str or path-like
+        The path of a file or a directory with corresponding hash value. Three
+        representations are supported:
+        (1) Absolute path;
+        (2) Relative path;
+        (3) Relative to a given root directory.
+    root : str, path-like or None, optional (default: None)
+        The root directory of `path`. The path field in `hash_line` is relative
+        to the root directory.
 
     Returns
     -------
@@ -334,27 +323,33 @@ def format_hash_line(hex_hash_value, path_repr):
     'd41d8cd98f00b204e9800998ecf8427e *a.txt\n'
     """
 
-    return "{} *{}\n".format(hex_hash_value, path_repr)
+    if root is not None:
+        path = os.path.relpath(path, root)
+    path = os.path.normpath(path)
+    return "{} *{}\n".format(hex_hash_value, path)
 
 
-def parse_hash_line(hash_line):
+def parse_hash_line(hash_line, *, root=None):
     r"""Parse hash line.
 
     Parameters
     ----------
     hash_line : str
         A line of *hash* and *filename* with GNU Coreutils style.
+    root : str, path-like or None, optional (default: None)
+        The root directory of `path`. The path field in `hash_line` is relative
+        to the root directory.
 
     Returns
     -------
     hex_hash_value : str
-        The hex hash value string.
-    path_repr : str
-        The certain path representation of a file or a directory with
-        corresponding hash value.
-        (1) A absolute path;
-        (2) A relative path;
-        (3) A path relative to a given root directory.
+        The hexadecimal hash value string.
+    path : str
+        The path of a file or a directory with corresponding hash value. Three
+        representations are supported:
+        (1) Absolute path;
+        (2) Relative path;
+        (3) Relative to a given root directory.
 
     Examples
     --------
@@ -365,19 +360,11 @@ def parse_hash_line(hash_line):
     m = _HASH_LINE_RE.match(hash_line)
     if m is None:
         raise ParseHashLineError(hash_line)
-    return m.groups()
-
-
-def _format_path_repr(path, *, root=None):
+    hex_hash_value, path = m.groups()
     if root is not None:
-        path = os.path.relpath(path, root)
-    return os.path.normpath(path)
-
-
-def _parse_path_repr(path_repr, *, root=None):
-    if root is not None:
-        path_repr = os.path.join(root, path_repr)
-    return os.path.normpath(path_repr)
+        path = os.path.join(root, path)
+    path = os.path.normpath(path)
+    return hex_hash_value, path
 
 
 def generate_hash_line(path, hash_function, *, root=None):
@@ -401,8 +388,7 @@ def generate_hash_line(path, hash_function, *, root=None):
 
     hash_value = hash_function(path)
     hex_hash_value = hash_value.hex()
-    path_repr = _format_path_repr(path, root=root)
-    return format_hash_line(hex_hash_value, path_repr)
+    return format_hash_line(hex_hash_value, path, root=root)
 
 
 def check_hash_line(hash_line, hash_function, *, root=None):
@@ -424,9 +410,8 @@ def check_hash_line(hash_line, hash_function, *, root=None):
         The path of a file or a directory with corresponding hash value.
     """
 
-    hex_hash_value, path_repr = parse_hash_line(hash_line)
+    hex_hash_value, path = parse_hash_line(hash_line, root=root)
     hash_value = bytes.fromhex(hex_hash_value)
-    path = _parse_path_repr(path_repr, root=root)
     curr_hash_value = hash_function(path)
     if not compare_digest(hash_value, curr_hash_value):
         raise CheckHashLineError(hash_line, hash_value, path, curr_hash_value)
@@ -434,8 +419,7 @@ def check_hash_line(hash_line, hash_function, *, root=None):
 
 
 def _parse_for_re(hash_line, *, root=None):
-    hex_hash_value, path_repr = parse_hash_line(hash_line)
-    nameing_path = _parse_path_repr(path_repr, root=root)
+    hex_hash_value, nameing_path = parse_hash_line(hash_line, root=root)
     hashing_path = os.path.join(os.path.dirname(nameing_path), hex_hash_value)
     return hashing_path, nameing_path
 
