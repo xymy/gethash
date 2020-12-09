@@ -17,6 +17,8 @@ from .core import (
 from .utils.colorama import cprint, wrap_stream
 from .utils.glob import glob_scanner
 
+_TQDM_ASCII = sys.platform == "win32"
+
 
 class FilePath(click.Path):
     def __init__(
@@ -280,10 +282,7 @@ def gethashcli(name, suffix):
             help="Do not output to files. This is the default output mode.",
         )
         @click.option(
-            "--tqdm-ascii",
-            type=click.BOOL,
-            default=(sys.platform == "win32"),
-            show_default=True,
+            "--tqdm-ascii", type=click.BOOL, default=_TQDM_ASCII, show_default=True
         )
         @click.option(
             "--tqdm-disable", type=click.BOOL, default=False, show_default=True
