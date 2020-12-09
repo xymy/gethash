@@ -209,6 +209,8 @@ class HashFileReader(object):
         return line  # empty string for EOF
 
     def iter(self):
+        """Yield hash line."""
+
         with self:
             while True:
                 hash_line = self.read_hash_line()
@@ -217,18 +219,26 @@ class HashFileReader(object):
                 yield hash_line
 
     def iter2(self, *, root=None):
+        """Yield hash and path."""
+
         for hash_line in self:
             yield parse_hash_line(hash_line, root=root)
 
     def iter3(self, *, root=None):
+        """Yield hash line, hash and path."""
+
         for hash_line in self:
             yield hash_line, *parse_hash_line(hash_line, root=root)
 
     def iter_hash(self):
+        """Yield hash."""
+
         for entry in self.iter2():
             yield entry[0]
 
     def iter_path(self, *, root=None):
+        """Yield path."""
+
         for entry in self.iter2(root=root):
             yield entry[1]
 
@@ -267,10 +277,6 @@ class HashFileWriter(object):
         """
 
         self.file.write(hash_line)
-
-    def write_hash_line_2(self, hex_hash_value, path, root=None):
-        hash_line = format_hash_line(hex_hash_value, path, root=root)
-        self.write_hash_line(hash_line)
 
     def write_comment(self, comment):
         """Write comment.
