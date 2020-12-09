@@ -6,7 +6,7 @@ SUFFIX = ".md5"
 
 @gethashcli(NAME, SUFFIX)
 def main(files, **kwargs):
-    """Generate and check MD5."""
+    """Generate or check MD5."""
 
     from hashlib import md5 as H
 

@@ -6,7 +6,7 @@ SUFFIX = ".md2"
 
 @gethashcli(NAME, SUFFIX)
 def main(files, **kwargs):
-    """Generate and check MD2."""
+    """Generate or check MD2."""
 
     from Cryptodome.Hash.MD2 import new as H
 

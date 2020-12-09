@@ -6,7 +6,7 @@ SUFFIX = ".blake2b"
 
 @gethashcli(NAME, SUFFIX)
 def main(files, **kwargs):
-    """Generate and check BLAKE2b."""
+    """Generate or check BLAKE2b."""
 
     from hashlib import blake2b as H
 

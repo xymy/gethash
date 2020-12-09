@@ -6,7 +6,7 @@ SUFFIX = ".sha1"
 
 @gethashcli(NAME, SUFFIX)
 def main(files, **kwargs):
-    """Generate and check SHA1."""
+    """Generate or check SHA1."""
 
     from hashlib import sha1 as H
 

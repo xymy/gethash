@@ -6,7 +6,7 @@ SUFFIX = ".ripemd160"
 
 @gethashcli(NAME, SUFFIX)
 def main(files, **kwargs):
-    """Generate and check RIPEMD160."""
+    """Generate or check RIPEMD160."""
 
     from Cryptodome.Hash.RIPEMD160 import new as H
 
