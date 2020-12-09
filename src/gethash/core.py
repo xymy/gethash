@@ -208,26 +208,29 @@ class HashFileReader(object):
             break
         return line  # empty string for EOF
 
-    def read_hash_line_2(self, *, root=None):
-        hash_line = self.read_hash_line()
-        if hash_line:
-            return parse_hash_line(hash_line, root=root)
-        return None  # None for EOF
-
-    def iter(self, mode=2, **kwargs):
-        if mode == 1:
-            read = self.read_hash_line
-        elif mode == 2:
-            read = self.read_hash_line_2
-        else:
-            raise ValueError("mode must in {{1, 2}}, got {}".format(mode))
-
+    def iter(self):
         with self:
             while True:
-                hash_line = read(**kwargs)
+                hash_line = self.read_hash_line()
                 if not hash_line:
                     break
                 yield hash_line
+
+    def iter2(self, *, root=None):
+        for hash_line in self:
+            yield parse_hash_line(hash_line, root=root)
+
+    def iter3(self, *, root=None):
+        for hash_line in self:
+            yield hash_line, *parse_hash_line(hash_line, root=root)
+
+    def iter_hash(self):
+        for entry in self.iter2():
+            yield entry[0]
+
+    def iter_path(self, *, root=None):
+        for entry in self.iter2(root=root):
+            yield entry[1]
 
     def __enter__(self):
         return self
@@ -235,13 +238,7 @@ class HashFileReader(object):
     def __exit__(self, exc_type, exc_value, traceback):
         self.close()
 
-    def __iter__(self):
-        with self as f:
-            while True:
-                hash_line = f.read_hash_line()
-                if not hash_line:
-                    break
-                yield hash_line
+    __iter__ = iter
 
 
 class HashFileWriter(object):
