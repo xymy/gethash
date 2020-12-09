@@ -2,7 +2,7 @@ import sys
 
 from . import _check_str, _check_str_opt
 
-__all__ = ["color", "cprint", "wrap_stream"]
+__all__ = ["add_color", "cprint", "wrap_stream"]
 
 _ANSI_COLORS_FORE = {
     "black": "\x1b[30m",
@@ -47,7 +47,7 @@ _ANSI_COLORS_BACK = {
 _ANSI_RESET_ALL = "\033[0m"
 
 
-def color(msg, *, fg=None, bg=None):
+def add_color(msg, *, fg=None, bg=None):
     """Add ANSI color sequence to a message.
 
     Parameters
@@ -127,25 +127,25 @@ def cprint(
 
     msg = sep.join(str(obj) for obj in objs) + end
     if tty or file.isatty():
-        msg = color(msg, fg=fg, bg=bg)
+        msg = add_color(msg, fg=fg, bg=bg)
     file.write(msg)
     if flush:
         file.flush()
 
 
 def wrap_stream(stream):
-    """Wrap stream using ``colorama`` package on Windows. No effect on other
+    """Wrap stream using `colorama.AnsiToWin32` on Windows. No effect on other
     platforms.
 
     Parameters
     ----------
     stream : file-like
-        A output stream.
+        The output stream that will be wrapped.
 
     Returns
     -------
     wrapped_stream : file-like
-        A wrapped output stream.
+        The output stream that has be wrapped.
     """
 
     if sys.platform == "win32":
