@@ -145,7 +145,7 @@ def wrap_stream(stream):
     Returns
     -------
     wrapped_stream : file-like
-        The output stream that has be wrapped.
+        The wrapped output stream.
     """
 
     if sys.platform == "win32":
