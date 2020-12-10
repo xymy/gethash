@@ -2,7 +2,7 @@ import sys
 
 from . import _check_str, _check_str_opt
 
-__all__ = ["add_color", "cprint", "wrap_stream"]
+__all__ = ["add_color", "cprint", "wrap_stream", "init_colorama", "deinit_colorama"]
 
 _ANSI_COLORS_FORE = {
     "black": "\x1b[30m",
@@ -157,3 +157,21 @@ def wrap_stream(stream):
         if wrapper.should_wrap():
             stream = wrapper.stream
     return stream
+
+
+def init_colorama():
+    if sys.platform == "win32":
+        # Use lazy loading so that ``colorama`` is only required on Windows.
+        import colorama
+
+        if not isinstance(sys.stdout, colorama.ansitowin32.StreamWrapper):
+            colorama.init()
+
+
+def deinit_colorama():
+    if sys.platform == "win32":
+        # Use lazy loading so that ``colorama`` is only required on Windows.
+        import colorama
+
+        if isinstance(sys.stdout, colorama.ansitowin32.StreamWrapper):
+            colorama.deinit()
