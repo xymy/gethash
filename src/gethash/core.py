@@ -69,7 +69,7 @@ class Hasher(object):
         self.tqdm_args.setdefault("unit_scale", True)
         self.tqdm_args.setdefault("unit_divisor", 1024)
 
-    def hash_f(self, filepath, start=None, stop=None):
+    def hash_file(self, filepath, start=None, stop=None):
         """Return the hash value of a file.
 
         Parameters
@@ -113,7 +113,7 @@ class Hasher(object):
             bar.update(remainsize)
         return ctx.digest()
 
-    def hash_d(self, dirpath, start=None, stop=None):
+    def hash_dir(self, dirpath, start=None, stop=None):
         """Return the hash value of a directory.
 
         Parameters
@@ -136,9 +136,9 @@ class Hasher(object):
         with os.scandir(dirpath) as it:
             for entry in it:
                 if entry.is_dir():
-                    other = self.hash_d(entry, start, stop)
+                    other = self.hash_dir(entry, start, stop)
                 else:
-                    other = self.hash_f(entry, start, stop)
+                    other = self.hash_file(entry, start, stop)
                 # Just XOR each byte string as hash value.
                 value = strxor(value, other)
         return value
@@ -165,9 +165,9 @@ class Hasher(object):
 
         if os.path.isdir(path):
             if dir_ok:
-                return self.hash_d(path, start, stop)
+                return self.hash_dir(path, start, stop)
             raise IsADirectory("'{}' is a directory".format(path))
-        return self.hash_f(path, start, stop)
+        return self.hash_file(path, start, stop)
 
     __call__ = hash
 
