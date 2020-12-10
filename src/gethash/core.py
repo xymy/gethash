@@ -219,13 +219,13 @@ class HashFileReader(object):
                 yield hash_line
 
     def iter2(self, *, root=None):
-        """Yield hash and path."""
+        """Yield hash and name."""
 
         for hash_line in self:
             yield parse_hash_line(hash_line, root=root)
 
     def iter3(self, *, root=None):
-        """Yield hash line, hash and path."""
+        """Yield hash line, hash and name."""
 
         for hash_line in self:
             yield hash_line, *parse_hash_line(hash_line, root=root)
@@ -236,8 +236,8 @@ class HashFileReader(object):
         for entry in self.iter2():
             yield entry[0]
 
-    def iter_path(self, *, root=None):
-        """Yield path."""
+    def iter_name(self, *, root=None):
+        """Yield name."""
 
         for entry in self.iter2(root=root):
             yield entry[1]
