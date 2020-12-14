@@ -194,7 +194,7 @@ class HashFileReader(object):
         Returns
         -------
         hash_line : str
-            A line of *hash* and *filename* with GNU Coreutils style.
+            A line of *hash* and *name* with GNU Coreutils style.
         """
 
         while True:
@@ -273,7 +273,7 @@ class HashFileWriter(object):
         Parameters
         ----------
         hash_line : str
-            A line of *hash* and *filename* with GNU Coreutils style.
+            A line of *hash* and *name* with GNU Coreutils style.
         """
 
         self.file.write(hash_line)
@@ -318,7 +318,7 @@ def format_hash_line(hex_hash_value, path, *, root=None):
     Returns
     -------
     hash_line : str
-        A line of *hash* and *filename* with GNU Coreutils style.
+        A line of *hash* and *name* with GNU Coreutils style.
 
     Examples
     --------
@@ -338,7 +338,7 @@ def parse_hash_line(hash_line, *, root=None):
     Parameters
     ----------
     hash_line : str
-        A line of *hash* and *filename* with GNU Coreutils style.
+        A line of *hash* and *name* with GNU Coreutils style.
     root : str, path-like or None, optional (default: None)
         The root directory of `path`. The path field in `hash_line` is relative
         to the root directory.
@@ -386,7 +386,7 @@ def generate_hash_line(path, hash_function, *, root=None):
     Returns
     -------
     hash_line : str
-        A line of *hash* and *filename* with GNU Coreutils style.
+        A line of *hash* and *name* with GNU Coreutils style.
     """
 
     hash_value = hash_function(path)
@@ -400,7 +400,7 @@ def check_hash_line(hash_line, hash_function, *, root=None):
     Parameters
     ----------
     hash_line : str
-        A line of *hash* and *filename* with GNU Coreutils style.
+        A line of *hash* and *name* with GNU Coreutils style.
     hash_function : callable(str or path-like) -> bytes-like
         A function for generating hash value.
     root : str, path-like or None, optional (default: None)
@@ -433,7 +433,7 @@ def re_name_to_hash(hash_line, *, root=None):
     Parameters
     ----------
     hash_line : str
-        A line of *hash* and *filename* with GNU Coreutils style.
+        A line of *hash* and *name* with GNU Coreutils style.
     root : str, path-like or None, optional (default: None)
         The root directory of `path`. The path field in `hash_line` is relative
         to the root directory.
@@ -450,7 +450,7 @@ def re_hash_to_name(hash_line, *, root=None):
     Parameters
     ----------
     hash_line : str
-        A line of *hash* and *filename* with GNU Coreutils style.
+        A line of *hash* and *name* with GNU Coreutils style.
     root : str, path-like or None, optional (default: None)
         The root directory of `path`. The path field in `hash_line` is relative
         to the root directory.
