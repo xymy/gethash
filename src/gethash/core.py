@@ -21,7 +21,7 @@ __all__ = [
 ]
 
 _CHUNKSIZE = 0x100000  # 1 MB
-_HASH_LINE_RE = re.compile(r"([0-9a-fA-F]+) (?:\*| )?(.+)")
+_HASH_LINE_RE = re.compile(r"([0-9a-fA-F]+)(?:(?: \*|  | )(.*))?$")
 
 
 class IsADirectory(OSError):
