@@ -1,3 +1,4 @@
+import contextlib
 import sys
 
 from . import _check_str, _check_str_opt
@@ -175,3 +176,12 @@ def deinit_colorama():
 
         if isinstance(sys.stdout, colorama.ansitowin32.StreamWrapper):
             colorama.deinit()
+
+
+@contextlib.contextmanager
+def coloarma_context():
+    init_colorama()
+    try:
+        yield
+    finally:
+        deinit_colorama()
