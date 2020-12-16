@@ -2,6 +2,8 @@ from importlib import import_module
 
 import click
 
+from . import __version__
+
 PYCRYPTODOMEX_INSTALLED = True
 try:
     import Cryptodome
@@ -35,24 +37,22 @@ class Cli(click.MultiCommand):
         name = name.replace("-", "_")  # fix dash to underline
         entry_point = None
         try:
-            # Import from plugins directory.
             module = import_module("gethash.cli.{}".format(name))
         except ImportError:
             pass
         else:
             try:
-                # Get `main` function as entry point.
                 main = module.main
             except AttributeError:
                 pass
             else:
-                # Is `main` a valid command?
                 if isinstance(main, click.Command):
                     entry_point = main
         return entry_point
 
 
 @click.command(cls=Cli, no_args_is_help=True)
+@click.version_option(__version__)
 def main():
     pass
 
