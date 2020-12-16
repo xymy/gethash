@@ -3,7 +3,14 @@ import sys
 
 from . import _check_str, _check_str_opt
 
-__all__ = ["add_color", "cprint", "wrap_stream", "init_colorama", "deinit_colorama"]
+__all__ = [
+    "add_color",
+    "cprint",
+    "wrap_stream",
+    "init_colorama",
+    "deinit_colorama",
+    "coloarma",
+]
 
 _ANSI_COLORS_FORE = {
     "black": "\x1b[30m",
@@ -179,7 +186,7 @@ def deinit_colorama():
 
 
 @contextlib.contextmanager
-def coloarma_context():
+def coloarma():
     init_colorama()
     try:
         yield
