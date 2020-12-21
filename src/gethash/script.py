@@ -220,6 +220,7 @@ def gethashcli(name, suffix):
         )
 
         @click.command(no_args_is_help=True)
+        @click.argument("files", nargs=-1)
         @click.option(
             "-c",
             "--check",
@@ -291,7 +292,6 @@ def gethashcli(name, suffix):
         @click.option("--no-stdout", is_flag=True, help="Do not output to stdout.")
         @click.option("--no-stderr", is_flag=True, help="Do not output to stderr.")
         @click.version_option(__version__)
-        @click.argument("files", nargs=-1)
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
             return func(*args, **kwargs)
