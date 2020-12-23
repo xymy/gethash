@@ -23,7 +23,7 @@ def _glob(pathname, *, mode=1, recursive=False):
 
 
 def glob_resolver(pathname, *, mode=1, recursive=False):
-    """Resolve glob pathname.
+    """Resolve a glob pathname.
 
     Parameters
     ----------
@@ -38,7 +38,7 @@ def glob_resolver(pathname, *, mode=1, recursive=False):
 
     Yields
     ------
-    path : str
+    str
         The matched path.
     """
 
@@ -62,7 +62,7 @@ def glob_scanner(pathnames, *, mode=1, recursive=False):
 
     Yields
     ------
-    path : str
+    str
         The matched path.
     """
 
