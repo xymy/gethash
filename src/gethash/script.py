@@ -237,9 +237,10 @@ def gethashcli(name, suffix):
             "Just xor each checksum of files in a given directory.",
         )
         @click.option(
+            "-g",
             "--glob",
             type=click.IntRange(0, 2),
-            metavar="{0, 1, 2}",
+            metavar="[0|1|2]",
             default=1,
             show_default=True,
             help="Set glob mode. If ``0``, disable glob pathname pattern; if ``1``, "
