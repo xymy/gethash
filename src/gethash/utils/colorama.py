@@ -75,7 +75,7 @@ def add_color(msg, *, fg=None, bg=None):
 
     Returns
     -------
-    cmsg : str
+    str
         A colorful message.
     """
 
@@ -152,7 +152,7 @@ def wrap_stream(stream):
 
     Returns
     -------
-    wrapped_stream : file-like
+    file-like
         The wrapped output stream.
     """
 
