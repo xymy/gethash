@@ -51,7 +51,7 @@ def glob_scanner(pathnames, *, mode=1, recursive=False):
 
     Parameters
     ----------
-    pathnames : str or path-like
+    pathnames : iterable of str or path-like
         A list of pathnames with glob patterns.
     mode : int, optional (default: 1)
         The mode of glob. If ``0``, disable glob pathname pattern; if ``1``,
