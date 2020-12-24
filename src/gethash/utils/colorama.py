@@ -97,7 +97,7 @@ def add_color(msg, *, fg=None, bg=None):
 
 
 def cprint(
-    *objs, sep=" ", end="\n", file=sys.stdout, flush=False, fg=None, bg=None, tty=False
+    *objs, sep=" ", end="\n", file=None, flush=False, fg=None, bg=None, tty=False
 ):
     """Print a colorful message.
 
@@ -109,7 +109,7 @@ def cprint(
         The same as builtin `print`.
     end : str or None, optional (default: "\n")
         The same as builtin `print`.
-    file : file-like or None, optional (default: sys.stdout)
+    file : file-like or None, optional (default: None)
         The same as builtin `print`.
     flush : bool, optional (default: False)
         The same as builtin `print`.
@@ -157,7 +157,7 @@ def wrap_stream(stream):
     """
 
     if sys.platform == "win32":
-        # Use lazy loading so that ``colorama`` is only required on Windows.
+        # Use lazy loading so that colorama is only required on Windows.
         import colorama
 
         # Disable auto strip for file stream.
@@ -169,7 +169,7 @@ def wrap_stream(stream):
 
 def init_colorama():
     if sys.platform == "win32":
-        # Use lazy loading so that ``colorama`` is only required on Windows.
+        # Use lazy loading so that colorama is only required on Windows.
         import colorama
 
         if not isinstance(sys.stdout, colorama.ansitowin32.StreamWrapper):
@@ -178,7 +178,7 @@ def init_colorama():
 
 def deinit_colorama():
     if sys.platform == "win32":
-        # Use lazy loading so that ``colorama`` is only required on Windows.
+        # Use lazy loading so that colorama is only required on Windows.
         import colorama
 
         if isinstance(sys.stdout, colorama.ansitowin32.StreamWrapper):
