@@ -23,7 +23,7 @@ def strxor(b1, b2):
 
     Returns
     -------
-    result : bytes
+    bytes
         The result of `b1` xor `b2`.
     """
 
