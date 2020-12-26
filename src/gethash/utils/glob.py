@@ -23,7 +23,7 @@ def _glob(pathname, *, mode=1, recursive=False):
 
 
 def glob_resolver(pathname, *, mode=1, recursive=False):
-    """Resolve a glob pathname.
+    """Resolve a pathname with glob patterns.
 
     Parameters
     ----------
@@ -38,8 +38,8 @@ def glob_resolver(pathname, *, mode=1, recursive=False):
 
     Yields
     ------
-    str
-        The matched path.
+    matched_pathname : str
+        The matched pathname.
     """
 
     _check_int(mode, "mode")
@@ -47,7 +47,7 @@ def glob_resolver(pathname, *, mode=1, recursive=False):
 
 
 def glob_scanner(pathnames, *, mode=1, recursive=False):
-    """Resolve a list of glob pathnames.
+    """Resolve a list of pathnames with glob patterns.
 
     Parameters
     ----------
@@ -62,8 +62,8 @@ def glob_scanner(pathnames, *, mode=1, recursive=False):
 
     Yields
     ------
-    str
-        The matched path.
+    matched_pathname : str
+        The matched pathname.
     """
 
     _check_int(mode, "mode")
