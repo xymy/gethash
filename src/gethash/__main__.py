@@ -37,7 +37,7 @@ class Cli(click.MultiCommand):
         name = name.replace("-", "_")  # fix dash to underline
         entry_point = None
         try:
-            module = import_module("gethash.cli.{}".format(name))
+            module = import_module(f"gethash.cli.{name}")
         except ImportError:
             pass
         else:
