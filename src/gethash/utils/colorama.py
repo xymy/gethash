@@ -85,13 +85,13 @@ def add_color(msg, *, fg=None, bg=None):
         try:
             msg = _ANSI_COLORS_FORE[fg] + msg
         except KeyError:
-            raise ValueError("invalid foreground color '{}'".format(fg))
+            raise ValueError(f"invalid foreground color '{fg}'")
 
     if bg is not None:
         try:
             msg = _ANSI_COLORS_BACK[bg] + msg
         except KeyError:
-            raise ValueError("invalid background color '{}'".format(bg))
+            raise ValueError(f"invalid background color '{fg}'")
 
     return msg + _ANSI_RESET_ALL
 
