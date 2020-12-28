@@ -142,8 +142,7 @@ def cprint(
 
 
 def wrap_stream(stream):
-    """Wrap stream using `colorama.AnsiToWin32` on Windows. No effect on other
-    platforms.
+    """Wrap stream using colorama on Windows. No effect on other platforms.
 
     Parameters
     ----------
