@@ -2,7 +2,7 @@ from importlib import import_module
 
 import click
 
-from . import __version__
+from . import __title__, __version__
 
 PYCRYPTODOMEX_INSTALLED = True
 try:
@@ -52,7 +52,7 @@ class Cli(click.MultiCommand):
 
 
 @click.command(cls=Cli, no_args_is_help=True)
-@click.version_option(__version__)
+@click.version_option(__version__, prog_name=__title__)
 def main():
     pass
 
