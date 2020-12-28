@@ -136,7 +136,7 @@ class GetHash(object):
         cprint(msg, file=self.stdout, **kwargs)
 
     def echo_error(self, path, exc):
-        msg = "[ERROR] {}\n\t{}: {}".format(path, type(exc).__name__, exc)
+        msg = f"[ERROR] {path}\n\t{type(exc).__name__}: {exc}"
         cprint(msg, file=self.stderr, fg="red")
 
     def check_root(self, path):
@@ -165,11 +165,11 @@ class GetHash(object):
                 root = self.check_root(hash_path)
                 path = check_hash_line(hash_line, self.hash_function, root=root)
             except CheckHashLineError as e:
-                self.echo("[FAILURE] {}".format(e.path), fg="red")
+                self.echo(f"[FAILURE] {e.path}", fg="red")
             except Exception as e:
                 self.echo_error(hash_path, e)
             else:
-                self.echo("[SUCCESS] {}".format(path), fg="green")
+                self.echo(f"[SUCCESS] {path}", fg="green")
 
     def check_hash(self, patterns):
         for hash_path in glob_scanner(patterns, mode=self.glob_mode):
@@ -225,7 +225,7 @@ def gethashcli(name, suffix):
             "-c",
             "--check",
             is_flag=True,
-            help="Read {} from FILES and check them.".format(name),
+            help=f"Read {name} from FILES and check them.",
         )
         @click.option("--start", type=click.INT, help="The start offset of files.")
         @click.option("--stop", type=click.INT, help="The stop offset of files.")

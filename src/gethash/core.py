@@ -95,7 +95,7 @@ class Hasher(object):
         if stop is None or stop > filesize:
             stop = filesize
         if start > stop:
-            raise ValueError("require start <= stop, but {} > {}".format(start, stop))
+            raise ValueError(f"require start <= stop, but {start} > {stop}")
 
         ctx = self.ctx_proto.copy()
         chunksize = self.chunksize
@@ -166,7 +166,7 @@ class Hasher(object):
         if os.path.isdir(path):
             if dir_ok:
                 return self.hash_dir(path, start, stop)
-            raise IsADirectory("'{}' is a directory".format(path))
+            raise IsADirectory(f"'{path}' is a directory")
         return self.hash_file(path, start, stop)
 
     __call__ = hash
@@ -329,7 +329,7 @@ def format_hash_line(hex_hash_value, path, *, root=None):
     if root is not None:
         path = os.path.relpath(path, root)
     path = os.path.normpath(path)
-    return "{} *{}\n".format(hex_hash_value, path)
+    return f"{hex_hash_value} *{path}\n"
 
 
 def parse_hash_line(hash_line, *, root=None):
