@@ -41,13 +41,9 @@ class Cli(click.MultiCommand):
         except ImportError:
             pass
         else:
-            try:
-                main = module.main
-            except AttributeError:
-                pass
-            else:
-                if isinstance(main, click.Command):
-                    entry_point = main
+            main = getattr(module, "main", None)
+            if isinstance(main, click.Command):
+                entry_point = main
         return entry_point
 
 
