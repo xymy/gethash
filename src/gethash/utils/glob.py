@@ -8,16 +8,29 @@ __all__ = ["glob_resolver", "glob_scanner"]
 _ESCAPE_SQUARE = glob.escape("[")
 
 
-def _glob(pathname, *, mode=1, recursive=False):
+def _glob0(pathname, recursive=False):
+    yield pathname
+
+
+def _glob1(pathname, recursive=False):
     pathname = os.fspath(pathname)
+    # Escape all square brackets to prevent glob from resolving them.
+    pathname = pathname.replace("[", _ESCAPE_SQUARE)
+    yield from glob.iglob(pathname, recursive=recursive)
+
+
+def _glob2(pathname, recursive=False):
+    yield from glob.iglob(pathname, recursive=recursive)
+
+
+def _get_glob(mode):
+    _check_int(mode, "mode")
     if mode == 0:
-        yield pathname
+        return _glob0
     elif mode == 1:
-        # Escape all square brackets to prevent glob from resolving them.
-        pathname = pathname.replace("[", _ESCAPE_SQUARE)
-        yield from glob.iglob(pathname, recursive=recursive)
+        return _glob1
     elif mode == 2:
-        yield from glob.iglob(pathname, recursive=recursive)
+        return _glob2
     else:
         raise ValueError(f"mode must be in {{0, 1, 2}}, got {mode}")
 
@@ -42,8 +55,8 @@ def glob_resolver(pathname, *, mode=1, recursive=False):
         The matched pathname.
     """
 
-    _check_int(mode, "mode")
-    yield from _glob(pathname, mode=mode, recursive=recursive)
+    glob_func = _get_glob(mode)
+    yield from glob_func(pathname, recursive=recursive)
 
 
 def glob_scanner(pathnames, *, mode=1, recursive=False):
@@ -66,6 +79,6 @@ def glob_scanner(pathnames, *, mode=1, recursive=False):
         The matched pathname.
     """
 
-    _check_int(mode, "mode")
+    glob_func = _get_glob(mode)
     for pathname in pathnames:
-        yield from _glob(pathname, mode=mode, recursive=recursive)
+        yield from glob_func(pathname, recursive=recursive)
