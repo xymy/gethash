@@ -19,7 +19,7 @@ def _glob(pathname, *, mode=1, recursive=False):
     elif mode == 2:
         yield from glob.iglob(pathname, recursive=recursive)
     else:
-        raise ValueError(f"invalid mode '{mode}'")
+        raise ValueError(f"mode must be in {{0, 1, 2}}, got {mode}")
 
 
 def glob_resolver(pathname, *, mode=1, recursive=False):
