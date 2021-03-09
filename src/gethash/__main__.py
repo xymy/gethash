@@ -47,7 +47,12 @@ class Cli(click.MultiCommand):
         return entry_point
 
 
-@click.command(cls=Cli, no_args_is_help=True)
+@click.command(
+    __title__,
+    cls=Cli,
+    context_settings=dict(help_option_names=["-h", "--help"]),
+    no_args_is_help=True,
+)
 @click.version_option(__version__, prog_name=__title__)
 def main():
     pass
