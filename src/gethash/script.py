@@ -219,7 +219,10 @@ def gethashcli(name, suffix):
             "Output Mode", help="Ignored when -c is set."
         )
 
-        @click.command(no_args_is_help=True)
+        @click.command(
+            context_settings=dict(help_option_names=["-h", "--help"]),
+            no_args_is_help=True,
+        )
         @click.argument("files", nargs=-1)
         @click.option(
             "-c",
