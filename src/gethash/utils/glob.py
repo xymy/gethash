@@ -23,7 +23,7 @@ def _glob2(pathname, recursive=False):
     yield from glob.iglob(pathname, recursive=recursive)
 
 
-def _get_glob(mode):
+def _get_glob_func(mode):
     _check_int(mode, "mode")
     if mode == 0:
         return _glob0
@@ -42,10 +42,10 @@ def glob_resolver(pathname, *, mode=1, recursive=False):
     ----------
     pathname : str or path-like
         A pathname with glob patterns.
-    mode : int, optional (default: 1)
+    mode : int, default=1
         The mode of glob. If ``0``, disable glob pathname pattern; if ``1``,
         resolve ``*`` and ``?``; if ``2``, resolve ``*``, ``?`` and ``[]``.
-    recursive : bool, optional (default: False)
+    recursive : bool, default=False
         If ``True``, the pattern ``**`` will match any files and zero or more
         directories, subdirectories and symbolic links to directories.
 
@@ -55,7 +55,7 @@ def glob_resolver(pathname, *, mode=1, recursive=False):
         The matched pathname.
     """
 
-    glob_func = _get_glob(mode)
+    glob_func = _get_glob_func(mode)
     yield from glob_func(pathname, recursive=recursive)
 
 
@@ -66,10 +66,10 @@ def glob_scanner(pathnames, *, mode=1, recursive=False):
     ----------
     pathnames : iterable of str or path-like
         A list of pathnames with glob patterns.
-    mode : int, optional (default: 1)
+    mode : int, default=1
         The mode of glob. If ``0``, disable glob pathname pattern; if ``1``,
         resolve ``*`` and ``?``; if ``2``, resolve ``*``, ``?`` and ``[]``.
-    recursive : bool, optional (default: False)
+    recursive : bool, default=False
         If ``True``, the pattern ``**`` will match any files and zero or more
         directories, subdirectories and symbolic links to directories.
 
@@ -79,6 +79,6 @@ def glob_scanner(pathnames, *, mode=1, recursive=False):
         The matched pathname.
     """
 
-    glob_func = _get_glob(mode)
+    glob_func = _get_glob_func(mode)
     for pathname in pathnames:
         yield from glob_func(pathname, recursive=recursive)
