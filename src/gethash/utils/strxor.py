@@ -1,3 +1,5 @@
+from . import _check_bytes
+
 __all__ = ["strxor"]
 
 
@@ -27,4 +29,6 @@ def strxor(b1, b2):
         The result of `b1` xor `b2`.
     """
 
+    _check_bytes(b1, "b1")
+    _check_bytes(b2, "b2")
     return _strxor(b1, b2)
