@@ -14,7 +14,6 @@ from .core import (
     check_hash_line,
     generate_hash_line,
 )
-from .utils.colorama import cprint, wrap_stream
 from .utils.glob import glob_scanner
 
 _TQDM_ASCII = sys.platform == "win32"
@@ -114,8 +113,8 @@ class GetHash(object):
         self.output = Output(sep, agg, null)
         self.dump = self.output.dump
 
-        self.stdout = wrap_stream(kwargs.pop("stdout", sys.stdout))
-        self.stderr = wrap_stream(kwargs.pop("stderr", sys.stderr))
+        self.stdout = kwargs.pop("stdout", sys.stdout)
+        self.stderr = kwargs.pop("stderr", sys.stderr)
 
         # Prepare arguments and construct the hash function.
         start = kwargs.pop("start", None)
@@ -133,11 +132,11 @@ class GetHash(object):
         )
 
     def echo(self, msg, **kwargs):
-        cprint(msg, file=self.stdout, **kwargs)
+        click.secho(msg, file=self.stdout, **kwargs)
 
     def echo_error(self, path, exc):
         msg = f"[ERROR] {path}\n\t{type(exc).__name__}: {exc}"
-        cprint(msg, file=self.stderr, fg="red")
+        click.secho(msg, file=self.stderr, fg="red")
 
     def check_root(self, path):
         if self.inplace:
@@ -157,7 +156,7 @@ class GetHash(object):
                 self.echo_error(path, e)
             else:
                 # The hash line already has a newline.
-                self.echo(hash_line, end="")
+                self.echo(hash_line, nl=False)
 
     def _check_hash(self, hash_path):
         for hash_line in HashFileReader(hash_path):
