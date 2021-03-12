@@ -25,6 +25,8 @@ PLUGINS = (
 
 LEGACY_PLUGINS = ("md2", "md4", "ripemd160")
 
+CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
+
 
 class Cli(click.MultiCommand):
     def list_commands(self, ctx):
@@ -48,9 +50,7 @@ class Cli(click.MultiCommand):
 
 
 @click.command(
-    cls=Cli,
-    context_settings=dict(help_option_names=["-h", "--help"]),
-    no_args_is_help=True,
+    __title__, cls=Cli, context_settings=CONTEXT_SETTINGS, no_args_is_help=True
 )
 @click.version_option(__version__, prog_name=__title__)
 def main():
