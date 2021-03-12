@@ -9,7 +9,7 @@ _ESCAPE_SQUARE = glob.escape("[")
 
 
 def _glob0(pathname, recursive=False):
-    yield pathname
+    yield os.fspath(pathname)
 
 
 def _glob1(pathname, recursive=False):
