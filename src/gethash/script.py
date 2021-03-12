@@ -16,8 +16,6 @@ from .core import (
 )
 from .utils.glob import glob_scanner
 
-_TQDM_ASCII = sys.platform == "win32"
-
 
 class FilePath(click.Path):
     def __init__(
@@ -285,9 +283,7 @@ def gethashcli(name, suffix):
             is_flag=True,
             help="Do not output to files. This is the default output mode.",
         )
-        @click.option(
-            "--tqdm-ascii", type=click.BOOL, default=_TQDM_ASCII, show_default=True
-        )
+        @click.option("--tqdm-ascii", type=click.BOOL, default=False, show_default=True)
         @click.option(
             "--tqdm-disable", type=click.BOOL, default=False, show_default=True
         )
