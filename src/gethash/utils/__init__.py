@@ -4,7 +4,7 @@ def _check_int(obj, name):
         raise TypeError(f"{name} must be an integer, not {tname}")
 
 
-def _check_int_opt(obj, name, default):
+def _check_int_opt(obj, name, default=None):
     if obj is None:
         return default
 
@@ -20,7 +20,7 @@ def _check_str(obj, name):
         raise TypeError(f"{name} must be a string, not {tname}")
 
 
-def _check_str_opt(obj, name, default):
+def _check_str_opt(obj, name, default=None):
     if obj is None:
         return default
 
