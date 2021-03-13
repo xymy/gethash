@@ -7,13 +7,13 @@ A set of command-line tools that can generate or check various hash values.
 Require Python 3.6+.
 
 ```shell
-pip install -U gethash
+$ pip install -U gethash
 ```
 
 or (if you need legacy hash algorithms)
 
 ```shell
-pip install -U gethash[all]
+$ pip install -U gethash[all]
 ```
 
 ## Usage
