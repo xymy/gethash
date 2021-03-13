@@ -1,10 +1,9 @@
 from gethash.script import gethashcli, script_main
 
-NAME = "RIPEMD160"
-SUFFIX = ".ripemd160"
+META = {"cmdname": "ripemd160", "hashname": "RIPEMD160", "suffix": ".ripemd160"}
 
 
-@gethashcli(NAME, SUFFIX)
+@gethashcli(**META)
 def main(files, **kwargs):
     """Generate or check RIPEMD160."""
 

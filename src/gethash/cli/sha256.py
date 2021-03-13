@@ -1,10 +1,9 @@
 from gethash.script import gethashcli, script_main
 
-NAME = "SHA256"
-SUFFIX = ".sha256"
+META = {"cmdname": "sha256", "hashname": "SHA256", "suffix": ".sha256"}
 
 
-@gethashcli(NAME, SUFFIX)
+@gethashcli(**META)
 def main(files, **kwargs):
     """Generate or check SHA256."""
 

@@ -1,10 +1,9 @@
 from gethash.script import gethashcli, script_main
 
-NAME = "MD4"
-SUFFIX = ".md4"
+META = {"cmdname": "md4", "hashname": "MD4", "suffix": ".md4"}
 
 
-@gethashcli(NAME, SUFFIX)
+@gethashcli(**META)
 def main(files, **kwargs):
     """Generate or check MD4."""
 

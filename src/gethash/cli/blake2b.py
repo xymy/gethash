@@ -1,10 +1,9 @@
 from gethash.script import gethashcli, script_main
 
-NAME = "BLAKE2b"
-SUFFIX = ".blake2b"
+META = {"cmdname": "blake2b", "hashname": "BLAKE2b", "suffix": ".blake2b"}
 
 
-@gethashcli(NAME, SUFFIX)
+@gethashcli(**META)
 def main(files, **kwargs):
     """Generate or check BLAKE2b."""
 

@@ -208,7 +208,7 @@ def script_main(ctx, files, **options):
         gh(check, files)
 
 
-def gethashcli(name, suffix):
+def gethashcli(cmdname, hashname, suffix):
     """Generate click decorators for the main function."""
 
     def decorator(func):
@@ -220,6 +220,7 @@ def gethashcli(name, suffix):
         )
 
         @click.command(
+            cmdname,
             context_settings=dict(help_option_names=["-h", "--help"]),
             no_args_is_help=True,
         )
@@ -228,7 +229,7 @@ def gethashcli(name, suffix):
             "-c",
             "--check",
             is_flag=True,
-            help=f"Read {name} from FILES and check them.",
+            help=f"Read {hashname} from FILES and check them.",
         )
         @click.option("--start", type=click.INT, help="The start offset of files.")
         @click.option("--stop", type=click.INT, help="The stop offset of files.")
@@ -302,7 +303,7 @@ def gethashcli(name, suffix):
         @click.option("--tqdm-leave", type=click.BOOL, default=False, show_default=True)
         @click.option("--no-stdout", is_flag=True, help="Do not output to stdout.")
         @click.option("--no-stderr", is_flag=True, help="Do not output to stderr.")
-        @click.version_option(__version__)
+        @click.version_option(__version__, prog_name=cmdname)
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
             return func(*args, **kwargs)

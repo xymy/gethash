@@ -1,10 +1,9 @@
 from gethash.script import gethashcli, script_main
 
-NAME = "SHA512"
-SUFFIX = ".sha512"
+META = {"cmdname": "sha512", "hashname": "SHA512", "suffix": ".sha512"}
 
 
-@gethashcli(NAME, SUFFIX)
+@gethashcli(**META)
 def main(files, **kwargs):
     """Generate or check SHA512."""
 
