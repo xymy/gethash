@@ -14,7 +14,7 @@ from .core import (
     check_hash_line,
     generate_hash_line,
 )
-from .utils.glob import glob_scanner
+from .utils.glob import glob_filter
 
 
 class FilePath(click.Path):
@@ -98,6 +98,7 @@ class GetHash(object):
         self.ctx = ctx
 
         self.glob_mode = kwargs.pop("glob", 1)
+        self.glob_type = kwargs.pop("type", "a")
         self.suffix = kwargs.pop("suffix", ".sha")
 
         # Determine the path format.
@@ -144,7 +145,7 @@ class GetHash(object):
         return None
 
     def generate_hash(self, patterns):
-        for path in glob_scanner(patterns, mode=self.glob_mode):
+        for path in glob_filter(patterns, mode=self.glob_mode, type=self.glob_type):
             try:
                 root = self.check_root(path)
                 hash_line = generate_hash_line(path, self.hash_function, root=root)
@@ -169,7 +170,9 @@ class GetHash(object):
                 self.echo(f"[SUCCESS] {path}", fg="green")
 
     def check_hash(self, patterns):
-        for hash_path in glob_scanner(patterns, mode=self.glob_mode):
+        for hash_path in glob_filter(
+            patterns, mode=self.glob_mode, type=self.glob_type
+        ):
             try:
                 self._check_hash(hash_path)
             except Exception as e:
@@ -245,6 +248,15 @@ def gethashcli(name, suffix):
             show_default=True,
             help="Set glob mode. If ``0``, disable glob pathname pattern; if ``1``, "
             "resolve ``*`` and ``?``; if ``2``, resolve ``*``, ``?`` and ``[]``.",
+        )
+        @click.option(
+            "-t",
+            "--type",
+            type=click.Choice(["a", "d", "f"]),
+            default="a",
+            show_default=True,
+            help="Set file type. If ``a``, include all types; if ``d``, include "
+            "directories; if ``f``, include files.",
         )
         @click.option(
             "--suffix",
