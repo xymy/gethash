@@ -13,6 +13,7 @@ else:
     del Cryptodome
 
 PLUGINS = [
+    "crc32",
     "md5",
     "sha1",
     "sha256",
