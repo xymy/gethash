@@ -18,8 +18,9 @@ $ pip install -U gethash[all]
 
 ## Usage
 
-After installation, 8 commands are available:
+After installation, 9 commands are available:
 
+- crc32
 - md5
 - sha1
 - sha256
