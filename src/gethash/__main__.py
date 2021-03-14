@@ -12,7 +12,7 @@ except ImportError:
 else:
     del Cryptodome
 
-PLUGINS = (
+PLUGINS = [
     "md5",
     "sha1",
     "sha256",
@@ -21,9 +21,9 @@ PLUGINS = (
     "sha3-512",
     "blake2b",
     "blake2s",
-)
+]
 
-LEGACY_PLUGINS = ("md2", "md4", "ripemd160")
+LEGACY_PLUGINS = ["md2", "md4", "ripemd160"]
 
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
