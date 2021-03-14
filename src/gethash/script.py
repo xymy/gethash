@@ -14,7 +14,7 @@ from .core import (
     check_hash_line,
     generate_hash_line,
 )
-from .utils.glob import glob_filter
+from .utils.glob import glob_filters
 
 
 class FilePath(click.Path):
@@ -145,7 +145,7 @@ class GetHash(object):
         return None
 
     def generate_hash(self, patterns):
-        for path in glob_filter(patterns, mode=self.glob_mode, type=self.glob_type):
+        for path in glob_filters(patterns, mode=self.glob_mode, type=self.glob_type):
             try:
                 root = self.check_root(path)
                 hash_line = generate_hash_line(path, self.hash_function, root=root)
@@ -170,7 +170,7 @@ class GetHash(object):
                 self.echo(f"[SUCCESS] {path}", fg="green")
 
     def check_hash(self, patterns):
-        for hash_path in glob_filter(
+        for hash_path in glob_filters(
             patterns, mode=self.glob_mode, type=self.glob_type
         ):
             try:
