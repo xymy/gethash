@@ -34,6 +34,18 @@ def _get_glob_func(mode):
         raise ValueError(f"mode must be in {{0, 1, 2}}, got {mode}")
 
 
+def _get_glob_type(type):
+    _check_str(type, "type")
+    type = type.lower()
+    if type not in {"a", "d", "f"}:
+        raise ValueError(f"type must be in {{'a', 'd', 'f'}}, got '{type}'")
+
+    all_ok = type == "a"
+    dir_ok = all_ok or type == "d"
+    file_ok = all_ok or type == "f"
+    return all_ok, dir_ok, file_ok
+
+
 def glob_scanner(pathname, *, mode=1, recursive=False):
     """Resolve a pathname with glob patterns.
 
@@ -81,14 +93,7 @@ def glob_filter(pathname, *, mode=1, recursive=False, type="a"):
         The glob matched pathname.
     """
 
-    _check_str(type, "type")
-    type = type.lower()
-    if type not in {"a", "d", "f"}:
-        raise ValueError(f"type must be in {{'a', 'd', 'f'}}, got '{type}'")
-
-    all_ok = type == "a"
-    dir_ok = all_ok or type == "d"
-    file_ok = all_ok or type == "f"
+    all_ok, dir_ok, file_ok = _get_glob_type(type)
     for path in glob_scanner(pathname, mode=mode, recursive=recursive):
         if os.path.isdir(path):
             if dir_ok:
@@ -149,14 +154,7 @@ def glob_filters(pathnames, *, mode=1, recursive=False, type="a"):
         The glob matched pathname.
     """
 
-    _check_str(type, "type")
-    type = type.lower()
-    if type not in {"a", "d", "f"}:
-        raise ValueError(f"type must be in {{'a', 'd', 'f'}}, got '{type}'")
-
-    all_ok = type == "a"
-    dir_ok = all_ok or type == "d"
-    file_ok = all_ok or type == "f"
+    all_ok, dir_ok, file_ok = _get_glob_type(type)
     for path in glob_scanners(pathnames, mode=mode, recursive=recursive):
         if os.path.isdir(path):
             if dir_ok:
