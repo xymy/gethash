@@ -51,8 +51,8 @@ class FilePath(click.Path):
 class Output(object):
     """Determine the output mode and provide the output interface."""
 
-    def __init__(self, sep=None, agg=None, null=None):
-        if (sep and agg) or (sep and null) or (agg and null):
+    def __init__(self, agg=None, sep=None, null=None):
+        if (agg and sep) or (agg and null) or (sep and null):
             raise ValueError("require exactly one argument")
 
         # Use the null mode by default.
@@ -60,11 +60,11 @@ class Output(object):
             null = True
 
         # Determine the output mode and dump method.
-        if sep:
-            self._dump = self.output_sep
-        elif agg:
+        if agg:
             self.agg_file = HashFileWriter(agg)
             self._dump = self.output_agg
+        elif sep:
+            self._dump = self.output_sep
         elif null:
             self._dump = self.output_null
 
@@ -79,15 +79,14 @@ class Output(object):
     def dump(self, hash_line, hash_path):
         self._dump(hash_line, hash_path)
 
+    def output_agg(self, hash_line, hash_path):
+        self.agg_file.write_hash_line(hash_line)
+
     def output_sep(self, hash_line, hash_path):
         with HashFileWriter(hash_path) as f:
             f.write_hash_line(hash_line)
 
-    def output_agg(self, hash_line, hash_path):
-        self.agg_file.write_hash_line(hash_line)
-
-    @staticmethod
-    def output_null(hash_line, hash_path):
+    def output_null(self, hash_line, hash_path):
         pass
 
 
@@ -113,7 +112,6 @@ class GetHash(object):
         agg = kwargs.pop("agg", None)
         null = kwargs.pop("null", None)
         self.output = Output(sep, agg, null)
-        self.dump = self.output.dump
 
         # Prepare arguments and construct the hash function.
         self.start = kwargs.pop("start", None)
@@ -126,6 +124,12 @@ class GetHash(object):
             "leave": kwargs.pop("tqdm-leave", False),
         }
         self.hasher = Hasher(ctx, tqdm_args=tqdm_args)
+
+    def __call__(self, check, files):
+        if check:
+            self.check_hash(files)
+        else:
+            self.generate_hash(files)
 
     def echo(self, msg, **kwargs):
         click.secho(msg, file=self.stdout, **kwargs)
@@ -153,7 +157,7 @@ class GetHash(object):
                 root = self.check_root(path)
                 hash_line = generate_hash_line(path, self.hash_function, root=root)
                 hash_path = path + self.suffix
-                self.dump(hash_line, hash_path)
+                self.output.dump(hash_line, hash_path)
             except Exception as e:
                 self.echo_error(path, e)
             else:
@@ -182,12 +186,6 @@ class GetHash(object):
     def close(self):
         self.output.close()
 
-    def __call__(self, check, files):
-        if check:
-            self.check_hash(files)
-        else:
-            self.generate_hash(files)
-
     def __enter__(self):
         return self
 
@@ -198,13 +196,13 @@ class GetHash(object):
 def script_main(ctx, files, **options):
     """Generate the body for the main function."""
 
-    check = options.pop("check", False)
     # Convert bool flags to streams.
     no_stdout = options.pop("no_stdout", False)
     no_stderr = options.pop("no_stderr", False)
     stdout = open(os.devnull, "w") if no_stdout else sys.stdout
     stderr = open(os.devnull, "w") if no_stderr else sys.stderr
 
+    check = options.pop("check", False)
     with GetHash(ctx, stdout=stdout, stderr=stderr, **options) as gh:
         gh(check, files)
 
@@ -217,7 +215,7 @@ def gethashcli(cmdname, hashname, suffix):
             "Path Format", help="Set the path format in checksum files."
         )
         output_mode = MutuallyExclusiveOptionGroup(
-            "Output Mode", help="Ignored when -c is set."
+            "Output Mode", help="Set the file output mode."
         )
 
         @click.command(
@@ -283,7 +281,6 @@ def gethashcli(cmdname, hashname, suffix):
             default=None,
             help="The path field in checksum files is relative to the root directory.",
         )
-        @output_mode.option("-s", "--sep", is_flag=True, help="Separate output files.")
         @output_mode.option(
             "-o",
             "--agg",
@@ -291,6 +288,7 @@ def gethashcli(cmdname, hashname, suffix):
             default=None,
             help="Set the aggregate output file.",
         )
+        @output_mode.option("-s", "--sep", is_flag=True, help="Separate output files.")
         @output_mode.option(
             "-n",
             "--null",
