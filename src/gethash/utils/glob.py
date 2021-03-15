@@ -34,7 +34,7 @@ def _get_glob_func(mode):
         raise ValueError(f"mode must be in {{0, 1, 2}}, got {mode}")
 
 
-def _get_glob_type(type):
+def _path_filter(pathnames, *, type="a"):
     _check_str(type, "type")
     type = type.lower()
     if type not in {"a", "d", "f"}:
@@ -43,7 +43,16 @@ def _get_glob_type(type):
     all_ok = type == "a"
     dir_ok = all_ok or type == "d"
     file_ok = all_ok or type == "f"
-    return all_ok, dir_ok, file_ok
+    for path in pathnames:
+        if os.path.isdir(path):
+            if dir_ok:
+                yield path
+        elif os.path.isfile(path):
+            if file_ok:
+                yield path
+        else:
+            if all_ok:
+                yield path
 
 
 def glob_scanner(pathname, *, mode=1, recursive=False):
@@ -93,17 +102,8 @@ def glob_filter(pathname, *, mode=1, recursive=False, type="a"):
         The glob matched pathname.
     """
 
-    all_ok, dir_ok, file_ok = _get_glob_type(type)
-    for path in glob_scanner(pathname, mode=mode, recursive=recursive):
-        if os.path.isdir(path):
-            if dir_ok:
-                yield path
-        elif os.path.isfile(path):
-            if file_ok:
-                yield path
-        else:
-            if all_ok:
-                yield path
+    generator = glob_scanner(pathname, mode=mode, recursive=recursive)
+    yield from _path_filter(generator, type=type)
 
 
 def glob_scanners(pathnames, *, mode=1, recursive=False):
@@ -154,14 +154,5 @@ def glob_filters(pathnames, *, mode=1, recursive=False, type="a"):
         The glob matched pathname.
     """
 
-    all_ok, dir_ok, file_ok = _get_glob_type(type)
-    for path in glob_scanners(pathnames, mode=mode, recursive=recursive):
-        if os.path.isdir(path):
-            if dir_ok:
-                yield path
-        elif os.path.isfile(path):
-            if file_ok:
-                yield path
-        else:
-            if all_ok:
-                yield path
+    generator = glob_scanners(pathnames, mode=mode, recursive=recursive)
+    yield from _path_filter(generator, type=type)
