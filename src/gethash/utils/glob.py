@@ -22,7 +22,7 @@ def _glob2(pathname, recursive=False):
     yield from glob.iglob(pathname, recursive=recursive)
 
 
-def _get_glob_func(mode):
+def _get_glob(mode):
     _check_int(mode, "mode")
     if mode == 0:
         return _glob0
@@ -43,6 +43,7 @@ def _path_filter(pathnames, *, type="a"):
     all_ok = type == "a"
     dir_ok = all_ok or type == "d"
     file_ok = all_ok or type == "f"
+
     for path in pathnames:
         if os.path.isdir(path):
             if dir_ok:
@@ -75,8 +76,8 @@ def glob_scanner(pathname, *, mode=1, recursive=False):
         The glob matched pathname.
     """
 
-    glob_func = _get_glob_func(mode)
-    yield from glob_func(pathname, recursive=recursive)
+    glob = _get_glob(mode)
+    yield from glob(pathname, recursive=recursive)
 
 
 def glob_filter(pathname, *, mode=1, recursive=False, type="a"):
@@ -126,9 +127,9 @@ def glob_scanners(pathnames, *, mode=1, recursive=False):
         The glob matched pathname.
     """
 
-    glob_func = _get_glob_func(mode)
+    glob = _get_glob(mode)
     for pathname in pathnames:
-        yield from glob_func(pathname, recursive=recursive)
+        yield from glob(pathname, recursive=recursive)
 
 
 def glob_filters(pathnames, *, mode=1, recursive=False, type="a"):
