@@ -96,10 +96,13 @@ class GetHash(object):
 
     def __init__(self, ctx, **kwargs):
         self.ctx = ctx
+        self.suffix = kwargs.pop("suffix", ".sha")
 
         self.glob_mode = kwargs.pop("glob", 1)
         self.glob_type = kwargs.pop("type", "a")
-        self.suffix = kwargs.pop("suffix", ".sha")
+
+        self.stdout = kwargs.pop("stdout", sys.stdout)
+        self.stderr = kwargs.pop("stderr", sys.stderr)
 
         # Determine the path format.
         self.inplace = kwargs.pop("inplace", False)
@@ -112,23 +115,17 @@ class GetHash(object):
         self.output = Output(sep, agg, null)
         self.dump = self.output.dump
 
-        self.stdout = kwargs.pop("stdout", sys.stdout)
-        self.stderr = kwargs.pop("stderr", sys.stderr)
-
         # Prepare arguments and construct the hash function.
-        start = kwargs.pop("start", None)
-        stop = kwargs.pop("stop", None)
-        dir_ok = kwargs.pop("dir", False)
+        self.start = kwargs.pop("start", None)
+        self.stop = kwargs.pop("stop", None)
+        self.dir_ok = kwargs.pop("dir", False)
         tqdm_args = {
             "file": self.stderr,
-            "ascii": kwargs.pop("tqdm-ascii", True),
+            "ascii": kwargs.pop("tqdm-ascii", False),
             "disable": kwargs.pop("tqdm-disable", False),
             "leave": kwargs.pop("tqdm-leave", False),
         }
-        hasher = Hasher(ctx, tqdm_args=tqdm_args)
-        self.hash_function = functools.partial(
-            hasher, start=start, stop=stop, dir_ok=dir_ok
-        )
+        self.hasher = Hasher(ctx, tqdm_args=tqdm_args)
 
     def echo(self, msg, **kwargs):
         click.secho(msg, file=self.stdout, **kwargs)
@@ -136,6 +133,12 @@ class GetHash(object):
     def echo_error(self, path, exc):
         msg = f"[ERROR] {path}\n\t{type(exc).__name__}: {exc}"
         click.secho(msg, file=self.stderr, fg="red")
+
+    def glob_function(self, pathnames):
+        return glob_filters(pathnames, mode=self.glob_mode, type=self.glob_type)
+
+    def hash_function(self, path):
+        return self.hasher(path, self.start, self.stop, dir_ok=self.dir_ok)
 
     def check_root(self, path):
         if self.inplace:
@@ -145,7 +148,7 @@ class GetHash(object):
         return None
 
     def generate_hash(self, patterns):
-        for path in glob_filters(patterns, mode=self.glob_mode, type=self.glob_type):
+        for path in self.glob_function(patterns):
             try:
                 root = self.check_root(path)
                 hash_line = generate_hash_line(path, self.hash_function, root=root)
@@ -170,9 +173,7 @@ class GetHash(object):
                 self.echo(f"[SUCCESS] {path}", fg="green")
 
     def check_hash(self, patterns):
-        for hash_path in glob_filters(
-            patterns, mode=self.glob_mode, type=self.glob_type
-        ):
+        for hash_path in self.glob_function(patterns):
             try:
                 self._check_hash(hash_path)
             except Exception as e:
