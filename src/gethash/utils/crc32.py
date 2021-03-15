@@ -6,7 +6,7 @@ from . import _check_bytes, _check_bytes_opt, _check_int, _check_int_opt
 class CRC32(object):
     """Hash functions API wrapper for CRC32."""
 
-    name = 'CRC32'
+    name = "CRC32"
     digest_size = 4
 
     def __init__(self, data=None, value=None):
