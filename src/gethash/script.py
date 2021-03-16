@@ -108,10 +108,10 @@ class GetHash(object):
         self.root = kwargs.pop("root", None)
 
         # Determine the output mode.
-        sep = kwargs.pop("sep", None)
         agg = kwargs.pop("agg", None)
+        sep = kwargs.pop("sep", None)
         null = kwargs.pop("null", None)
-        self.output = Output(sep, agg, null)
+        self.output = Output(agg, sep, null)
 
         # Prepare arguments and construct the hash function.
         self.start = kwargs.pop("start", None)
