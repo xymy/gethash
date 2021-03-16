@@ -56,7 +56,7 @@ class Output(object):
             raise ValueError("require exactly one argument")
 
         # Use the null mode by default.
-        if not (sep or agg or null):
+        if not (agg or sep or null):
             null = True
 
         # Determine the output mode and dump method.
