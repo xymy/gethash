@@ -53,9 +53,9 @@ class Hasher(object):
     ----------
     ctx_proto : hash context
         The hash context prototype used to generate hash values.
-    chunksize : int or None, optional (default: None)
+    chunksize : int or None, optional
         The size of data blocks when reading data from files.
-    tqdm_args : dict or None, optional (default: None)
+    tqdm_args : dict or None, optional
         The arguments passed to the underlying ``tqdm`` constructor.
     """
 
@@ -76,9 +76,9 @@ class Hasher(object):
         ----------
         filepath : str or path-like
             The path of a file.
-        start : int or None, optional (default: None)
+        start : int or None, optional
             The start offset of the file.
-        stop : int or None, optional (default: None)
+        stop : int or None, optional
             The stop offset of the file.
 
         Returns
@@ -120,9 +120,9 @@ class Hasher(object):
         ----------
         dirpath : str or path-like
             The path of a directory.
-        start : int or None, optional (default: None)
+        start : int or None, optional
             The start offset of files belonging to the directory.
-        stop : int or None, optional (default: None)
+        stop : int or None, optional
             The stop offset of files belonging to the directory.
 
         Returns
@@ -150,11 +150,11 @@ class Hasher(object):
         ----------
         path : str or path-like
             The path of a file or a directory.
-        start : int or None, optional (default: None)
+        start : int or None, optional
             The start offset of the file or files belonging to the directory.
-        stop : int or None, optional (default: None)
+        stop : int or None, optional
             The stop offset of the file or files belonging to the directory.
-        dir_ok : bool, optional (default: False)
+        dir_ok : bool, default=False
             If ``True``, enable directory hashing.
 
         Returns
@@ -311,7 +311,7 @@ def format_hash_line(hex_hash_value, path, *, root=None):
         (1) Absolute path;
         (2) Relative path;
         (3) Relative to a given root directory.
-    root : str, path-like or None, optional (default: None)
+    root : str, path-like or None, optional
         The root directory of `path`. The path field in `hash_line` is relative
         to the root directory.
 
@@ -339,7 +339,7 @@ def parse_hash_line(hash_line, *, root=None):
     ----------
     hash_line : str
         A line of *hash* and *name* with GNU Coreutils style.
-    root : str, path-like or None, optional (default: None)
+    root : str, path-like or None, optional
         The root directory of `path`. The path field in `hash_line` is relative
         to the root directory.
 
@@ -379,7 +379,7 @@ def generate_hash_line(path, hash_function, *, root=None):
         The path of a file or a directory with corresponding hash value.
     hash_function : callable(str or path-like) -> bytes-like
         A function for generating hash value.
-    root : str, path-like or None, optional (default: None)
+    root : str, path-like or None, optional
         The root directory of `path`. The path field in `hash_line` is relative
         to the root directory.
 
@@ -403,7 +403,7 @@ def check_hash_line(hash_line, hash_function, *, root=None):
         A line of *hash* and *name* with GNU Coreutils style.
     hash_function : callable(str or path-like) -> bytes-like
         A function for generating hash value.
-    root : str, path-like or None, optional (default: None)
+    root : str, path-like or None, optional
         The root directory of `path`. The path field in `hash_line` is relative
         to the root directory.
 
@@ -434,7 +434,7 @@ def re_name_to_hash(hash_line, *, root=None):
     ----------
     hash_line : str
         A line of *hash* and *name* with GNU Coreutils style.
-    root : str, path-like or None, optional (default: None)
+    root : str, path-like or None, optional
         The root directory of `path`. The path field in `hash_line` is relative
         to the root directory.
     """
@@ -451,7 +451,7 @@ def re_hash_to_name(hash_line, *, root=None):
     ----------
     hash_line : str
         A line of *hash* and *name* with GNU Coreutils style.
-    root : str, path-like or None, optional (default: None)
+    root : str, path-like or None, optional
         The root directory of `path`. The path field in `hash_line` is relative
         to the root directory.
     """
