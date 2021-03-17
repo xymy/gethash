@@ -1,6 +1,6 @@
 from gethash.script import gethashcli, script_main
 
-META = {"cmdname": "sha512", "hashname": "SHA512", "suffix": ".sha512"}
+META = dict(cmdname="sha512", hashname="SHA512", suffix=".sha512")
 
 
 @gethashcli(**META)

@@ -1,6 +1,6 @@
 from gethash.script import gethashcli, script_main
 
-META = {"cmdname": "ripemd160", "hashname": "RIPEMD160", "suffix": ".ripemd160"}
+META = dict(cmdname="ripemd160", hashname="RIPEMD160", suffix=".ripemd160")
 
 
 @gethashcli(**META)

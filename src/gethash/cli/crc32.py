@@ -1,6 +1,6 @@
 from gethash.script import gethashcli, script_main
 
-META = {"cmdname": "crc32", "hashname": "CRC32", "suffix": ".crc32"}
+META = dict(cmdname="crc32", hashname="CRC32", suffix=".crc32")
 
 
 @gethashcli(**META)
