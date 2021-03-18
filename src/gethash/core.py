@@ -100,7 +100,7 @@ class Hasher(object):
         ctx = self.ctx_proto.copy()
         chunksize = self.chunksize
         total = stop - start
-        with tqdm(total=total, **self.tqdm_args) as bar, open(filepath, "rb") as f:
+        with open(filepath, "rb") as f, tqdm(total=total, **self.tqdm_args) as bar:
             # Precompute chunk count and remaining size.
             count, remainsize = divmod(total, chunksize)
             f.seek(start, io.SEEK_SET)
