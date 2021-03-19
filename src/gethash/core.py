@@ -52,7 +52,7 @@ class Hasher(object):
     Parameters
     ----------
     ctx_proto : hash context
-        The hash context prototype used to generate hash values.
+        The hash context prototype used for generating hash values.
     chunksize : int or None, optional
         The size of data blocks when reading data from files.
     tqdm_args : dict or None, optional
@@ -100,9 +100,9 @@ class Hasher(object):
         ctx = self.ctx_proto.copy()
         chunksize = self.chunksize
         total = stop - start
+        # Precompute chunk count and remaining size.
+        count, remainsize = divmod(total, chunksize)
         with open(filepath, "rb") as f, tqdm(total=total, **self.tqdm_args) as bar:
-            # Precompute chunk count and remaining size.
-            count, remainsize = divmod(total, chunksize)
             f.seek(start, io.SEEK_SET)
             for _ in range(count):
                 chunk = f.read(chunksize)
