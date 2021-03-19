@@ -202,7 +202,7 @@ class HashFileReader(object):
             if line.startswith("#"):
                 continue
             # A empty string means EOF and will not give rise to infinite loop
-            # since `''.isspace() == False`.
+            # since ``''.isspace() == False``.
             if line.isspace():
                 continue
             break
@@ -287,9 +287,7 @@ class HashFileWriter(object):
             A comment without leading # and tailing newline.
         """
 
-        self.file.write("# ")
-        self.file.write(comment)
-        self.file.write("\n")
+        self.file.write(f"# {comment}\n")
 
     def __enter__(self):
         return self
