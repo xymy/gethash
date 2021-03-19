@@ -132,7 +132,7 @@ class Hasher(object):
         """
 
         # The initial hash value is all zeros.
-        value = bytes(self.ctx_proto.digest_size)
+        value = bytearray(self.ctx_proto.digest_size)
         with os.scandir(dirpath) as it:
             for entry in it:
                 if entry.is_dir():
@@ -140,8 +140,8 @@ class Hasher(object):
                 else:
                     other = self.hash_file(entry, start, stop)
                 # Just XOR each byte string as hash value.
-                value = strxor(value, other)
-        return value
+                strxor(value, other, value)
+        return bytes(value)
 
     def hash(self, path, start=None, stop=None, *, dir_ok=False):
         """Return the hash value of a file or a directory.
