@@ -46,8 +46,8 @@ class CheckHashLineError(ValueError):
 class Hasher(object):
     """General hash value generator.
 
-    Generate hash values using given hash context prototype. Note that a
-    ``tqdm`` progressbar is also available.
+    Generate hash values using given hash context prototype. When generating
+    hash values, a tqdm progressbar is available.
 
     Parameters
     ----------
