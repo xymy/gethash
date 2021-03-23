@@ -4,9 +4,21 @@ from . import _check_bytes, _check_bytes_opt, _check_int, _check_int_opt
 
 
 class CRC32(object):
-    """Hash functions API wrapper for CRC32."""
+    """Hash functions API wrapper for CRC32.
+
+    The instance of `CRC32` exposes the `value` attribute for the current CRC32
+    value.
+
+    References
+    ----------
+    - PEP 247 -- API for Cryptographic Hash Functions
+      https://www.python.org/dev/peps/pep-0247/
+    - PEP 452 -- API for Cryptographic Hash Functions v2.0
+      https://www.python.org/dev/peps/pep-0452/
+    """
 
     name = "CRC32"
+    block_size = NotImplemented
     digest_size = 4
 
     def __init__(self, data=None, value=None):
