@@ -31,32 +31,36 @@ def _check_str_opt(obj, name, default=None):
 
 
 def _check_bytes(obj, name):
-    if not isinstance(obj, (bytes, bytearray)):
+    if not isinstance(obj, (bytes, bytearray, memoryview)):
         tname = type(obj).__name__
-        raise TypeError(f"{name} must be bytes or bytearray, not {tname}")
+        raise TypeError(f"{name} must be bytes-like, not {tname}")
 
 
 def _check_bytes_opt(obj, name, default=None):
     if obj is None:
         return default
 
-    if not isinstance(obj, (bytes, bytearray)):
+    if not isinstance(obj, (bytes, bytearray, memoryview)):
         tname = type(obj).__name__
-        raise TypeError(f"{name} must be bytes, bytearray or None, not {tname}")
+        raise TypeError(f"{name} must be bytes-like or None, not {tname}")
     return obj
 
 
-def _check_bytearray(obj, name):
-    if not isinstance(obj, bytearray):
+def _check_bytes_w(obj, name):
+    if not (
+        isinstance(obj, bytearray) or (isinstance(obj, memoryview) and not obj.readonly)
+    ):
         tname = type(obj).__name__
-        raise TypeError(f"{name} must be bytearray, not {tname}")
+        raise TypeError(f"{name} must be writable bytes-like, not {tname}")
 
 
-def _check_bytearray_opt(obj, name, default=None):
+def _check_bytes_w_opt(obj, name, default=None):
     if obj is None:
         return default
 
-    if not isinstance(obj, bytearray):
+    if not (
+        isinstance(obj, bytearray) or (isinstance(obj, memoryview) and not obj.readonly)
+    ):
         tname = type(obj).__name__
-        raise TypeError(f"{name} must be bytearray or None, not {tname}")
+        raise TypeError(f"{name} must be writable bytes-like or None, not {tname}")
     return obj

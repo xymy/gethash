@@ -1,4 +1,4 @@
-from . import _check_bytearray_opt, _check_bytes
+from . import _check_bytes, _check_bytes_w_opt
 
 __all__ = ["strxor"]
 
@@ -26,7 +26,7 @@ def strxor(term1, term2, output=None):
         The first term of the XOR operation.
     term2 : bytes-like
         The second term of the XOR operation.
-    output : bytearray or None, optional
+    output : writable bytes-like or None, optional
         The location where the result must be written to. If ``None``, the
         result is returned.
 
@@ -39,7 +39,7 @@ def strxor(term1, term2, output=None):
 
     _check_bytes(term1, "term1")
     _check_bytes(term2, "term2")
-    _check_bytearray_opt(output, "output")
+    _check_bytes_w_opt(output, "output")
     if len(term1) != len(term2):
         raise ValueError("term1 and term2 must have the same length")
     if output is not None and len(output) != len(term1):
