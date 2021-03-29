@@ -37,23 +37,29 @@ def _get_glob(mode):
 def _path_filter(pathnames, *, type="a"):
     _check_str(type, "type")
     type = type.lower()
-    if type not in {"a", "d", "f"}:
-        raise ValueError(f"type must be in {{'a', 'd', 'f'}}, got '{type}'")
+    if type not in {"a", "d", "f", "l"}:
+        raise ValueError(f"type must be in {{'a', 'd', 'f', 'l'}}, got '{type}'")
 
     all_ok = type == "a"
-    dir_ok = all_ok or type == "d"
-    file_ok = all_ok or type == "f"
+    dir_ok = type == "d"
+    file_ok = type == "f"
+    link_ok = type == "l"
 
-    for path in pathnames:
-        if os.path.isdir(path):
-            if dir_ok:
-                yield path
-        elif os.path.isfile(path):
-            if file_ok:
-                yield path
-        else:
-            if all_ok:
-                yield path
+    if all_ok:
+        yield from pathnames
+    else:
+        for path in pathnames:
+            if os.path.islink(path):
+                if link_ok:
+                    yield path
+            elif os.path.isdir(path):
+                if dir_ok:
+                    yield path
+            elif os.path.isfile(path):
+                if file_ok:
+                    yield path
+            else:
+                assert False, "unexpected file type"
 
 
 def glob_scanner(pathname, *, mode=1, recursive=False):
@@ -95,7 +101,7 @@ def glob_filter(pathname, *, mode=1, recursive=False, type="a"):
         directories, subdirectories and symbolic links to directories.
     type : str, default='a'
         The type of file. If ``a``, include all types; if ``d``, include
-        directories; if ``f``, include files.
+        directories; if ``f``, include files; if ``l``, includes symbolic links.
 
     Yields
     ------
@@ -147,7 +153,7 @@ def glob_filters(pathnames, *, mode=1, recursive=False, type="a"):
         directories, subdirectories and symbolic links to directories.
     type : str, default='a'
         The type of file. If ``a``, include all types; if ``d``, include
-        directories; if ``f``, include files.
+        directories; if ``f``, include files; if ``l``, includes symbolic links.
 
     Yields
     ------
