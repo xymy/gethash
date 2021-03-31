@@ -251,7 +251,7 @@ def gethashcli(cmdname, hashname, suffix):
         @click.option(
             "--sync",
             is_flag=True,
-            help="Set mtime of hash files to the same as data file.",
+            help="Set mtime of hash files to the same as data files.",
         )
         @click.option(
             "-g",
