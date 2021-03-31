@@ -96,6 +96,7 @@ class GetHash(object):
     def __init__(self, ctx, **kwargs):
         self.ctx = ctx
         self.suffix = kwargs.pop("suffix", ".sha")
+        self.sync = kwargs.pop("sync", False)
 
         self.glob_mode = kwargs.pop("glob", 1)
         self.glob_type = kwargs.pop("type", "a")
@@ -158,6 +159,10 @@ class GetHash(object):
                 hash_line = generate_hash_line(path, self.hash_function, root=root)
                 hash_path = path + self.suffix
                 self.output.dump(hash_line, hash_path)
+
+                if self.sync:
+                    t = os.path.getmtime(path)
+                    os.utime(hash_path, (t, t))
             except Exception as e:
                 self.echo_error(path, e)
             else:
@@ -169,6 +174,10 @@ class GetHash(object):
             try:
                 root = self.check_root(hash_path)
                 path = check_hash_line(hash_line, self.hash_function, root=root)
+
+                if self.sync:
+                    t = os.path.getmtime(path)
+                    os.utime(hash_path, (t, t))
             except CheckHashLineError as e:
                 self.echo(f"[FAILURE] {e.path}", fg="red")
             except Exception as e:
@@ -238,6 +247,11 @@ def gethashcli(cmdname, hashname, suffix):
             is_flag=True,
             help="Allow checksum for directories. "
             "Just xor each checksum of files in a given directory.",
+        )
+        @click.option(
+            "--sync",
+            is_flag=True,
+            help="Set mtime of hash files to the same as data file.",
         )
         @click.option(
             "-g",
