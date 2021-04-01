@@ -96,10 +96,11 @@ class GetHash(object):
     def __init__(self, ctx, **kwargs):
         self.ctx = ctx
         self.suffix = kwargs.pop("suffix", ".sha")
-        self.sync = kwargs.pop("sync", False)
 
         self.glob_mode = kwargs.pop("glob", 1)
         self.glob_type = kwargs.pop("type", "a")
+        self.recursive = kwargs.pop("recursive", False)
+        self.sync = kwargs.pop("sync", False)
 
         self.stdout = kwargs.pop("stdout", sys.stdout)
         self.stderr = kwargs.pop("stderr", sys.stderr)
@@ -140,7 +141,12 @@ class GetHash(object):
         click.secho(msg, file=self.stderr, fg="red")
 
     def glob_function(self, pathnames):
-        return glob_filters(pathnames, mode=self.glob_mode, type=self.glob_type)
+        return glob_filters(
+            pathnames,
+            mode=self.glob_mode,
+            type=self.glob_type,
+            recursive=self.recursive,
+        )
 
     def hash_function(self, path):
         return self.hasher(path, self.start, self.stop, dir_ok=self.dir_ok)
@@ -239,8 +245,6 @@ def gethashcli(cmdname, hashname, suffix):
             is_flag=True,
             help=f"Read {hashname} from FILES and check them.",
         )
-        @click.option("--start", type=click.INT, help="The start offset of files.")
-        @click.option("--stop", type=click.INT, help="The stop offset of files.")
         @click.option(
             "-d",
             "--dir",
@@ -249,9 +253,11 @@ def gethashcli(cmdname, hashname, suffix):
             "Just xor each checksum of files in a given directory.",
         )
         @click.option(
-            "--sync",
-            is_flag=True,
-            help="Set mtime of hash files to the same as data files.",
+            "--suffix",
+            metavar="SUFFIX",
+            default=suffix,
+            show_default=True,
+            help="Set the filename extension of checksum files.",
         )
         @click.option(
             "-g",
@@ -273,11 +279,18 @@ def gethashcli(cmdname, hashname, suffix):
             "directories; if ``f``, include files.",
         )
         @click.option(
-            "--suffix",
-            metavar="SUFFIX",
-            default=suffix,
-            show_default=True,
-            help="Set the filename extension of checksum files.",
+            "-r",
+            "--recursive",
+            is_flag=True,
+            help="Enable recursive matching, i.e. "
+            "the pattern ``**`` will match any files and zero or more "
+            "directories, subdirectories and symbolic links to directories.",
+        )
+        @click.option(
+            "-y",
+            "--sync",
+            is_flag=True,
+            help="Update mtime of hash files to the same as data files.",
         )
         @path_format.option(
             "-i", "--inplace", is_flag=True, help="Use basename in checksum files."
@@ -309,6 +322,8 @@ def gethashcli(cmdname, hashname, suffix):
             is_flag=True,
             help="Do not output to files. This is the default output mode.",
         )
+        @click.option("--start", type=click.INT, help="The start offset of files.")
+        @click.option("--stop", type=click.INT, help="The stop offset of files.")
         @click.option("--tqdm-ascii", type=click.BOOL, default=False, show_default=True)
         @click.option(
             "--tqdm-disable", type=click.BOOL, default=False, show_default=True
