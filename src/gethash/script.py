@@ -227,7 +227,7 @@ def gethashcli(cmdname, hashname, suffix):
             "Output Mode", help="Set the file output mode."
         )
 
-        @click.command(
+        @click.command(  # type: ignore [call-arg]
             cmdname,
             context_settings=dict(help_option_names=["-h", "--help"]),
             no_args_is_help=True,
