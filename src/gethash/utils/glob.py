@@ -36,14 +36,18 @@ def _get_glob(mode):
 
 def _path_filter(pathnames, *, type):
     _check_str(type, "type")
-    type = type.lower()
-    if type not in {"a", "d", "f", "l"}:
-        raise ValueError(f"type must be in {{'a', 'd', 'f', 'l'}}, got '{type}'")
 
-    all_ok = type == "a"
-    dir_ok = type == "d"
-    file_ok = type == "f"
-    link_ok = type == "l"
+    all_ok = False
+    dir_ok = False
+    file_ok = False
+    link_ok = False
+    for t in type.lower():
+        if t not in {"a", "d", "f", "l"}:
+            raise ValueError(f"type must be in {{'a', 'd', 'f', 'l'}}, got '{t}'")
+        all_ok = all_ok or t == "a"
+        dir_ok = dir_ok or t == "d"
+        file_ok = file_ok or t == "f"
+        link_ok = link_ok or t == "l"
 
     if all_ok:
         yield from pathnames
