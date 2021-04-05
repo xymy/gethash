@@ -8,17 +8,17 @@ __all__ = ["glob_scanner", "glob_filter", "glob_scanners", "glob_filters"]
 _ESCAPE_SQUARE = glob.escape("[")
 
 
-def _glob0(pathname, recursive=False):
+def _glob0(pathname, *, recursive=False):
     yield os.fspath(pathname)
 
 
-def _glob1(pathname, recursive=False):
+def _glob1(pathname, *, recursive=False):
     # Escape all square brackets to prevent glob from resolving them.
     pathname = os.fspath(pathname).replace("[", _ESCAPE_SQUARE)
     yield from glob.iglob(pathname, recursive=recursive)
 
 
-def _glob2(pathname, recursive=False):
+def _glob2(pathname, *, recursive=False):
     yield from glob.iglob(pathname, recursive=recursive)
 
 
@@ -34,7 +34,7 @@ def _get_glob(mode):
         raise ValueError(f"mode must be in {{0, 1, 2}}, got {mode}")
 
 
-def _path_filter(pathnames, *, type="a"):
+def _path_filter(pathnames, *, type):
     _check_str(type, "type")
     type = type.lower()
     if type not in {"a", "d", "f", "l"}:
@@ -59,7 +59,7 @@ def _path_filter(pathnames, *, type="a"):
                 if file_ok:
                     yield path
             else:
-                assert False, "unexpected file type"
+                raise ValueError(f"unexpected file type for path '{path}'")
 
 
 def glob_scanner(pathname, *, mode=1, recursive=False):
@@ -86,7 +86,7 @@ def glob_scanner(pathname, *, mode=1, recursive=False):
     yield from glob(pathname, recursive=recursive)
 
 
-def glob_filter(pathname, *, mode=1, recursive=False, type="a"):
+def glob_filter(pathname, *, mode=1, type="a", recursive=False):
     """Resolve and filter a pathname with glob patterns.
 
     Parameters
@@ -96,17 +96,17 @@ def glob_filter(pathname, *, mode=1, recursive=False, type="a"):
     mode : int, default=1
         The mode of glob. If ``0``, disable glob pathname pattern; if ``1``,
         resolve ``*`` and ``?``; if ``2``, resolve ``*``, ``?`` and ``[]``.
-    recursive : bool, default=False
-        If ``True``, the pattern ``**`` will match any files and zero or more
-        directories, subdirectories and symbolic links to directories.
     type : str, default='a'
         The type of file. If ``a``, include all types; if ``d``, include
         directories; if ``f``, include files; if ``l``, includes symbolic links.
+    recursive : bool, default=False
+        If ``True``, the pattern ``**`` will match any files and zero or more
+        directories, subdirectories and symbolic links to directories.
 
     Yields
     ------
     matched_pathname : str
-        The glob matched pathname.
+        The glob matched pathname with the given file type.
     """
 
     generator = glob_scanner(pathname, mode=mode, recursive=recursive)
@@ -138,7 +138,7 @@ def glob_scanners(pathnames, *, mode=1, recursive=False):
         yield from glob(pathname, recursive=recursive)
 
 
-def glob_filters(pathnames, *, mode=1, recursive=False, type="a"):
+def glob_filters(pathnames, *, mode=1, type="a", recursive=False):
     """Resolve and filter a list of pathnames with glob patterns.
 
     Parameters
@@ -148,17 +148,17 @@ def glob_filters(pathnames, *, mode=1, recursive=False, type="a"):
     mode : int, default=1
         The mode of glob. If ``0``, disable glob pathname pattern; if ``1``,
         resolve ``*`` and ``?``; if ``2``, resolve ``*``, ``?`` and ``[]``.
-    recursive : bool, default=False
-        If ``True``, the pattern ``**`` will match any files and zero or more
-        directories, subdirectories and symbolic links to directories.
     type : str, default='a'
         The type of file. If ``a``, include all types; if ``d``, include
         directories; if ``f``, include files; if ``l``, includes symbolic links.
+    recursive : bool, default=False
+        If ``True``, the pattern ``**`` will match any files and zero or more
+        directories, subdirectories and symbolic links to directories.
 
     Yields
     ------
     matched_pathname : str
-        The glob matched pathname.
+        The glob matched pathname with the given file type.
     """
 
     generator = glob_scanners(pathnames, mode=mode, recursive=recursive)
