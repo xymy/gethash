@@ -33,7 +33,7 @@ class CRC32(object):
     @value.setter
     def value(self, value):
         _check_int(value, "value")
-        self._value = value
+        self._value = value & 0xffffffff
 
     def update(self, data):
         _check_bytes(data, "data")
