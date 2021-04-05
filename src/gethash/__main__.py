@@ -53,7 +53,7 @@ class Cli(click.MultiCommand):
 @click.command(__title__, cls=Cli, context_settings=CONTEXT_SETTINGS)
 @click.version_option(__version__, prog_name=__title__)
 def main():
-    pass
+    """Generate or check various hash values."""
 
 
 if __name__ == "__main__":
