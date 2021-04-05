@@ -12,7 +12,8 @@ def _py_strxor(term1, term2, output=None):
 
 
 try:
-    from Cryptodome.Util.strxor import strxor as _strxor  # NOQA: F811
+    from Cryptodome.Util.strxor import strxor as _c_strxor
+    _strxor = _c_strxor
 except ImportError:
     _strxor = _py_strxor
 
@@ -40,6 +41,7 @@ def strxor(term1, term2, output=None):
     _check_bytes(term1, "term1")
     _check_bytes(term2, "term2")
     _check_bytes_w_opt(output, "output")
+
     if len(term1) != len(term2):
         raise ValueError("term1 and term2 must have the same length")
     if output is not None and len(output) != len(term1):
