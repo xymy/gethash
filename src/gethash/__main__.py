@@ -4,12 +4,12 @@ import click
 
 from . import __title__, __version__
 
-PYCRYPTODOMEX_INSTALLED = True
 try:
     import Cryptodome
 except ImportError:
     PYCRYPTODOMEX_INSTALLED = False
 else:
+    PYCRYPTODOMEX_INSTALLED = True
     del Cryptodome
 
 PLUGINS = [

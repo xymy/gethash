@@ -2,12 +2,13 @@ import zlib
 
 from . import _check_bytes, _check_bytes_opt, _check_int, _check_int_opt
 
+__all__ = ["CRC32"]
+
 
 class CRC32(object):
     """Hash functions API wrapper for CRC32.
 
-    The instance of `CRC32` exposes the `value` attribute for the current CRC32
-    value.
+    The instance exposes the `value` attribute for the current CRC32 value.
 
     References
     ----------
@@ -18,7 +19,6 @@ class CRC32(object):
     """
 
     name = "CRC32"
-    block_size = NotImplemented
     digest_size = 4
 
     def __init__(self, data=None, value=None):
