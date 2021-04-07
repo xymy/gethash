@@ -18,6 +18,8 @@ __all__ = [
     "parse_hash_line",
     "generate_hash_line",
     "check_hash_line",
+    "re_name_to_hash",
+    "re_hash_to_name",
 ]
 
 _CHUNKSIZE = 0x100000  # 1 MB
@@ -284,7 +286,7 @@ class HashFileWriter(object):
         Parameters
         ----------
         comment : str
-            A comment without leading # and tailing newline.
+            A comment without leading ``#`` and tailing newline.
         """
 
         self.file.write(f"# {comment}\n")
@@ -310,8 +312,7 @@ def format_hash_line(hex_hash_value, path, *, root=None):
         (2) Relative path;
         (3) Relative to a given root directory.
     root : str, path-like or None, optional
-        The root directory of `path`. The path field in `hash_line` is relative
-        to the root directory.
+        The root directory of `path`.
 
     Returns
     -------
@@ -338,8 +339,7 @@ def parse_hash_line(hash_line, *, root=None):
     hash_line : str
         A line of *hash* and *name* with GNU Coreutils style.
     root : str, path-like or None, optional
-        The root directory of `path`. The path field in `hash_line` is relative
-        to the root directory.
+        The root directory of `path`.
 
     Returns
     -------
@@ -378,8 +378,7 @@ def generate_hash_line(path, hash_function, *, root=None):
     hash_function : callable(str or path-like) -> bytes-like
         A function for generating hash value.
     root : str, path-like or None, optional
-        The root directory of `path`. The path field in `hash_line` is relative
-        to the root directory.
+        The root directory of `path`.
 
     Returns
     -------
@@ -402,8 +401,7 @@ def check_hash_line(hash_line, hash_function, *, root=None):
     hash_function : callable(str or path-like) -> bytes-like
         A function for generating hash value.
     root : str, path-like or None, optional
-        The root directory of `path`. The path field in `hash_line` is relative
-        to the root directory.
+        The root directory of `path`.
 
     Returns
     -------
@@ -420,9 +418,9 @@ def check_hash_line(hash_line, hash_function, *, root=None):
 
 
 def _parse_for_re(hash_line, *, root=None):
-    hex_hash_value, nameing_path = parse_hash_line(hash_line, root=root)
-    hashing_path = os.path.join(os.path.dirname(nameing_path), hex_hash_value)
-    return hashing_path, nameing_path
+    hex_hash_value, naming_path = parse_hash_line(hash_line, root=root)
+    hashing_path = os.path.join(os.path.dirname(naming_path), hex_hash_value)
+    return hashing_path, naming_path
 
 
 def re_name_to_hash(hash_line, *, root=None):
@@ -433,13 +431,19 @@ def re_name_to_hash(hash_line, *, root=None):
     hash_line : str
         A line of *hash* and *name* with GNU Coreutils style.
     root : str, path-like or None, optional
-        The root directory of `path`. The path field in `hash_line` is relative
-        to the root directory.
+        The root directory of `path`.
+
+    Returns
+    -------
+    naming_path : str
+        The naming (source) path.
+    hashing_path : str
+        The hashing (destination) path.
     """
 
-    hashing_path, nameing_path = _parse_for_re(hash_line, root=root)
-    os.rename(nameing_path, hashing_path)
-    return nameing_path, hashing_path
+    hashing_path, naming_path = _parse_for_re(hash_line, root=root)
+    os.rename(naming_path, hashing_path)
+    return naming_path, hashing_path
 
 
 def re_hash_to_name(hash_line, *, root=None):
@@ -450,10 +454,16 @@ def re_hash_to_name(hash_line, *, root=None):
     hash_line : str
         A line of *hash* and *name* with GNU Coreutils style.
     root : str, path-like or None, optional
-        The root directory of `path`. The path field in `hash_line` is relative
-        to the root directory.
+        The root directory of `path`.
+
+    Returns
+    -------
+    hashing_path : str
+        The hashing (source) path.
+    naming_path : str
+        The naming (destination) path.
     """
 
-    hashing_path, nameing_path = _parse_for_re(hash_line, root=root)
-    os.rename(hashing_path, nameing_path)
-    return hashing_path, nameing_path
+    hashing_path, naming_path = _parse_for_re(hash_line, root=root)
+    os.rename(hashing_path, naming_path)
+    return hashing_path, naming_path
