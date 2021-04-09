@@ -154,9 +154,12 @@ class GetHash(object):
     def check_root(self, path):
         if self.inplace:
             return os.path.dirname(path)
-        if self.root is not None:
-            return self.root
-        return None
+        return self.root
+
+    def check_sync(self, path, hash_path):
+        if self.sync:
+            t = os.path.getmtime(path)
+            os.utime(hash_path, (t, t))
 
     def generate_hash(self, patterns):
         for path in self.glob_function(patterns):
@@ -165,10 +168,7 @@ class GetHash(object):
                 hash_line = generate_hash_line(path, self.hash_function, root=root)
                 hash_path = path + self.suffix
                 self.output.dump(hash_line, hash_path)
-
-                if self.sync:
-                    t = os.path.getmtime(path)
-                    os.utime(hash_path, (t, t))
+                self.check_sync(path, hash_path)
             except Exception as e:
                 self.echo_error(path, e)
             else:
@@ -180,10 +180,7 @@ class GetHash(object):
             try:
                 root = self.check_root(hash_path)
                 path = check_hash_line(hash_line, self.hash_function, root=root)
-
-                if self.sync:
-                    t = os.path.getmtime(path)
-                    os.utime(hash_path, (t, t))
+                self.check_sync(path, hash_path)
             except CheckHashLineError as e:
                 self.echo(f"[FAILURE] {e.path}", fg="red")
             except Exception as e:
@@ -211,7 +208,6 @@ class GetHash(object):
 def script_main(ctx, files, **options):
     """Generate the body for the main function."""
 
-    # Convert bool flags to streams.
     no_stdout = options.pop("no_stdout", False)
     no_stderr = options.pop("no_stderr", False)
     stdout = open(os.devnull, "w") if no_stdout else sys.stdout
@@ -298,21 +294,13 @@ def gethashcli(cmdname, hashname, suffix):
         @path_format.option(
             "-z",
             "--root",
-            type=click.Path(
-                exists=True,
-                file_okay=False,
-                dir_okay=True,
-                writable=False,
-                readable=False,
-            ),
-            default=None,
+            type=click.Path(exists=True, file_okay=False),
             help="The path field in checksum files is relative to the root directory.",
         )
         @output_mode.option(
             "-o",
             "--agg",
             type=FilePath(suffix=suffix),
-            default=None,
             help="Set the aggregate output file.",
         )
         @output_mode.option("-s", "--sep", is_flag=True, help="Separate output files.")
@@ -324,13 +312,13 @@ def gethashcli(cmdname, hashname, suffix):
         )
         @click.option("--start", type=click.INT, help="The start offset of files.")
         @click.option("--stop", type=click.INT, help="The stop offset of files.")
+        @click.option("--no-stdout", is_flag=True, help="Do not output to stdout.")
+        @click.option("--no-stderr", is_flag=True, help="Do not output to stderr.")
         @click.option("--tqdm-ascii", type=click.BOOL, default=False, show_default=True)
         @click.option(
             "--tqdm-disable", type=click.BOOL, default=False, show_default=True
         )
         @click.option("--tqdm-leave", type=click.BOOL, default=False, show_default=True)
-        @click.option("--no-stdout", is_flag=True, help="Do not output to stdout.")
-        @click.option("--no-stderr", is_flag=True, help="Do not output to stderr.")
         @click.version_option(__version__, prog_name=cmdname)
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
