@@ -4,7 +4,13 @@ import os
 
 from . import _check_int, _check_str
 
-__all__ = ["glob_scanner", "glob_filter", "glob_scanners", "glob_filters"]
+__all__ = [
+    "glob_scanner",
+    "glob_filter",
+    "glob_scanners",
+    "glob_filters",
+    "sorted_locale",
+]
 
 _ESCAPE_SQUARE = glob.escape("[")
 
@@ -57,6 +63,7 @@ def _path_filter(pathnames, *, type):
         yield from pathnames
     else:
         for path in pathnames:
+            # Detect symlink first to avoid following symbolic links.
             if os.path.islink(path):
                 if link_ok:
                     yield path
@@ -189,6 +196,4 @@ def sorted_locale(iterable, *, reverse=False):
         The sorted list of strings.
     """
 
-    seq = list(iterable)
-    seq.sort(key=locale.strxfrm, reverse=reverse)
-    return seq
+    return sorted(iterable, key=locale.strxfrm, reverse=reverse)
