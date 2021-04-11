@@ -1,4 +1,5 @@
 import glob
+import locale
 import os
 
 from . import _check_int, _check_str
@@ -36,18 +37,21 @@ def _get_glob(mode):
 
 def _path_filter(pathnames, *, type):
     _check_str(type, "type")
-
     all_ok = False
     dir_ok = False
     file_ok = False
     link_ok = False
-    for t in type.lower():
-        if t not in {"a", "d", "f", "l"}:
+    for t in set(type.lower()):
+        if t == "a":
+            all_ok = True
+        elif t == "d":
+            dir_ok = True
+        elif t == "f":
+            file_ok = True
+        elif t == "l":
+            link_ok = True
+        else:
             raise ValueError(f"type must be in {{'a', 'd', 'f', 'l'}}, got '{t}'")
-        all_ok = all_ok or t == "a"
-        dir_ok = dir_ok or t == "d"
-        file_ok = file_ok or t == "f"
-        link_ok = link_ok or t == "l"
 
     if all_ok:
         yield from pathnames
@@ -167,3 +171,24 @@ def glob_filters(pathnames, *, mode=1, type="a", recursive=False):
 
     generator = glob_scanners(pathnames, mode=mode, recursive=recursive)
     yield from _path_filter(generator, type=type)
+
+
+def sorted_locale(iterable, *, reverse=False):
+    """Sort a list of strings according to locale.
+
+    Parameters
+    ----------
+    iterable : iterable of str
+        A list of strings.
+    reverse : bool, default=False
+        If ``True``, reverse the sorted result.
+
+    Returns
+    -------
+    sorted_list : list
+        The sorted list of strings.
+    """
+
+    seq = list(iterable)
+    seq.sort(key=locale.strxfrm, reverse=reverse)
+    return seq
