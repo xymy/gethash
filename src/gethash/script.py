@@ -225,9 +225,7 @@ def gethashcli(cmdname, hashname, suffix):
         path_format = MutuallyExclusiveOptionGroup(
             "Path Format", help="Set the path format in checksum files."
         )
-        output_mode = MutuallyExclusiveOptionGroup(
-            "Output Mode", help="Set the file output mode."
-        )
+        output_mode = MutuallyExclusiveOptionGroup("Output Mode", help="Set the file output mode.")
 
         @click.command(  # type: ignore [call-arg]
             cmdname,
@@ -288,9 +286,7 @@ def gethashcli(cmdname, hashname, suffix):
             is_flag=True,
             help="Update mtime of hash files to the same as data files.",
         )
-        @path_format.option(
-            "-i", "--inplace", is_flag=True, help="Use basename in checksum files."
-        )
+        @path_format.option("-i", "--inplace", is_flag=True, help="Use basename in checksum files.")
         @path_format.option(
             "-z",
             "--root",
@@ -315,9 +311,7 @@ def gethashcli(cmdname, hashname, suffix):
         @click.option("--no-stdout", is_flag=True, help="Do not output to stdout.")
         @click.option("--no-stderr", is_flag=True, help="Do not output to stderr.")
         @click.option("--tqdm-ascii", type=click.BOOL, default=False, show_default=True)
-        @click.option(
-            "--tqdm-disable", type=click.BOOL, default=False, show_default=True
-        )
+        @click.option("--tqdm-disable", type=click.BOOL, default=False, show_default=True)
         @click.option("--tqdm-leave", type=click.BOOL, default=False, show_default=True)
         @click.version_option(__version__, prog_name=cmdname)
         @functools.wraps(func)

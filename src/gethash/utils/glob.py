@@ -4,13 +4,7 @@ import os
 
 from . import _check_int, _check_str
 
-__all__ = [
-    "glob_scanner",
-    "glob_filter",
-    "glob_scanners",
-    "glob_filters",
-    "sorted_locale",
-]
+__all__ = ["glob_scanner", "glob_filter", "glob_scanners", "glob_filters", "sorted_locale"]
 
 _ESCAPE_SQUARE = glob.escape("[")
 
