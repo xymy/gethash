@@ -2,7 +2,7 @@
 /.vscode/
 /build/
 /dist/
-/docs/_build/
+/doc/_build/
 /temp/
 /venv/
 *.egg-info/
