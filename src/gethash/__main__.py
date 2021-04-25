@@ -12,17 +12,7 @@ else:
     PYCRYPTODOMEX_INSTALLED = True
     del Cryptodome
 
-PLUGINS = [
-    "crc32",
-    "md5",
-    "sha1",
-    "sha256",
-    "sha512",
-    "sha3-256",
-    "sha3-512",
-    "blake2b",
-    "blake2s",
-]
+PLUGINS = ["crc32", "md5", "sha1", "sha256", "sha512", "sha3-256", "sha3-512", "blake2b", "blake2s"]
 LEGACY_PLUGINS = ["md2", "md4", "ripemd160"]
 
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])

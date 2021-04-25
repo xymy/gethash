@@ -142,10 +142,7 @@ class GetHash(object):
 
     def glob_function(self, pathnames):
         return glob_filters(
-            pathnames,
-            mode=self.glob_mode,
-            type=self.glob_type,
-            recursive=self.recursive,
+            pathnames, mode=self.glob_mode, type=self.glob_type, recursive=self.recursive
         )
 
     def hash_function(self, path):
@@ -234,10 +231,7 @@ def gethashcli(cmdname, hashname, suffix):
         )
         @click.argument("files", nargs=-1)
         @click.option(
-            "-c",
-            "--check",
-            is_flag=True,
-            help=f"Read {hashname} from FILES and check them.",
+            "-c", "--check", is_flag=True, help=f"Read {hashname} from FILES and check them."
         )
         @click.option(
             "-d",
@@ -294,10 +288,7 @@ def gethashcli(cmdname, hashname, suffix):
             help="The path field in checksum files is relative to the root directory.",
         )
         @output_mode.option(
-            "-o",
-            "--agg",
-            type=FilePath(suffix=suffix),
-            help="Set the aggregate output file.",
+            "-o", "--agg", type=FilePath(suffix=suffix), help="Set the aggregate output file."
         )
         @output_mode.option("-s", "--sep", is_flag=True, help="Separate output files.")
         @output_mode.option(
