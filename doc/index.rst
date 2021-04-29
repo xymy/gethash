@@ -1,20 +1,13 @@
-.. gethash documentation master file, created by
-   sphinx-quickstart on Sun Apr 25 10:41:04 2021.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+Gethash Documentation
+=====================
 
-Welcome to gethash's documentation!
-===================================
+A set of command-line tools that can generate or check various hash values.
+
+Table of Contents
+-----------------
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+    :maxdepth: 2
 
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+    quickstart
+    api
