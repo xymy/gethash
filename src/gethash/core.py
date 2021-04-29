@@ -27,15 +27,15 @@ _HASH_LINE_RE = re.compile(r"([0-9a-fA-F]+)(?:(?: \*|  | )(.+))?")
 
 
 class IsADirectory(OSError):
-    """Raised by method `Hasher.calc_hash`."""
+    """Raised by :meth:`Hasher.hash`."""
 
 
 class ParseHashLineError(ValueError):
-    """Raised by function `parse_hash_line`."""
+    """Raised by :func:`parse_hash_line`."""
 
 
 class CheckHashLineError(ValueError):
-    """Raised by function `check_hash_line`."""
+    """Raised by :func:`check_hash_line`."""
 
     def __init__(self, hash_line, hash_value, path, curr_hash_value):
         super().__init__(hash_line, hash_value, path, curr_hash_value)
@@ -46,17 +46,17 @@ class CheckHashLineError(ValueError):
 
 
 class Hasher(object):
-    """General hash value generator.
+    """General hash values generator.
 
-    Generate hash values using given hash context prototype. When generating
-    hash values, a tqdm progressbar is available.
+    Generate hash values via given hash context prototype. In addition, a
+    ``tqdm`` progressbar is available.
 
     Parameters
     ----------
     ctx_proto : hash context
         The hash context prototype used for generating hash values.
     chunksize : int or None, optional
-        The size of data blocks when reading data from files.
+        The size of data blocks used when reading data from files.
     tqdm_args : dict or None, optional
         The arguments passed to the underlying ``tqdm`` constructor.
     """
