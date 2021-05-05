@@ -1,9 +1,6 @@
 API Reference
 =============
 
-Overview
---------
-
 .. autosummary::
 
     gethash.core.IsADirectory
@@ -29,20 +26,8 @@ Overview
     gethash.utils.glob.sorted_locale
     gethash.utils.strxor.strxor
 
-Core
-----
+.. toctree::
+    :hidden:
 
-.. automodule:: gethash.core
-    :members:
-
-Utilities
----------
-
-.. automodule:: gethash.utils.crc32
-    :members:
-
-.. automodule:: gethash.utils.glob
-    :members:
-
-.. automodule:: gethash.utils.strxor
-    :members:
+    reference/core
+    reference/utils

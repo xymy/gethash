@@ -18,7 +18,6 @@ src_dir = os.path.join(project_dir, "src")
 sys.path.insert(0, src_dir)
 gethash = import_module("gethash")
 
-
 # -- Project information -----------------------------------------------------
 
 project = "gethash"
@@ -27,7 +26,6 @@ author = "xymy"
 
 version = gethash.__version__  # type: ignore [attr-defined]
 release = gethash.__version__  # type: ignore [attr-defined]
-
 
 # -- General configuration ---------------------------------------------------
 
@@ -38,9 +36,9 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
     "sphinx.ext.intersphinx",
-    "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
     "sphinx_rtd_theme",
+    "numpydoc"
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -50,7 +48,6 @@ templates_path = ["_templates"]
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
-
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -63,11 +60,9 @@ html_theme = "sphinx_rtd_theme"
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
 
-
 # -- Options for autodoc -----------------------------------------------------
 
 autodoc_member_order = "bysource"
-
 
 # -- Options for intersphinx -------------------------------------------------
 
