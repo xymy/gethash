@@ -49,8 +49,12 @@ def _check_bytes_opt(obj: object, name: str, default: object = None) -> Any:
     return obj
 
 
+def _is_writable_memoryview(obj):
+    return isinstance(obj, memoryview) and not obj.readonly
+
+
 def _check_bytes_w(obj: object, name: str) -> None:
-    if not (isinstance(obj, bytearray) or (isinstance(obj, memoryview) and not obj.readonly)):
+    if not isinstance(obj, bytearray) and not _is_writable_memoryview(obj):
         tname = type(obj).__name__
         raise TypeError(f"{name} must be writable bytes-like, not {tname}")
 
@@ -59,7 +63,7 @@ def _check_bytes_w_opt(obj: object, name: str, default: object = None) -> Any:
     if obj is None:
         return default
 
-    if not (isinstance(obj, bytearray) or (isinstance(obj, memoryview) and not obj.readonly)):
+    if not isinstance(obj, bytearray) and not _is_writable_memoryview(obj):
         tname = type(obj).__name__
         raise TypeError(f"{name} must be writable bytes-like or None, not {tname}")
     return obj
