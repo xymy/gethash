@@ -142,7 +142,10 @@ class GetHash(object):
 
     def glob_function(self, pathnames):
         return glob_filters(
-            pathnames, mode=self.glob_mode, type=self.glob_type, recursive=self.recursive
+            pathnames,
+            mode=self.glob_mode,
+            type=self.glob_type,
+            recursive=self.recursive,
         )
 
     def hash_function(self, path):
@@ -222,7 +225,9 @@ def gethashcli(cmdname, hashname, suffix):
         path_format = MutuallyExclusiveOptionGroup(
             "Path Format", help="Set the path format in checksum files."
         )
-        output_mode = MutuallyExclusiveOptionGroup("Output Mode", help="Set the file output mode.")
+        output_mode = MutuallyExclusiveOptionGroup(
+            "Output Mode", help="Set the file output mode."
+        )
 
         @click.command(  # type: ignore [call-arg]
             cmdname,
@@ -231,7 +236,10 @@ def gethashcli(cmdname, hashname, suffix):
         )
         @click.argument("files", nargs=-1)
         @click.option(
-            "-c", "--check", is_flag=True, help=f"Read {hashname} from FILES and check them."
+            "-c",
+            "--check",
+            is_flag=True,
+            help=f"Read {hashname} from FILES and check them.",
         )
         @click.option(
             "-d",
@@ -280,7 +288,9 @@ def gethashcli(cmdname, hashname, suffix):
             is_flag=True,
             help="Update mtime of hash files to the same as data files.",
         )
-        @path_format.option("-i", "--inplace", is_flag=True, help="Use basename in checksum files.")
+        @path_format.option(
+            "-i", "--inplace", is_flag=True, help="Use basename in checksum files."
+        )
         @path_format.option(
             "-z",
             "--root",
@@ -288,7 +298,10 @@ def gethashcli(cmdname, hashname, suffix):
             help="The path field in checksum files is relative to the root directory.",
         )
         @output_mode.option(
-            "-o", "--agg", type=FilePath(suffix=suffix), help="Set the aggregate output file."
+            "-o",
+            "--agg",
+            type=FilePath(suffix=suffix),
+            help="Set the aggregate output file.",
         )
         @output_mode.option("-s", "--sep", is_flag=True, help="Separate output files.")
         @output_mode.option(
@@ -302,7 +315,9 @@ def gethashcli(cmdname, hashname, suffix):
         @click.option("--no-stdout", is_flag=True, help="Do not output to stdout.")
         @click.option("--no-stderr", is_flag=True, help="Do not output to stderr.")
         @click.option("--tqdm-ascii", type=click.BOOL, default=False, show_default=True)
-        @click.option("--tqdm-disable", type=click.BOOL, default=False, show_default=True)
+        @click.option(
+            "--tqdm-disable", type=click.BOOL, default=False, show_default=True
+        )
         @click.option("--tqdm-leave", type=click.BOOL, default=False, show_default=True)
         @click.version_option(__version__, prog_name=cmdname)
         @functools.wraps(func)
