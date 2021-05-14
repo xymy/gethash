@@ -39,6 +39,8 @@ extensions = [
     "sphinx.ext.todo",
     "sphinx.ext.viewcode",
     "numpydoc",
+    "sphinx_inline_tabs",
+    "sphinx_toggleprompt",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
