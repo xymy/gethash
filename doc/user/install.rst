@@ -26,4 +26,4 @@ In the project directory, activate the virtual environment and run:
 
 .. code-block:: console
 
-    pip install --no-build-isolation -e .
+    pip install --no-build-isolation -e ".[dev]"
