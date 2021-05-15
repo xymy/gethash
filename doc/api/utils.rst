@@ -1,11 +1,29 @@
 Utilities
 =========
 
-.. automodule:: gethash.utils.crc32
-    :members:
+.. currentmodule:: gethash.utils
 
-.. automodule:: gethash.utils.glob
-    :members:
+Functions
+---------
 
-.. automodule:: gethash.utils.strxor
-    :members:
+Glob
+~~~~
+
+.. currentmodule:: gethash.utils.glob
+
+.. autofunction:: glob_scanner
+
+.. autofunction:: glob_filter
+
+.. autofunction:: glob_scanners
+
+.. autofunction:: glob_filters
+
+.. autofunction:: sorted_locale
+
+Strxor
+~~~~~~
+
+.. currentmodule:: gethash.utils.strxor
+
+.. autofunction:: strxor
