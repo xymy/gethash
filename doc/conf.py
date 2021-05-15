@@ -36,10 +36,8 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
     "sphinx.ext.intersphinx",
-    "sphinx.ext.todo",
     "sphinx.ext.viewcode",
     "numpydoc",
-    "sphinx_inline_tabs",
     "sphinx_toggleprompt",
 ]
 
@@ -62,10 +60,10 @@ html_theme = "pydata_sphinx_theme"
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
 
-# -- Options for autodoc -----------------------------------------------------
-
-autodoc_member_order = "bysource"
-
 # -- Options for intersphinx -------------------------------------------------
 
 intersphinx_mapping = {"python": ("https://docs.python.org/3", None)}
+
+# -- Options for numpydoc ----------------------------------------------------
+
+numpydoc_show_class_members = False
