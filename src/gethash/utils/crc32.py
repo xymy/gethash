@@ -8,7 +8,7 @@ __all__ = ["CRC32"]
 class CRC32(object):
     """Hash functions API wrapper for CRC32.
 
-    The instance exposes the `value` attribute for the current CRC32 value.
+    The context exposes the ``value`` attribute for the current CRC32 value.
 
     References
     ----------

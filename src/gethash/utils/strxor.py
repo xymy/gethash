@@ -35,7 +35,7 @@ def strxor(term1, term2, output=None):
     Returns
     -------
     result : bytes or None
-        If `output` is ``None``, return a new byte string; otherwise return
+        If ``output`` is ``None``, return a new byte string; otherwise return
         ``None``.
     """
 
