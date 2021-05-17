@@ -82,7 +82,7 @@ def glob_scanner(pathname, *, mode=1, recursive=False):
 
     Parameters
     ----------
-    pathname : str or path-like
+    pathname : str, bytes or path-like
         A pathname with glob patterns.
     mode : int, default=1
         The mode of glob. If ``0``, disable glob pathname pattern; if ``1``,
@@ -106,7 +106,7 @@ def glob_filter(pathname, *, mode=1, type="a", recursive=False):
 
     Parameters
     ----------
-    pathname : str or path-like
+    pathname : str, bytes or path-like
         A pathname with glob patterns.
     mode : int, default=1
         The mode of glob. If ``0``, disable glob pathname pattern; if ``1``,
@@ -133,7 +133,7 @@ def glob_scanners(pathnames, *, mode=1, recursive=False):
 
     Parameters
     ----------
-    pathnames : iterable of str or path-like
+    pathnames : iterable of str, bytes or path-like
         A list of pathnames with glob patterns.
     mode : int, default=1
         The mode of glob. If ``0``, disable glob pathname pattern; if ``1``,
@@ -158,7 +158,7 @@ def glob_filters(pathnames, *, mode=1, type="a", recursive=False):
 
     Parameters
     ----------
-    pathnames : iterable of str or path-like
+    pathnames : iterable of str, bytes or path-like
         A list of pathnames with glob patterns.
     mode : int, default=1
         The mode of glob. If ``0``, disable glob pathname pattern; if ``1``,
