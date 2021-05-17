@@ -13,6 +13,7 @@ __all__ = [
 ]
 
 _ESCAPE_SQUARE = glob.escape("[")
+_ESCAPE_SQUARE_BYTES = glob.escape(b"[")
 
 
 def _glob0(pathname, *, recursive=False):
@@ -20,8 +21,11 @@ def _glob0(pathname, *, recursive=False):
 
 
 def _glob1(pathname, *, recursive=False):
-    # Escape all square brackets to prevent glob from resolving them.
-    pathname = os.fspath(pathname).replace("[", _ESCAPE_SQUARE)
+    pathname = os.fspath(pathname)
+    if isinstance(pathname, bytes):
+        pathname = pathname.replace(b"[", _ESCAPE_SQUARE_BYTES)
+    else:
+        pathname = pathname.replace("[", _ESCAPE_SQUARE)
     yield from glob.iglob(pathname, recursive=recursive)
 
 
@@ -58,12 +62,10 @@ def _path_filter(pathnames, *, type):
             link_ok = True
         else:
             raise ValueError(f"type must be in {{'a', 'd', 'f', 'l'}}, got '{t}'")
-
     if all_ok:
-        yield from pathnames
+        yield from filter(os.path.exists, pathnames)
     else:
         for path in pathnames:
-            # Detect symlinks first to avoid following symbolic links.
             if os.path.islink(path):
                 if link_ok:
                     yield path
@@ -73,8 +75,6 @@ def _path_filter(pathnames, *, type):
             elif os.path.isfile(path):
                 if file_ok:
                     yield path
-            else:
-                raise ValueError(f"unexpected file type for path '{path}'")
 
 
 def glob_scanner(pathname, *, mode=1, recursive=False):
