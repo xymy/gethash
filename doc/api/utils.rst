@@ -3,11 +3,15 @@ Utilities
 
 .. currentmodule:: gethash.utils
 
-Functions
----------
+CRC32
+-----
+
+.. currentmodule:: gethash.utils.crc32
+
+.. autoclass:: CRC32
 
 Glob
-~~~~
+----
 
 .. currentmodule:: gethash.utils.glob
 
@@ -22,7 +26,7 @@ Glob
 .. autofunction:: sorted_locale
 
 Strxor
-~~~~~~
+------
 
 .. currentmodule:: gethash.utils.strxor
 
