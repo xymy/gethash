@@ -51,7 +51,7 @@ def _path_filter(pathnames, *, type):
     dir_ok = False
     file_ok = False
     link_ok = False
-    for t in set(type.lower()):
+    for t in set(type):
         if t == "a":
             all_ok = True
         elif t == "d":
@@ -112,8 +112,8 @@ def glob_filter(pathname, *, mode=1, type="a", recursive=False):
         The mode of glob. If ``0``, disable glob pathname pattern; if ``1``,
         resolve ``*`` and ``?``; if ``2``, resolve ``*``, ``?`` and ``[]``.
     type : str, default='a'
-        The type of file. If ``'a'``, include all types; if ``'d'``, include
-        directories; if ``'f'``, include files; if ``'l'``, include symlinks.
+        The type of file. If ``a``, include all types; if ``d``, include
+        directories; if ``f``, include files; if ``l``, include symlinks.
     recursive : bool, default=False
         If ``True``, the pattern ``**`` will match any files and zero or more
         directories, subdirectories and symbolic links to directories.
@@ -164,8 +164,8 @@ def glob_filters(pathnames, *, mode=1, type="a", recursive=False):
         The mode of glob. If ``0``, disable glob pathname pattern; if ``1``,
         resolve ``*`` and ``?``; if ``2``, resolve ``*``, ``?`` and ``[]``.
     type : str, default='a'
-        The type of file. If ``'a'``, include all types; if ``'d'``, include
-        directories; if ``'f'``, include files; if ``'l'``, include symlinks.
+        The type of file. If ``a``, include all types; if ``d``, include
+        directories; if ``f``, include files; if ``l``, include symlinks.
     recursive : bool, default=False
         If ``True``, the pattern ``**`` will match any files and zero or more
         directories, subdirectories and symbolic links to directories.

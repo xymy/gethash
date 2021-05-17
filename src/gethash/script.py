@@ -271,8 +271,8 @@ def gethashcli(cmdname, hashname, suffix):
             type=click.Choice(["a", "d", "f", "l"]),
             default="a",
             show_default=True,
-            help="Set file type. If ``'a'``, include all types; if ``'d'``, include "
-            "directories; if ``'f'``, include files; if ``'l'``, include symlinks.",
+            help="Set file type. If ``a``, include all types; if ``d``, include "
+            "directories; if ``f``, include files; if ``l``, include symlinks.",
         )
         @click.option(
             "-r",
