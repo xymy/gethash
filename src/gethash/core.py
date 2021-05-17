@@ -192,6 +192,8 @@ class HashFileReader(object):
         self.file = open(filepath, "r", encoding="utf-8")
 
     def close(self):
+        """Close the underlying file."""
+
         self.file.close()
 
     def read_hash_line(self):
@@ -275,6 +277,8 @@ class HashFileWriter(object):
         self.file = open(filepath, "w", encoding="utf-8")
 
     def close(self):
+        """Close the underlying file."""
+
         self.file.close()
 
     def write_hash_line(self, hash_line):
@@ -320,7 +324,7 @@ def format_hash_line(hex_hash_value, path, *, root=None):
         (2) Relative path;
         (3) Relative to a given root directory.
     root : str, path-like or None, optional
-        The root directory of `path`.
+        The root directory.
 
     Returns
     -------
@@ -347,7 +351,7 @@ def parse_hash_line(hash_line, *, root=None):
     hash_line : str
         A line of *hash* and *name* with GNU Coreutils style.
     root : str, path-like or None, optional
-        The root directory of `path`.
+        The root directory.
 
     Returns
     -------
@@ -386,7 +390,7 @@ def generate_hash_line(path, hash_function, *, root=None):
     hash_function : callable(str or path-like) -> bytes-like
         A function for generating hash value.
     root : str, path-like or None, optional
-        The root directory of `path`.
+        The root directory.
 
     Returns
     -------
@@ -409,7 +413,7 @@ def check_hash_line(hash_line, hash_function, *, root=None):
     hash_function : callable(str or path-like) -> bytes-like
         A function for generating hash value.
     root : str, path-like or None, optional
-        The root directory of `path`.
+        The root directory.
 
     Returns
     -------
@@ -439,7 +443,7 @@ def re_name_to_hash(hash_line, *, root=None):
     hash_line : str
         A line of *hash* and *name* with GNU Coreutils style.
     root : str, path-like or None, optional
-        The root directory of `path`.
+        The root directory.
 
     Returns
     -------
@@ -462,7 +466,7 @@ def re_hash_to_name(hash_line, *, root=None):
     hash_line : str
         A line of *hash* and *name* with GNU Coreutils style.
     root : str, path-like or None, optional
-        The root directory of `path`.
+        The root directory.
 
     Returns
     -------
