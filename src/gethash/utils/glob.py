@@ -93,7 +93,7 @@ def glob_scanner(pathname, *, mode=1, recursive=False):
 
     Yields
     ------
-    matched_pathname : str
+    matched_pathname : str or bytes
         The glob matched pathname.
     """
 
@@ -120,7 +120,7 @@ def glob_filter(pathname, *, mode=1, type="a", recursive=False):
 
     Yields
     ------
-    matched_pathname : str
+    matched_pathname : str or bytes
         The glob matched pathname with the given file type.
     """
 
@@ -144,7 +144,7 @@ def glob_scanners(pathnames, *, mode=1, recursive=False):
 
     Yields
     ------
-    matched_pathname : str
+    matched_pathname : str or bytes
         The glob matched pathname.
     """
 
@@ -172,7 +172,7 @@ def glob_filters(pathnames, *, mode=1, type="a", recursive=False):
 
     Yields
     ------
-    matched_pathname : str
+    matched_pathname : str or bytes
         The glob matched pathname with the given file type.
     """
 
