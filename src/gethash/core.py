@@ -33,6 +33,10 @@ class IsADirectory(OSError):
 class ParseHashLineError(ValueError):
     """Raised by :func:`parse_hash_line`."""
 
+    def __init__(self, hash_line):
+        super.__init__(hash_line)
+        self.hash_line = hash_line
+
 
 class CheckHashLineError(ValueError):
     """Raised by :func:`check_hash_line`."""
@@ -191,7 +195,7 @@ class HashFileReader(object):
         self.file.close()
 
     def read_hash_line(self):
-        """Read hash line.
+        """Read a hash line.
 
         Returns
         -------
@@ -201,17 +205,21 @@ class HashFileReader(object):
 
         while True:
             line = self.file.readline()
-            if line.startswith("#"):
-                continue
-            # A empty string means EOF and will not give rise to infinite loop
-            # since ``''.isspace() == False``.
-            if line.isspace():
+            if not line:
+                break
+            if line.startswith("#") or line.isspace():
                 continue
             break
         return line  # empty string for EOF
 
     def iter(self):
-        """Yield hash line."""
+        """Yield hash line.
+
+        Yields
+        ------
+        hash_line : str
+            A line of *hash* and *name* with GNU Coreutils style.
+        """
 
         with self:
             while True:
@@ -270,7 +278,7 @@ class HashFileWriter(object):
         self.file.close()
 
     def write_hash_line(self, hash_line):
-        """Write hash line.
+        """Write a hash line.
 
         Parameters
         ----------
@@ -281,12 +289,12 @@ class HashFileWriter(object):
         self.file.write(hash_line)
 
     def write_comment(self, comment):
-        """Write comment.
+        """Write a line of comment.
 
         Parameters
         ----------
         comment : str
-            A comment without leading ``#`` and tailing newline.
+            A line of comment without leading ``#`` and tailing newline.
         """
 
         self.file.write(f"# {comment}\n")
