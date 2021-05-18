@@ -22,7 +22,7 @@ __all__ = [
     "re_hash_to_name",
 ]
 
-_CHUNKSIZE = 0x100000  # 1 MB
+_CHUNKSIZE = 0x100000  # 1 MiB
 _HASH_LINE_RE = re.compile(r"([0-9a-fA-F]+)(?:(?: \*|  | )(.+))?")
 
 
@@ -181,6 +181,9 @@ class Hasher(object):
 class HashFileReader(object):
     """General hash file reader.
 
+    The :class:`HashFileReader` supports the context manager protocol for
+    calling :meth:`HashFileReader.close` automatically.
+
     Parameters
     ----------
     filepath : str or path-like
@@ -197,7 +200,7 @@ class HashFileReader(object):
         self.file.close()
 
     def read_hash_line(self):
-        """Read a hash line.
+        """Read hash line.
 
         Returns
         -------
@@ -231,25 +234,70 @@ class HashFileReader(object):
                 yield hash_line
 
     def iter2(self, *, root=None):
-        """Yield hash and name."""
+        """Yield hash and name.
+
+        Parameters
+        ----------
+        root : str, path-like or None, optional
+            The root directory.
+
+        Yields
+        ------
+        hash : str
+            The hexadecimal hash value string.
+        name : str
+            The path of a file or a directory with corresponding hash value.
+        """
 
         for hash_line in self:
             yield parse_hash_line(hash_line, root=root)
 
     def iter3(self, *, root=None):
-        """Yield hash line, hash and name."""
+        """Yield hash line, hash and name.
+
+        Parameters
+        ----------
+        root : str, path-like or None, optional
+            The root directory.
+
+        Yields
+        ------
+        hash_line : str
+            A line of *hash* and *name* with GNU Coreutils style.
+        hash : str
+            The hexadecimal hash value string.
+        name : str
+            The path of a file or a directory with corresponding hash value.
+        """
 
         for hash_line in self:
             yield hash_line, *parse_hash_line(hash_line, root=root)
 
     def iter_hash(self):
-        """Yield hash."""
+        """Yield hash.
+
+        Yields
+        ------
+        hash : str
+            The hexadecimal hash value string.
+        """
 
         for entry in self.iter2():
             yield entry[0]
 
     def iter_name(self, *, root=None):
-        """Yield name."""
+        """Yield name.
+
+        Parameters
+        ----------
+        root : str, path-like or None, optional
+            The root directory.
+
+        Yields
+        ------
+        name : str
+            The path of a file or a directory with corresponding hash value.
+        """
 
         for entry in self.iter2(root=root):
             yield entry[1]
@@ -265,6 +313,9 @@ class HashFileReader(object):
 
 class HashFileWriter(object):
     """General hash file writer.
+
+    The :class:`HashFileWriter` supports the context manager protocol for
+    calling :meth:`HashFileReader.close` automatically.
 
     Parameters
     ----------
@@ -282,7 +333,7 @@ class HashFileWriter(object):
         self.file.close()
 
     def write_hash_line(self, hash_line):
-        """Write a hash line.
+        """Write hash line.
 
         Parameters
         ----------
@@ -293,7 +344,7 @@ class HashFileWriter(object):
         self.file.write(hash_line)
 
     def write_comment(self, comment):
-        """Write a line of comment.
+        """Write comment.
 
         Parameters
         ----------
@@ -387,7 +438,7 @@ def generate_hash_line(path, hash_function, *, root=None):
     ----------
     path : str or path-like
         The path of a file or a directory with corresponding hash value.
-    hash_function : callable(str or path-like) -> bytes-like
+    hash_function : callable(str or path-like) -> bytes
         A function for generating hash value.
     root : str, path-like or None, optional
         The root directory.
@@ -410,7 +461,7 @@ def check_hash_line(hash_line, hash_function, *, root=None):
     ----------
     hash_line : str
         A line of *hash* and *name* with GNU Coreutils style.
-    hash_function : callable(str or path-like) -> bytes-like
+    hash_function : callable(str or path-like) -> bytes
         A function for generating hash value.
     root : str, path-like or None, optional
         The root directory.

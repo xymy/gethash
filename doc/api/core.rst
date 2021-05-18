@@ -41,11 +41,21 @@ HashFileReader
 
 .. autoclass:: HashFileReader
 
+.. automethod:: HashFileReader.read_hash_line
+
+.. automethod:: HashFileReader.iter
+
 .. note::
 
-    This class supports context manager for calling :meth:`HashFileReader.close` automatically.
+    :meth:`Hasher.__iter__` is an alias of :meth:`HashFileReader.iter`.
 
-.. automethod:: HashFileReader.read_hash_line
+.. automethod:: HashFileReader.iter2
+
+.. automethod:: HashFileReader.iter3
+
+.. automethod:: HashFileReader.iter_hash
+
+.. automethod:: HashFileReader.iter_name
 
 .. automethod:: HashFileReader.close
 
@@ -53,10 +63,6 @@ HashFileWriter
 ~~~~~~~~~~~~~~
 
 .. autoclass:: HashFileWriter
-
-.. note::
-
-    This class supports context manager for calling :meth:`HashFileWriter.close` automatically.
 
 .. automethod:: HashFileWriter.write_hash_line
 
