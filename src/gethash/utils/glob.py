@@ -47,34 +47,14 @@ def _get_glob(mode):
 
 def _path_filter(pathnames, *, type):
     _check_str(type, "type")
-    all_ok = False
-    dir_ok = False
-    file_ok = False
-    link_ok = False
-    for t in set(type):
-        if t == "a":
-            all_ok = True
-        elif t == "d":
-            dir_ok = True
-        elif t == "f":
-            file_ok = True
-        elif t == "l":
-            link_ok = True
-        else:
-            raise ValueError(f"type must be in {{'a', 'd', 'f', 'l'}}, got '{t}'")
-    if all_ok:
+    if type == "a":
         yield from filter(os.path.exists, pathnames)
+    elif type == "d":
+        yield from filter(os.path.isdir, pathnames)
+    elif type == "f":
+        yield from filter(os.path.isfile, pathnames)
     else:
-        for path in pathnames:
-            if os.path.islink(path):
-                if link_ok:
-                    yield path
-            elif os.path.isdir(path):
-                if dir_ok:
-                    yield path
-            elif os.path.isfile(path):
-                if file_ok:
-                    yield path
+        raise ValueError(f"type must be in {{'a', 'd', 'f'}}, got '{type}'")
 
 
 def glob_scanner(pathname, *, mode=1, recursive=False):
@@ -113,7 +93,7 @@ def glob_filter(pathname, *, mode=1, type="a", recursive=False):
         resolve ``*`` and ``?``; if ``2``, resolve ``*``, ``?`` and ``[]``.
     type : str, default='a'
         The type of file. If ``a``, include all types; if ``d``, include
-        directories; if ``f``, include files; if ``l``, include symlinks.
+        directories; if ``f``, include files.
     recursive : bool, default=False
         If ``True``, the pattern ``**`` will match any files and zero or more
         directories, subdirectories and symbolic links to directories.
@@ -165,7 +145,7 @@ def glob_filters(pathnames, *, mode=1, type="a", recursive=False):
         resolve ``*`` and ``?``; if ``2``, resolve ``*``, ``?`` and ``[]``.
     type : str, default='a'
         The type of file. If ``a``, include all types; if ``d``, include
-        directories; if ``f``, include files; if ``l``, include symlinks.
+        directories; if ``f``, include files.
     recursive : bool, default=False
         If ``True``, the pattern ``**`` will match any files and zero or more
         directories, subdirectories and symbolic links to directories.

@@ -268,11 +268,11 @@ def gethashcli(cmdname, hashname, suffix):
         @click.option(
             "-t",
             "--type",
-            type=click.Choice(["a", "d", "f", "l"]),
+            type=click.Choice(["a", "d", "f"]),
             default="a",
             show_default=True,
             help="Set file type. If ``a``, include all types; if ``d``, include "
-            "directories; if ``f``, include files; if ``l``, include symlinks.",
+            "directories; if ``f``, include files.",
         )
         @click.option(
             "-r",
