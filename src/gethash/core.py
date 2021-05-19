@@ -194,6 +194,12 @@ class HashFileReader(object):
         self.name = filepath
         self.file = open(filepath, "r", encoding="utf-8")
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.close()
+
     def close(self):
         """Close the underlying file."""
 
@@ -232,6 +238,8 @@ class HashFileReader(object):
                 if not hash_line:
                     break
                 yield hash_line
+
+    __iter__ = iter
 
     def iter2(self, *, root=None):
         """Yield hash and name.
@@ -302,14 +310,6 @@ class HashFileReader(object):
         for entry in self.iter2(root=root):
             yield entry[1]
 
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        self.close()
-
-    __iter__ = iter
-
 
 class HashFileWriter(object):
     """General hash file writer.
@@ -326,6 +326,12 @@ class HashFileWriter(object):
     def __init__(self, filepath):
         self.name = filepath
         self.file = open(filepath, "w", encoding="utf-8")
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.close()
 
     def close(self):
         """Close the underlying file."""
@@ -353,12 +359,6 @@ class HashFileWriter(object):
         """
 
         self.file.write(f"# {comment}\n")
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        self.close()
 
 
 def format_hash_line(hex_hash_value, path, *, root=None):

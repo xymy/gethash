@@ -206,7 +206,7 @@ class GetHash(object):
 
 
 def script_main(ctx, files, **options):
-    """Generate the body for the main function."""
+    """Execute the body for the main function."""
 
     no_stdout = options.pop("no_stdout", False)
     no_stderr = options.pop("no_stderr", False)
@@ -219,7 +219,7 @@ def script_main(ctx, files, **options):
 
 
 def gethashcli(cmdname, hashname, suffix):
-    """Generate click decorators for the main function."""
+    """Apply click decorators to the main function."""
 
     def decorator(func):
         path_format = MutuallyExclusiveOptionGroup(
