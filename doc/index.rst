@@ -3,9 +3,9 @@ Gethash Documentation
 
 A set of command-line tools that can generate or check various hash values.
 
-.. code-block:: console
+.. code-block:: shell
 
-    gethash
+    $ gethash
 
 Table of Contents
 -----------------
