@@ -20,7 +20,7 @@ gethash = import_module("gethash")
 
 # -- Project information -----------------------------------------------------
 
-project = "gethash"
+project = "Gethash"
 copyright = "2020-2021, xymy"
 author = "xymy"
 
