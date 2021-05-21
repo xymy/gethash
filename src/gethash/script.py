@@ -90,7 +90,7 @@ class Output(object):
         pass
 
 
-class GetHash(object):
+class Gethash(object):
     """Provide uniform interface for CLI scripts."""
 
     def __init__(self, ctx, **kwargs):
@@ -214,20 +214,16 @@ def script_main(ctx, files, **options):
     stderr = open(os.devnull, "w") if no_stderr else sys.stderr
 
     check = options.pop("check", False)
-    with GetHash(ctx, stdout=stdout, stderr=stderr, **options) as gh:
-        gh(check, files)
+    with Gethash(ctx, stdout=stdout, stderr=stderr, **options) as gethash:
+        gethash(check, files)
 
 
 def gethashcli(cmdname, hashname, suffix):
     """Apply click decorators to the main function."""
 
     def decorator(func):
-        path_format = MutuallyExclusiveOptionGroup(
-            "Path Format", help="Set the path format in checksum files."
-        )
-        output_mode = MutuallyExclusiveOptionGroup(
-            "Output Mode", help="Set the file output mode."
-        )
+        path_format = MutuallyExclusiveOptionGroup("Path Format")
+        output_mode = MutuallyExclusiveOptionGroup("Output Mode")
 
         @click.command(
             cmdname,
