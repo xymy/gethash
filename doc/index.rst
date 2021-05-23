@@ -5,7 +5,7 @@ A set of command-line tools that can generate or check various hash values.
 
 .. code-block:: shell
 
-    $ gethash
+    $ gethash --help
 
 Table of Contents
 -----------------
