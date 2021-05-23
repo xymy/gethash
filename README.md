@@ -13,7 +13,7 @@ $ pip install -U gethash
 or (if you need legacy hash algorithms)
 
 ```shell
-$ pip install -U gethash[all]
+$ pip install -U "gethash[all]"
 ```
 
 ## Usage
