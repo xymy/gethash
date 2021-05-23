@@ -260,27 +260,6 @@ class HashFileReader(object):
         for hash_line in self:
             yield parse_hash_line(hash_line, root=root)
 
-    def iter3(self, *, root=None):
-        """Yield hash line, hash and name.
-
-        Parameters
-        ----------
-        root : str, path-like or None, optional
-            The root directory.
-
-        Yields
-        ------
-        hash_line : str
-            A line of *hash* and *name* with GNU Coreutils style.
-        hash : str
-            The hexadecimal hash value string.
-        name : str
-            The path of a file or a directory with corresponding hash value.
-        """
-
-        for hash_line in self:
-            yield hash_line, *parse_hash_line(hash_line, root=root)
-
     def iter_hash(self):
         """Yield hash.
 
@@ -309,6 +288,60 @@ class HashFileReader(object):
 
         for entry in self.iter2(root=root):
             yield entry[1]
+
+    def load(self):
+        """Return a list of hash line.
+
+        Returns
+        -------
+        hash_line_list : list
+            A list of hash line.
+        """
+
+        return list(self)
+
+    def load2(self, *, root=None):
+        """Return a list of hash and name.
+
+        Parameters
+        ----------
+        root : str, path-like or None, optional
+            The root directory.
+
+        Returns
+        -------
+        hash_name_list : list
+            A list of hash and name.
+        """
+
+        return list(self.iter2(root=root))
+
+    def load_hash(self):
+        """Return a list of hash.
+
+        Returns
+        -------
+        hash_list : list
+            A list of hash.
+        """
+
+        return list(self.iter_hash())
+
+    def load_name(self, *, root=None):
+        """Return a list of name.
+
+        Parameters
+        ----------
+        root : str, path-like or None, optional
+            The root directory.
+
+        Returns
+        -------
+        name_list : list
+            A list of name.
+        """
+
+        return list(self.iter_name(root=root))
 
 
 class HashFileWriter(object):
