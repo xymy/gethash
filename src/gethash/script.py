@@ -8,12 +8,12 @@ from click_option_group import MutuallyExclusiveOptionGroup
 from . import __version__
 from .core import (
     CheckHashLineError,
-    Hasher,
     HashFileReader,
     HashFileWriter,
     check_hash_line,
     generate_hash_line,
 )
+from .hasher import Hasher
 from .utils.glob import glob_filters
 
 
