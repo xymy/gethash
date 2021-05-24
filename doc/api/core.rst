@@ -21,21 +21,6 @@ Functions
 Classes
 -------
 
-Hasher
-~~~~~~
-
-.. autoclass:: Hasher
-
-.. automethod:: Hasher.hash
-
-.. note::
-
-    :meth:`Hasher.__call__` is an alias of :meth:`Hasher.hash`.
-
-.. automethod:: Hasher.hash_file
-
-.. automethod:: Hasher.hash_dir
-
 HashFileReader
 ~~~~~~~~~~~~~~
 
@@ -51,11 +36,17 @@ HashFileReader
 
 .. automethod:: HashFileReader.iter2
 
-.. automethod:: HashFileReader.iter3
-
 .. automethod:: HashFileReader.iter_hash
 
 .. automethod:: HashFileReader.iter_name
+
+.. automethod:: HashFileReader.load
+
+.. automethod:: HashFileReader.load2
+
+.. automethod:: HashFileReader.load_hash
+
+.. automethod:: HashFileReader.load_name
 
 .. automethod:: HashFileReader.close
 
@@ -72,8 +63,6 @@ HashFileWriter
 
 Exceptions
 ----------
-
-.. autoexception:: IsADirectory
 
 .. autoexception:: ParseHashLineError
 
