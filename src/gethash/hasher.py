@@ -31,7 +31,7 @@ class Hasher(object):
     """
 
     def __init__(self, ctx_proto, *, chunksize=None, tqdm_args=None):
-        # We use the copies of parameters for avoiding potential side-effects.
+        # Use the copies of parameters for avoiding potential side-effects.
         self.ctx_proto = ctx_proto.copy()
         self.chunksize = _CHUNKSIZE if chunksize is None else int(chunksize)
         self.tqdm_args = {} if tqdm_args is None else dict(tqdm_args)
@@ -72,7 +72,7 @@ class Hasher(object):
         ctx = self.ctx_proto.copy()
         chunksize = self.chunksize
         total = stop - start
-        # Precompute chunk count and remaining size.
+        # Precompute the chunk count and the remaining size.
         count, remainsize = divmod(total, chunksize)
         with open(filepath, "rb") as f, tqdm(total=total, **self.tqdm_args) as bar:
             f.seek(start, io.SEEK_SET)
