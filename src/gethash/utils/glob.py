@@ -16,12 +16,21 @@ _ESCAPE_SQUARE = glob.escape("[")
 _ESCAPE_SQUARE_BYTES = glob.escape(b"[")
 
 
-def _glob0(pathname, *, recursive=False):
-    yield os.fspath(pathname)
-
-
-def _glob1(pathname, *, recursive=False):
+def _expand(pathname, *, user=False, vars=False):
     pathname = os.fspath(pathname)
+    if user:
+        pathname = os.path.expanduser(pathname)
+    if vars:
+        pathname = os.path.expandvars(pathname)
+    return pathname
+
+
+def _glob0(pathname, *, recursive=False, user=False, vars=False):
+    yield _expand(pathname, user=user, vars=vars)
+
+
+def _glob1(pathname, *, recursive=False, user=False, vars=False):
+    pathname = _expand(pathname, user=user, vars=vars)
     if isinstance(pathname, bytes):
         pathname = pathname.replace(b"[", _ESCAPE_SQUARE_BYTES)
     else:
@@ -29,7 +38,8 @@ def _glob1(pathname, *, recursive=False):
     yield from glob.iglob(pathname, recursive=recursive)
 
 
-def _glob2(pathname, *, recursive=False):
+def _glob2(pathname, *, recursive=False, user=False, vars=False):
+    pathname = _expand(pathname, user=user, vars=vars)
     yield from glob.iglob(pathname, recursive=recursive)
 
 
@@ -57,7 +67,7 @@ def _path_filter(pathnames, *, type):
         raise ValueError(f"type must be in {{'a', 'd', 'f'}}, got '{type}'")
 
 
-def glob_scanner(pathname, *, mode=1, recursive=False):
+def glob_scanner(pathname, *, mode=1, recursive=False, user=False, vars=False):
     """Resolve a pathname with glob patterns.
 
     Parameters
@@ -70,6 +80,10 @@ def glob_scanner(pathname, *, mode=1, recursive=False):
     recursive : bool, default=False
         If ``True``, the pattern ``**`` will match any files and zero or more
         directories, subdirectories and symbolic links to directories.
+    user : bool, default=False
+        If ``True``, user home directory will be expanded.
+    vars : bool, default=False
+        If ``True``, environment variables will be expanded.
 
     Yields
     ------
@@ -78,10 +92,10 @@ def glob_scanner(pathname, *, mode=1, recursive=False):
     """
 
     glob = _get_glob(mode)
-    yield from glob(pathname, recursive=recursive)
+    yield from glob(pathname, recursive=recursive, user=user, vars=vars)
 
 
-def glob_filter(pathname, *, mode=1, type="a", recursive=False):
+def glob_filter(pathname, *, mode=1, type="a", recursive=False, user=False, vars=False):
     """Resolve and filter a pathname with glob patterns.
 
     Parameters
@@ -97,6 +111,10 @@ def glob_filter(pathname, *, mode=1, type="a", recursive=False):
     recursive : bool, default=False
         If ``True``, the pattern ``**`` will match any files and zero or more
         directories, subdirectories and symbolic links to directories.
+    user : bool, default=False
+        If ``True``, user home directory will be expanded.
+    vars : bool, default=False
+        If ``True``, environment variables will be expanded.
 
     Yields
     ------
@@ -104,11 +122,11 @@ def glob_filter(pathname, *, mode=1, type="a", recursive=False):
         The glob matched pathname with the given file type.
     """
 
-    generator = glob_scanner(pathname, mode=mode, recursive=recursive)
-    yield from _path_filter(generator, type=type)
+    g = glob_scanner(pathname, mode=mode, recursive=recursive, user=user, vars=vars)
+    yield from _path_filter(g, type=type)
 
 
-def glob_scanners(pathnames, *, mode=1, recursive=False):
+def glob_scanners(pathnames, *, mode=1, recursive=False, user=False, vars=False):
     """Resolve a list of pathnames with glob patterns.
 
     Parameters
@@ -121,6 +139,10 @@ def glob_scanners(pathnames, *, mode=1, recursive=False):
     recursive : bool, default=False
         If ``True``, the pattern ``**`` will match any files and zero or more
         directories, subdirectories and symbolic links to directories.
+    user : bool, default=False
+        If ``True``, user home directory will be expanded.
+    vars : bool, default=False
+        If ``True``, environment variables will be expanded.
 
     Yields
     ------
@@ -130,10 +152,12 @@ def glob_scanners(pathnames, *, mode=1, recursive=False):
 
     glob = _get_glob(mode)
     for pathname in pathnames:
-        yield from glob(pathname, recursive=recursive)
+        yield from glob(pathname, recursive=recursive, user=user, vars=vars)
 
 
-def glob_filters(pathnames, *, mode=1, type="a", recursive=False):
+def glob_filters(
+    pathnames, *, mode=1, type="a", recursive=False, user=False, vars=False
+):
     """Resolve and filter a list of pathnames with glob patterns.
 
     Parameters
@@ -149,6 +173,10 @@ def glob_filters(pathnames, *, mode=1, type="a", recursive=False):
     recursive : bool, default=False
         If ``True``, the pattern ``**`` will match any files and zero or more
         directories, subdirectories and symbolic links to directories.
+    user : bool, default=False
+        If ``True``, user home directory will be expanded.
+    vars : bool, default=False
+        If ``True``, environment variables will be expanded.
 
     Yields
     ------
@@ -156,8 +184,8 @@ def glob_filters(pathnames, *, mode=1, type="a", recursive=False):
         The glob matched pathname with the given file type.
     """
 
-    generator = glob_scanners(pathnames, mode=mode, recursive=recursive)
-    yield from _path_filter(generator, type=type)
+    g = glob_scanners(pathnames, mode=mode, recursive=recursive, user=user, vars=vars)
+    yield from _path_filter(g, type=type)
 
 
 def sorted_locale(iterable, *, reverse=False):
