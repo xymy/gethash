@@ -218,7 +218,7 @@ def script_main(ctx, files, **options):
         gethash(check, files)
 
 
-def gethashcli(cmdname, hashname, suffix):
+def gethashcli(cmdname, hashname, suffix, **ignored):
     """Apply click decorators to the main function."""
 
     def decorator(func):
