@@ -99,7 +99,6 @@ class Gethash(object):
 
         self.glob_mode = kwargs.pop("glob", 1)
         self.glob_type = kwargs.pop("type", "a")
-        self.recursive = kwargs.pop("recursive", False)
         self.sync = kwargs.pop("sync", False)
 
         self.stdout = kwargs.pop("stdout", sys.stdout)
@@ -145,7 +144,9 @@ class Gethash(object):
             pathnames,
             mode=self.glob_mode,
             type=self.glob_type,
-            recursive=self.recursive,
+            recursive=True,
+            user=True,
+            vars=True,
         )
 
     def hash_function(self, path):
@@ -269,14 +270,6 @@ def gethashcli(cmdname, hashname, suffix, **ignored):
             show_default=True,
             help="Set file type. If ``a``, include all types; if ``d``, include "
             "directories; if ``f``, include files.",
-        )
-        @click.option(
-            "-r",
-            "--recursive",
-            is_flag=True,
-            help="Enable recursive matching, i.e. "
-            "the pattern ``**`` will match any files and zero or more "
-            "directories, subdirectories and symbolic links to directories.",
         )
         @click.option(
             "-y",
