@@ -9,32 +9,11 @@ META_LIST = [
         "hasher": "CRC32",
     },
     {
-        "cmdname": "md2",
-        "hashname": "MD2",
-        "suffix": ".md2",
-        "package": "Cryptodome.Hash.MD2",
-        "hasher": "new",
-    },
-    {
-        "cmdname": "md4",
-        "hashname": "MD4",
-        "suffix": ".md4",
-        "package": "Cryptodome.Hash.MD4",
-        "hasher": "new",
-    },
-    {
         "cmdname": "md5",
         "hashname": "MD5",
         "suffix": ".md5",
         "package": "hashlib",
         "hasher": "md5",
-    },
-    {
-        "cmdname": "ripemd160",
-        "hashname": "RIPEMD160",
-        "suffix": ".ripemd160",
-        "package": "Cryptodome.Hash.RIPEMD160",
-        "hasher": "new",
     },
     {
         "cmdname": "sha1",
@@ -84,6 +63,27 @@ META_LIST = [
         "suffix": ".blake2s",
         "package": "hashlib",
         "hasher": "blake2s",
+    },
+    {
+        "cmdname": "md2",
+        "hashname": "MD2",
+        "suffix": ".md2",
+        "package": "Cryptodome.Hash.MD2",
+        "hasher": "new",
+    },
+    {
+        "cmdname": "md4",
+        "hashname": "MD4",
+        "suffix": ".md4",
+        "package": "Cryptodome.Hash.MD4",
+        "hasher": "new",
+    },
+    {
+        "cmdname": "ripemd160",
+        "hashname": "RIPEMD160",
+        "suffix": ".ripemd160",
+        "package": "Cryptodome.Hash.RIPEMD160",
+        "hasher": "new",
     },
 ]
 
