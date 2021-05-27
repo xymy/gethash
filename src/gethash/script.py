@@ -14,6 +14,7 @@ from .core import (
     generate_hash_line,
 )
 from .hasher import Hasher
+from .utils.click import Command
 from .utils.glob import glob_filters
 
 
@@ -228,6 +229,7 @@ def gethashcli(cmdname, hashname, suffix, **ignored):
 
         @click.command(
             cmdname,
+            cls=Command,
             context_settings=dict(help_option_names=["-h", "--help"]),
             no_args_is_help=True,
         )
