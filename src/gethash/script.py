@@ -121,9 +121,9 @@ class Gethash(object):
         self.dir_ok = kwargs.pop("dir", False)
         tqdm_args = {
             "file": self.stderr,
-            "ascii": kwargs.pop("tqdm-ascii", False),
-            "disable": kwargs.pop("tqdm-disable", False),
-            "leave": kwargs.pop("tqdm-leave", False),
+            "ascii": kwargs.pop("tqdm_ascii", False),
+            "disable": kwargs.pop("tqdm_disable", False),
+            "leave": kwargs.pop("tqdm_leave", False),
         }
         self.hasher = Hasher(ctx, tqdm_args=tqdm_args)
 
