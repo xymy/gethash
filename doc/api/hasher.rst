@@ -10,9 +10,7 @@ Classes
 
 .. automethod:: Hasher.hash
 
-.. note::
-
-    :meth:`Hasher.__call__` is an alias of :meth:`Hasher.hash`.
+.. automethod:: Hasher.__call__
 
 .. automethod:: Hasher.hash_file
 

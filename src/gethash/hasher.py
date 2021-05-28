@@ -141,4 +141,7 @@ class Hasher(object):
             raise IsADirectory(f"'{path}' is a directory")
         return self.hash_file(path, start, stop)
 
-    __call__ = hash
+    def __call__(self, path, start=None, stop=None, *, dir_ok=False):
+        """Alias for :meth:`Hasher.hash`."""
+
+        return self.hash(path, start, stop, dir_ok=dir_ok)
