@@ -1,9 +1,9 @@
-import sys
 from importlib import import_module
 
 import click
 
 from . import __title__, __version__
+from .utils.click import MultiCommand
 
 try:
     import Cryptodome
@@ -30,7 +30,7 @@ LEGACY_PLUGINS = ["md2", "md4", "ripemd160"]
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
 
-class Cli(click.MultiCommand):
+class Cli(MultiCommand):
     def list_commands(self, ctx):
         plugins = list(PLUGINS)
         if PYCRYPTODOMEX_INSTALLED:
@@ -53,16 +53,8 @@ class Cli(click.MultiCommand):
 
 @click.command(__title__, cls=Cli, context_settings=CONTEXT_SETTINGS)
 @click.version_option(__version__, prog_name=__title__)
-def _main():
-    """Generate or check various hash values."""
-
-
 def main():
-    # Since Click 8, glob patterns, user home directory and environment variables will
-    # be expanded automatically on Windows, which causes unexpected behaviour. What's
-    # more, there is no way to disable expansion through quotation marks on Windows
-    # command line. So we suppress this feature by passing arguments explicitly.
-    return _main(sys.argv[1:])
+    """Generate or check various hash values."""
 
 
 if __name__ == "__main__":
