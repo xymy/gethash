@@ -1,6 +1,7 @@
-from importlib import import_module
+from contextlib import suppress
 
 import click
+from importlib_metadata import entry_points
 
 from . import __title__, __version__
 from .utils.click import MultiCommand
@@ -13,40 +14,24 @@ else:
     PYCRYPTODOMEX_INSTALLED = True
     del Cryptodome
 
-PLUGINS = [
-    "crc32",
-    "md5",
-    "sha1",
-    "sha256",
-    "sha512",
-    "sha3-256",
-    "sha3-512",
-    "blake2b",
-    "blake2s",
-]
-
-LEGACY_PLUGINS = ["md2", "md4", "ripemd160"]
+PLUGINS = entry_points(group="gethash.plugins")
+LEGACY_PLUGINS = entry_points(group="gethash.legacy_plugins")
 
 
 class Cli(MultiCommand):
     def list_commands(self, ctx):
-        plugins = list(PLUGINS)
+        plugins = list(PLUGINS.names)
         if PYCRYPTODOMEX_INSTALLED:
-            plugins.extend(LEGACY_PLUGINS)
-        return plugins
+            plugins.extend(LEGACY_PLUGINS.names)
+        return sorted(plugins)
 
     def get_command(self, ctx, name):
-        name = name.replace("-", "_")  # fix dash to underline
-        entry_point = None
-        try:
-            module = import_module(f"gethash.cli.{name}")
-        except ImportError:
-            pass
-        else:
-            main = getattr(module, "main", None)
-            if isinstance(main, click.Command):
-                entry_point = main
-        return entry_point
+        with suppress(KeyError, ImportError):
+            return PLUGINS[name].load()
+        if PYCRYPTODOMEX_INSTALLED:
+            with suppress(KeyError, ImportError):
+                return LEGACY_PLUGINS[name].load()
+        return None
 
 
 @click.command(__title__, cls=Cli)
