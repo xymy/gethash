@@ -27,8 +27,6 @@ PLUGINS = [
 
 LEGACY_PLUGINS = ["md2", "md4", "ripemd160"]
 
-CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
-
 
 class Cli(MultiCommand):
     def list_commands(self, ctx):
@@ -51,7 +49,7 @@ class Cli(MultiCommand):
         return entry_point
 
 
-@click.command(__title__, cls=Cli, context_settings=CONTEXT_SETTINGS)
+@click.command(__title__, cls=Cli)
 @click.version_option(__version__, prog_name=__title__)
 def main():
     """Generate or check various hash values."""

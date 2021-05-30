@@ -227,12 +227,7 @@ def gethashcli(cmdname, hashname, suffix, **ignored):
         path_format = MutuallyExclusiveOptionGroup("Path Format")
         output_mode = MutuallyExclusiveOptionGroup("Output Mode")
 
-        @click.command(
-            cmdname,
-            cls=Command,
-            context_settings=dict(help_option_names=["-h", "--help"]),
-            no_args_is_help=True,
-        )
+        @click.command(cmdname, cls=Command, no_args_is_help=True)
         @click.argument("files", nargs=-1)
         @click.option(
             "-c",
