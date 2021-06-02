@@ -75,8 +75,8 @@ def glob_scanner(pathname, *, mode=1, recursive=False, user=False, vars=False):
     pathname : str, bytes or path-like
         A pathname with glob patterns.
     mode : int, default=1
-        The mode of glob. If ``0``, disable glob pathname pattern; if ``1``,
-        resolve ``*`` and ``?``; if ``2``, resolve ``*``, ``?`` and ``[]``.
+        The mode of glob. If ``0``, disable globbing; if ``1``, resolve ``*``
+        and ``?``; if ``2``, resolve ``*``, ``?`` and ``[]``.
     recursive : bool, default=False
         If ``True``, the pattern ``**`` will match any files and zero or more
         directories, subdirectories and symbolic links to directories.
@@ -88,7 +88,7 @@ def glob_scanner(pathname, *, mode=1, recursive=False, user=False, vars=False):
     Yields
     ------
     matched_pathname : str or bytes
-        The glob matched pathname.
+        The matched pathname.
     """
 
     glob = _get_glob(mode)
@@ -103,8 +103,8 @@ def glob_filter(pathname, *, mode=1, type="a", recursive=False, user=False, vars
     pathname : str, bytes or path-like
         A pathname with glob patterns.
     mode : int, default=1
-        The mode of glob. If ``0``, disable glob pathname pattern; if ``1``,
-        resolve ``*`` and ``?``; if ``2``, resolve ``*``, ``?`` and ``[]``.
+        The mode of glob. If ``0``, disable globbing; if ``1``, resolve ``*``
+        and ``?``; if ``2``, resolve ``*``, ``?`` and ``[]``.
     type : str, default='a'
         The type of file. If ``a``, include all types; if ``d``, include
         directories; if ``f``, include files.
@@ -119,13 +119,13 @@ def glob_filter(pathname, *, mode=1, type="a", recursive=False, user=False, vars
     Yields
     ------
     matched_pathname : str or bytes
-        The glob matched pathname with the given file type.
+        The matched pathname with the given file type.
     """
 
-    results = glob_scanner(
+    matched = glob_scanner(
         pathname, mode=mode, recursive=recursive, user=user, vars=vars
     )
-    yield from _path_filter(results, type=type)
+    yield from _path_filter(matched, type=type)
 
 
 def glob_scanners(pathnames, *, mode=1, recursive=False, user=False, vars=False):
@@ -136,8 +136,8 @@ def glob_scanners(pathnames, *, mode=1, recursive=False, user=False, vars=False)
     pathnames : iterable of str, bytes or path-like
         A list of pathnames with glob patterns.
     mode : int, default=1
-        The mode of glob. If ``0``, disable glob pathname pattern; if ``1``,
-        resolve ``*`` and ``?``; if ``2``, resolve ``*``, ``?`` and ``[]``.
+        The mode of glob. If ``0``, disable globbing; if ``1``, resolve ``*``
+        and ``?``; if ``2``, resolve ``*``, ``?`` and ``[]``.
     recursive : bool, default=False
         If ``True``, the pattern ``**`` will match any files and zero or more
         directories, subdirectories and symbolic links to directories.
@@ -149,7 +149,7 @@ def glob_scanners(pathnames, *, mode=1, recursive=False, user=False, vars=False)
     Yields
     ------
     matched_pathname : str or bytes
-        The glob matched pathname.
+        The matched pathname.
     """
 
     glob = _get_glob(mode)
@@ -167,8 +167,8 @@ def glob_filters(
     pathnames : iterable of str, bytes or path-like
         A list of pathnames with glob patterns.
     mode : int, default=1
-        The mode of glob. If ``0``, disable glob pathname pattern; if ``1``,
-        resolve ``*`` and ``?``; if ``2``, resolve ``*``, ``?`` and ``[]``.
+        The mode of glob. If ``0``, disable globbing; if ``1``, resolve ``*``
+        and ``?``; if ``2``, resolve ``*``, ``?`` and ``[]``.
     type : str, default='a'
         The type of file. If ``a``, include all types; if ``d``, include
         directories; if ``f``, include files.
@@ -183,13 +183,13 @@ def glob_filters(
     Yields
     ------
     matched_pathname : str or bytes
-        The glob matched pathname with the given file type.
+        The matched pathname with the given file type.
     """
 
-    results = glob_scanners(
+    matched = glob_scanners(
         pathnames, mode=mode, recursive=recursive, user=user, vars=vars
     )
-    yield from _path_filter(results, type=type)
+    yield from _path_filter(matched, type=type)
 
 
 def sorted_locale(iterable, *, reverse=False):
