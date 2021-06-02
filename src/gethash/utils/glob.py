@@ -68,7 +68,7 @@ def _path_filter(pathnames, *, type):
 
 
 def glob_scanner(pathname, *, mode=1, recursive=False, user=False, vars=False):
-    """Resolve a pathname with glob patterns.
+    """Match a pathname with glob patterns.
 
     Parameters
     ----------
@@ -96,7 +96,7 @@ def glob_scanner(pathname, *, mode=1, recursive=False, user=False, vars=False):
 
 
 def glob_filter(pathname, *, mode=1, type="a", recursive=False, user=False, vars=False):
-    """Resolve and filter a pathname with glob patterns.
+    """Match and filter a pathname with glob patterns.
 
     Parameters
     ----------
@@ -122,12 +122,14 @@ def glob_filter(pathname, *, mode=1, type="a", recursive=False, user=False, vars
         The glob matched pathname with the given file type.
     """
 
-    g = glob_scanner(pathname, mode=mode, recursive=recursive, user=user, vars=vars)
-    yield from _path_filter(g, type=type)
+    results = glob_scanner(
+        pathname, mode=mode, recursive=recursive, user=user, vars=vars
+    )
+    yield from _path_filter(results, type=type)
 
 
 def glob_scanners(pathnames, *, mode=1, recursive=False, user=False, vars=False):
-    """Resolve a list of pathnames with glob patterns.
+    """Match a list of pathnames with glob patterns.
 
     Parameters
     ----------
@@ -158,7 +160,7 @@ def glob_scanners(pathnames, *, mode=1, recursive=False, user=False, vars=False)
 def glob_filters(
     pathnames, *, mode=1, type="a", recursive=False, user=False, vars=False
 ):
-    """Resolve and filter a list of pathnames with glob patterns.
+    """Match and filter a list of pathnames with glob patterns.
 
     Parameters
     ----------
@@ -184,8 +186,10 @@ def glob_filters(
         The glob matched pathname with the given file type.
     """
 
-    g = glob_scanners(pathnames, mode=mode, recursive=recursive, user=user, vars=vars)
-    yield from _path_filter(g, type=type)
+    results = glob_scanners(
+        pathnames, mode=mode, recursive=recursive, user=user, vars=vars
+    )
+    yield from _path_filter(results, type=type)
 
 
 def sorted_locale(iterable, *, reverse=False):
