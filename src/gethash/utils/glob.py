@@ -16,31 +16,31 @@ _ESCAPE_SQUARE = glob.escape("[")
 _ESCAPE_SQUARE_BYTES = glob.escape(b"[")
 
 
-def _expand(pathname, *, user=False, vars=False):
-    pathname = os.fspath(pathname)
+def _expand(path, *, user=False, vars=False):
+    path = os.fspath(path)
     if user:
-        pathname = os.path.expanduser(pathname)
+        path = os.path.expanduser(path)
     if vars:
-        pathname = os.path.expandvars(pathname)
-    return pathname
+        path = os.path.expandvars(path)
+    return path
 
 
-def _glob0(pathname, *, recursive=False, user=False, vars=False):
-    yield _expand(pathname, user=user, vars=vars)
+def _glob0(path, *, recursive=False, user=False, vars=False):
+    yield _expand(path, user=user, vars=vars)
 
 
-def _glob1(pathname, *, recursive=False, user=False, vars=False):
-    pathname = _expand(pathname, user=user, vars=vars)
-    if isinstance(pathname, bytes):
-        pathname = pathname.replace(b"[", _ESCAPE_SQUARE_BYTES)
+def _glob1(path, *, recursive=False, user=False, vars=False):
+    path = _expand(path, user=user, vars=vars)
+    if isinstance(path, bytes):
+        path = path.replace(b"[", _ESCAPE_SQUARE_BYTES)
     else:
-        pathname = pathname.replace("[", _ESCAPE_SQUARE)
-    yield from glob.iglob(pathname, recursive=recursive)
+        path = path.replace("[", _ESCAPE_SQUARE)
+    yield from glob.iglob(path, recursive=recursive)
 
 
-def _glob2(pathname, *, recursive=False, user=False, vars=False):
-    pathname = _expand(pathname, user=user, vars=vars)
-    yield from glob.iglob(pathname, recursive=recursive)
+def _glob2(path, *, recursive=False, user=False, vars=False):
+    path = _expand(path, user=user, vars=vars)
+    yield from glob.iglob(path, recursive=recursive)
 
 
 def _get_glob(mode):
@@ -55,25 +55,25 @@ def _get_glob(mode):
         raise ValueError(f"mode must be in {{0, 1, 2}}, got {mode}")
 
 
-def _path_filter(pathnames, *, type):
+def _path_filter(paths, *, type):
     _check_str(type, "type")
     if type == "a":
-        yield from filter(os.path.exists, pathnames)
+        yield from filter(os.path.exists, paths)
     elif type == "d":
-        yield from filter(os.path.isdir, pathnames)
+        yield from filter(os.path.isdir, paths)
     elif type == "f":
-        yield from filter(os.path.isfile, pathnames)
+        yield from filter(os.path.isfile, paths)
     else:
         raise ValueError(f"type must be in {{'a', 'd', 'f'}}, got '{type}'")
 
 
-def glob_scanner(pathname, *, mode=1, recursive=False, user=False, vars=False):
-    """Match a pathname with glob patterns.
+def glob_scanner(path, *, mode=1, recursive=False, user=False, vars=False):
+    """Match a path with glob patterns.
 
     Parameters
     ----------
-    pathname : str, bytes or path-like
-        A pathname with glob patterns.
+    path : str, bytes or path-like
+        A path with glob patterns.
     mode : int, default=1
         The mode of glob. If ``0``, disable globbing; if ``1``, resolve ``*``
         and ``?``; if ``2``, resolve ``*``, ``?`` and ``[]``.
@@ -87,21 +87,21 @@ def glob_scanner(pathname, *, mode=1, recursive=False, user=False, vars=False):
 
     Yields
     ------
-    matched_pathname : str or bytes
-        The matched pathname.
+    matched_path : str or bytes
+        The matched path.
     """
 
     glob = _get_glob(mode)
-    yield from glob(pathname, recursive=recursive, user=user, vars=vars)
+    yield from glob(path, recursive=recursive, user=user, vars=vars)
 
 
-def glob_filter(pathname, *, mode=1, type="a", recursive=False, user=False, vars=False):
-    """Match and filter a pathname with glob patterns.
+def glob_filter(path, *, mode=1, type="a", recursive=False, user=False, vars=False):
+    """Match and filter a path with glob patterns.
 
     Parameters
     ----------
-    pathname : str, bytes or path-like
-        A pathname with glob patterns.
+    path : str, bytes or path-like
+        A path with glob patterns.
     mode : int, default=1
         The mode of glob. If ``0``, disable globbing; if ``1``, resolve ``*``
         and ``?``; if ``2``, resolve ``*``, ``?`` and ``[]``.
@@ -118,23 +118,21 @@ def glob_filter(pathname, *, mode=1, type="a", recursive=False, user=False, vars
 
     Yields
     ------
-    matched_pathname : str or bytes
-        The matched pathname with the given file type.
+    matched_path : str or bytes
+        The matched path with the given file type.
     """
 
-    matched = glob_scanner(
-        pathname, mode=mode, recursive=recursive, user=user, vars=vars
-    )
+    matched = glob_scanner(path, mode=mode, recursive=recursive, user=user, vars=vars)
     yield from _path_filter(matched, type=type)
 
 
-def glob_scanners(pathnames, *, mode=1, recursive=False, user=False, vars=False):
-    """Match a list of pathnames with glob patterns.
+def glob_scanners(paths, *, mode=1, recursive=False, user=False, vars=False):
+    """Match a list of paths with glob patterns.
 
     Parameters
     ----------
-    pathnames : iterable of str, bytes or path-like
-        A list of pathnames with glob patterns.
+    paths : iterable of str, bytes or path-like
+        A list of paths with glob patterns.
     mode : int, default=1
         The mode of glob. If ``0``, disable globbing; if ``1``, resolve ``*``
         and ``?``; if ``2``, resolve ``*``, ``?`` and ``[]``.
@@ -148,24 +146,22 @@ def glob_scanners(pathnames, *, mode=1, recursive=False, user=False, vars=False)
 
     Yields
     ------
-    matched_pathname : str or bytes
-        The matched pathname.
+    matched_path : str or bytes
+        The matched path.
     """
 
     glob = _get_glob(mode)
-    for pathname in pathnames:
-        yield from glob(pathname, recursive=recursive, user=user, vars=vars)
+    for path in paths:
+        yield from glob(path, recursive=recursive, user=user, vars=vars)
 
 
-def glob_filters(
-    pathnames, *, mode=1, type="a", recursive=False, user=False, vars=False
-):
-    """Match and filter a list of pathnames with glob patterns.
+def glob_filters(paths, *, mode=1, type="a", recursive=False, user=False, vars=False):
+    """Match and filter a list of paths with glob patterns.
 
     Parameters
     ----------
-    pathnames : iterable of str, bytes or path-like
-        A list of pathnames with glob patterns.
+    paths : iterable of str, bytes or path-like
+        A list of paths with glob patterns.
     mode : int, default=1
         The mode of glob. If ``0``, disable globbing; if ``1``, resolve ``*``
         and ``?``; if ``2``, resolve ``*``, ``?`` and ``[]``.
@@ -182,13 +178,11 @@ def glob_filters(
 
     Yields
     ------
-    matched_pathname : str or bytes
-        The matched pathname with the given file type.
+    matched_path : str or bytes
+        The matched path with the given file type.
     """
 
-    matched = glob_scanners(
-        pathnames, mode=mode, recursive=recursive, user=user, vars=vars
-    )
+    matched = glob_scanners(paths, mode=mode, recursive=recursive, user=user, vars=vars)
     yield from _path_filter(matched, type=type)
 
 
