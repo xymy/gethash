@@ -1,6 +1,8 @@
 import glob
 import locale
 import os
+from os import PathLike
+from typing import AnyStr, Iterable, Iterator, List, Union
 
 from . import _check_int, _check_str
 
@@ -67,7 +69,14 @@ def _path_filter(paths, *, type):
         raise ValueError(f"type must be in {{'a', 'd', 'f'}}, got '{type}'")
 
 
-def glob_scanner(path, *, mode=1, recursive=False, user=False, vars=False):
+def glob_scanner(
+    path: Union[AnyStr, PathLike[AnyStr]],
+    *,
+    mode: int = 1,
+    recursive: bool = False,
+    user: bool = False,
+    vars: bool = False,
+) -> Iterator[AnyStr]:
     """Match a path with glob patterns.
 
     Parameters
@@ -95,7 +104,15 @@ def glob_scanner(path, *, mode=1, recursive=False, user=False, vars=False):
     yield from glob(path, recursive=recursive, user=user, vars=vars)
 
 
-def glob_filter(path, *, mode=1, type="a", recursive=False, user=False, vars=False):
+def glob_filter(
+    path: Union[AnyStr, PathLike[AnyStr]],
+    *,
+    mode: int = 1,
+    type: str = "a",
+    recursive: bool = False,
+    user: bool = False,
+    vars: bool = False,
+) -> Iterator[AnyStr]:
     """Match and filter a path with glob patterns.
 
     Parameters
@@ -126,7 +143,14 @@ def glob_filter(path, *, mode=1, type="a", recursive=False, user=False, vars=Fal
     yield from _path_filter(matched, type=type)
 
 
-def glob_scanners(paths, *, mode=1, recursive=False, user=False, vars=False):
+def glob_scanners(
+    paths: Iterable[Union[AnyStr, PathLike[AnyStr]]],
+    *,
+    mode: int = 1,
+    recursive: bool = False,
+    user: bool = False,
+    vars: bool = False,
+) -> Iterator[AnyStr]:
     """Match a list of paths with glob patterns.
 
     Parameters
@@ -155,7 +179,15 @@ def glob_scanners(paths, *, mode=1, recursive=False, user=False, vars=False):
         yield from glob(path, recursive=recursive, user=user, vars=vars)
 
 
-def glob_filters(paths, *, mode=1, type="a", recursive=False, user=False, vars=False):
+def glob_filters(
+    paths: Iterable[Union[AnyStr, PathLike[AnyStr]]],
+    *,
+    mode: int = 1,
+    type: str = "a",
+    recursive: bool = False,
+    user: bool = False,
+    vars: bool = False,
+) -> Iterator[AnyStr]:
     """Match and filter a list of paths with glob patterns.
 
     Parameters
@@ -186,7 +218,7 @@ def glob_filters(paths, *, mode=1, type="a", recursive=False, user=False, vars=F
     yield from _path_filter(matched, type=type)
 
 
-def sorted_locale(iterable, *, reverse=False):
+def sorted_locale(iterable: Iterable[str], *, reverse: bool = False) -> List[str]:
     """Sort a list of strings according to locale.
 
     Parameters
