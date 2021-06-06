@@ -2,7 +2,7 @@ import glob
 import locale
 import os
 from os import PathLike
-from typing import AnyStr, Iterable, Iterator, List, Union
+from typing import AnyStr, Callable, Iterable, Iterator, List, Union
 
 from . import _check_int, _check_str
 
@@ -18,7 +18,9 @@ _ESCAPE_SQUARE = glob.escape("[")
 _ESCAPE_SQUARE_BYTES = glob.escape(b"[")
 
 
-def _expand(path, *, user=False, vars=False):
+def _expand(
+    path: Union[AnyStr, PathLike[AnyStr]], *, user: bool = False, vars: bool = False
+) -> AnyStr:
     path = os.fspath(path)
     if user:
         path = os.path.expanduser(path)
@@ -27,11 +29,23 @@ def _expand(path, *, user=False, vars=False):
     return path
 
 
-def _glob0(path, *, recursive=False, user=False, vars=False):
+def _glob0(
+    path: Union[AnyStr, PathLike[AnyStr]],
+    *,
+    recursive: bool = False,
+    user: bool = False,
+    vars: bool = False,
+) -> Iterator[AnyStr]:
     yield _expand(path, user=user, vars=vars)
 
 
-def _glob1(path, *, recursive=False, user=False, vars=False):
+def _glob1(
+    path: Union[AnyStr, PathLike[AnyStr]],
+    *,
+    recursive: bool = False,
+    user: bool = False,
+    vars: bool = False,
+) -> Iterator[AnyStr]:
     path = _expand(path, user=user, vars=vars)
     if isinstance(path, bytes):
         path = path.replace(b"[", _ESCAPE_SQUARE_BYTES)
@@ -40,12 +54,19 @@ def _glob1(path, *, recursive=False, user=False, vars=False):
     yield from glob.iglob(path, recursive=recursive)
 
 
-def _glob2(path, *, recursive=False, user=False, vars=False):
+def _glob2(
+    path: Union[AnyStr, PathLike[AnyStr]],
+    *,
+    recursive: bool = False,
+    user: bool = False,
+    vars: bool = False,
+) -> Iterator[AnyStr]:
     path = _expand(path, user=user, vars=vars)
     yield from glob.iglob(path, recursive=recursive)
 
 
-def _get_glob(mode):
+# TODO: Callable[..., Iterator[AnyStr]]
+def _get_glob(mode: int) -> Callable:
     _check_int(mode, "mode")
     if mode == 0:
         return _glob0
@@ -57,7 +78,8 @@ def _get_glob(mode):
         raise ValueError(f"mode must be in {{0, 1, 2}}, got {mode}")
 
 
-def _path_filter(paths, *, type):
+# TODO: Iterable[Union[AnyStr, PathLike[AnyStr]]]
+def _path_filter(paths: Iterable[AnyStr], *, type: str) -> Iterator[AnyStr]:
     _check_str(type, "type")
     if type == "a":
         yield from filter(os.path.exists, paths)
