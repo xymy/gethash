@@ -11,23 +11,23 @@ _CHUNKSIZE = 0x100000  # 1 MiB
 
 
 class IsADirectory(OSError):
-    """Raised by :meth:`Hasher.hash`."""
+    """Raised by :meth:`Hasher.__call__`."""
 
 
 class Hasher(object):
     """General hash values generator.
 
-    Generate hash values via given hash context prototype. In addition, a
+    Generate hash values via the given hash context prototype. In addition, a
     ``tqdm`` progressbar is available.
 
     Parameters
     ----------
     ctx_proto : hash context
-        The hash context prototype used for generating hash values.
+        The hash context prototype used to generate hash values.
     chunksize : int or None, optional
-        The size of data blocks used when reading data from files.
+        The size of data blocks in bytes used when reading data from files.
     tqdm_args : dict or None, optional
-        The arguments passed to the underlying ``tqdm`` constructor.
+        The arguments passed to the ``tqdm`` constructor.
     """
 
     def __init__(self, ctx_proto, *, chunksize=None, tqdm_args=None):
@@ -40,26 +40,47 @@ class Hasher(object):
         self.tqdm_args.setdefault("unit_scale", True)
         self.tqdm_args.setdefault("unit_divisor", 1024)
 
-    def hash_file(self, filepath, start=None, stop=None):
-        """Return the hash value of a file.
+    def __call__(self, path, start=None, stop=None, *, dir_ok=False):
+        """Return the hash value of a file or a directory.
 
         Parameters
         ----------
-        filepath : str or path-like
-            The path of a file.
+        path : str, bytes or path-like
+            The path of a file or a directory.
         start : int or None, optional
-            The start offset of the file.
+            The start offset of the file or files in the directory.
         stop : int or None, optional
-            The stop offset of the file.
+            The stop offset of the file or files in the directory.
+        dir_ok : bool, default=False
+            If ``True``, enable directory hashing.
 
         Returns
         -------
         hash_value : bytes
-            The hash value of the file.
+            The hash value of the file or the directory.
         """
 
-        # Decide the range of current file. Use (0, filesize) by default.
-        # The (start, stop) will be shrinked to (0, filesize) if necessary.
+        if os.path.isdir(path):
+            if dir_ok:
+                return bytes(self._hash_dir(path, start, stop))
+            raise IsADirectory(f"'{path}' is a directory")
+        return self._hash_file(path, start, stop)
+
+    def _hash_dir(self, dirpath, start=None, stop=None):
+        # The initial hash value is all zeros.
+        value = bytearray(self.ctx_proto.digest_size)
+        with os.scandir(dirpath) as it:
+            for entry in it:
+                if entry.is_dir():
+                    other = self._hash_dir(entry, start, stop)
+                else:
+                    other = self._hash_file(entry, start, stop)
+                # Just XOR each byte string as the result of hashing.
+                strxor(value, other, value)
+        return value
+
+    def _hash_file(self, filepath, start=None, stop=None):
+        # Clamp ``(start, stop)`` to ``(0, filesize)``.
         filesize = os.path.getsize(filepath)
         if start is None or start < 0:
             start = 0
@@ -84,64 +105,3 @@ class Hasher(object):
             ctx.update(remain)
             bar.update(remainsize)
         return ctx.digest()
-
-    def hash_dir(self, dirpath, start=None, stop=None):
-        """Return the hash value of a directory.
-
-        Parameters
-        ----------
-        dirpath : str or path-like
-            The path of a directory.
-        start : int or None, optional
-            The start offset of files belonging to the directory.
-        stop : int or None, optional
-            The stop offset of files belonging to the directory.
-
-        Returns
-        -------
-        hash_value : bytes
-            The hash value of the directory.
-        """
-
-        # The initial hash value is all zeros.
-        value = bytearray(self.ctx_proto.digest_size)
-        with os.scandir(dirpath) as it:
-            for entry in it:
-                if entry.is_dir():
-                    other = self.hash_dir(entry, start, stop)
-                else:
-                    other = self.hash_file(entry, start, stop)
-                # Just XOR each byte string as hash value.
-                strxor(value, other, value)
-        return bytes(value)
-
-    def hash(self, path, start=None, stop=None, *, dir_ok=False):
-        """Return the hash value of a file or a directory.
-
-        Parameters
-        ----------
-        path : str or path-like
-            The path of a file or a directory.
-        start : int or None, optional
-            The start offset of the file or files belonging to the directory.
-        stop : int or None, optional
-            The stop offset of the file or files belonging to the directory.
-        dir_ok : bool, default=False
-            If ``True``, enable directory hashing.
-
-        Returns
-        -------
-        hash_value : bytes
-            The hash value of the file or the directory.
-        """
-
-        if os.path.isdir(path):
-            if dir_ok:
-                return self.hash_dir(path, start, stop)
-            raise IsADirectory(f"'{path}' is a directory")
-        return self.hash_file(path, start, stop)
-
-    def __call__(self, path, start=None, stop=None, *, dir_ok=False):
-        """Alias for :meth:`Hasher.hash`."""
-
-        return self.hash(path, start, stop, dir_ok=dir_ok)
