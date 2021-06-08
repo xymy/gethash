@@ -2,7 +2,7 @@ import glob
 import locale
 import os
 from os import PathLike
-from typing import AnyStr, Callable, Iterable, Iterator, List, Union
+from typing import Any, AnyStr, Callable, Iterable, Iterator, List, Union
 
 from . import _check_int, _check_str
 
@@ -66,7 +66,7 @@ def _glob2(
 
 
 # TODO: Callable[..., Iterator[AnyStr]]
-def _get_glob(mode: int) -> Callable:
+def _get_glob(mode: int) -> Callable[..., Iterator[Any]]:
     _check_int(mode, "mode")
     if mode == 0:
         return _glob0
@@ -78,17 +78,19 @@ def _get_glob(mode: int) -> Callable:
         raise ValueError(f"mode must be in {{0, 1, 2}}, got {mode}")
 
 
-# TODO: Iterable[Union[AnyStr, PathLike[AnyStr]]]
-def _path_filter(paths: Iterable[AnyStr], *, type: str) -> Iterator[AnyStr]:
+def _path_filter(
+    paths: Iterable[Union[AnyStr, PathLike[AnyStr]]], *, type: str
+) -> Iterator[AnyStr]:
     _check_str(type, "type")
     if type == "a":
-        yield from filter(os.path.exists, paths)
+        pred = os.path.exists
     elif type == "d":
-        yield from filter(os.path.isdir, paths)
+        pred = os.path.isdir  # type: ignore
     elif type == "f":
-        yield from filter(os.path.isfile, paths)
+        pred = os.path.isfile  # type: ignore
     else:
         raise ValueError(f"type must be in {{'a', 'd', 'f'}}, got '{type}'")
+    yield from (os.fspath(path) for path in paths if pred(path))
 
 
 def glob_scanner(
