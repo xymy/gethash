@@ -1,5 +1,7 @@
 import io
 import os
+from os import PathLike
+from typing import Any, AnyStr, Mapping, Optional, Union, cast
 
 from tqdm import tqdm
 
@@ -30,17 +32,28 @@ class Hasher(object):
         The arguments passed to the ``tqdm`` constructor.
     """
 
-    def __init__(self, ctx_proto, *, chunksize=None, tqdm_args=None):
-        # Use the copies of parameters for avoiding potential side-effects.
+    def __init__(
+        self,
+        ctx_proto,  # TODO
+        *,
+        chunksize: Optional[int] = None,
+        tqdm_args: Optional[Mapping[str, Any]] = None,
+    ) -> None:
         self.ctx_proto = ctx_proto.copy()
         self.chunksize = _CHUNKSIZE if chunksize is None else int(chunksize)
         self.tqdm_args = {} if tqdm_args is None else dict(tqdm_args)
-        # Set the unit of iterations as byte.
         self.tqdm_args.setdefault("unit", "B")
         self.tqdm_args.setdefault("unit_scale", True)
         self.tqdm_args.setdefault("unit_divisor", 1024)
 
-    def __call__(self, path, start=None, stop=None, *, dir_ok=False):
+    def __call__(
+        self,
+        path: Union[AnyStr, PathLike[AnyStr]],
+        start: Optional[int] = None,
+        stop: Optional[int] = None,
+        *,
+        dir_ok: bool = False,
+    ) -> bytes:
         """Return the hash value of a file or a directory.
 
         Parameters
@@ -62,24 +75,36 @@ class Hasher(object):
 
         if os.path.isdir(path):
             if dir_ok:
-                return bytes(self._hash_dir(path, start, stop))
-            raise IsADirectory(f"'{path}' is a directory")
+                return self._hash_dir(path, start, stop)
+            path_str = str(os.fspath(path))
+            raise IsADirectory(f"'{path_str}' is a directory")
         return self._hash_file(path, start, stop)
 
-    def _hash_dir(self, dirpath, start=None, stop=None):
+    def _hash_dir(
+        self,
+        dirpath: Union[AnyStr, PathLike[AnyStr]],
+        start: Optional[int] = None,
+        stop: Optional[int] = None,
+    ) -> bytes:
         # The initial hash value is all zeros.
         value = bytearray(self.ctx_proto.digest_size)
         with os.scandir(dirpath) as it:
             for entry in it:
+                path = cast(PathLike[str], entry)
                 if entry.is_dir():
-                    other = self._hash_dir(entry, start, stop)
+                    other = self._hash_dir(path, start, stop)
                 else:
-                    other = self._hash_file(entry, start, stop)
+                    other = self._hash_file(path, start, stop)
                 # Just XOR each byte string as the result of hashing.
                 strxor(value, other, value)
-        return value
+        return bytes(value)
 
-    def _hash_file(self, filepath, start=None, stop=None):
+    def _hash_file(
+        self,
+        filepath: Union[AnyStr, PathLike[AnyStr]],
+        start: Optional[int] = None,
+        stop: Optional[int] = None,
+    ) -> bytes:
         # Clamp ``(start, stop)`` to ``(0, filesize)``.
         filesize = os.path.getsize(filepath)
         if start is None or start < 0:
