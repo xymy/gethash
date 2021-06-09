@@ -30,6 +30,8 @@ class Hasher(object):
         The size of each data block in bytes used for chunking.
     tqdm_args : dict or None, optional
         The arguments passed to the ``tqdm`` constructor.
+    tqdm_class : tqdm or None, optional
+        The ``tqdm`` class.
     """
 
     def __init__(
@@ -38,6 +40,7 @@ class Hasher(object):
         *,
         chunksize: Optional[int] = None,
         tqdm_args: Optional[Mapping[str, Any]] = None,
+        tqdm_class: Optional[tqdm] = None,
     ) -> None:
         self.ctx_proto = ctx_proto.copy()
         self.chunksize = _CHUNKSIZE if chunksize is None else int(chunksize)
@@ -45,6 +48,7 @@ class Hasher(object):
         self.tqdm_args.setdefault("unit", "B")
         self.tqdm_args.setdefault("unit_scale", True)
         self.tqdm_args.setdefault("unit_divisor", 1024)
+        self.tqdm_class = tqdm if tqdm_class is None else tqdm_class
 
     def __call__(
         self,
@@ -123,13 +127,14 @@ class Hasher(object):
         count, remainsize = divmod(total, chunksize)
 
         ctx = self.ctx_proto.copy()
-        with open(filepath, "rb") as f, tqdm(total=total, **self.tqdm_args) as bar:
+        with open(filepath, "rb") as f:
             f.seek(start, io.SEEK_SET)
-            for _ in range(count):
-                chunk = f.read(chunksize)
-                ctx.update(chunk)
-                bar.update(chunksize)
-            remain = f.read(remainsize)
-            ctx.update(remain)
-            bar.update(remainsize)
+            with self.tqdm_class(total=total, **self.tqdm_args) as bar:
+                for _ in range(count):
+                    chunk = f.read(chunksize)
+                    ctx.update(chunk)
+                    bar.update(chunksize)
+                remain = f.read(remainsize)
+                ctx.update(remain)
+                bar.update(remainsize)
         return ctx.digest()
