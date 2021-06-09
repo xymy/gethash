@@ -25,9 +25,9 @@ class Hasher(object):
     Parameters
     ----------
     ctx_proto : hash context
-        The hash context prototype used to generate hash values.
+        The hash context prototype used for generating hash values.
     chunksize : int or None, optional
-        The size of data blocks in bytes used when reading data from files.
+        The size of each data block in bytes used for chunking.
     tqdm_args : dict or None, optional
         The arguments passed to the ``tqdm`` constructor.
     """
@@ -66,6 +66,11 @@ class Hasher(object):
             The stop offset of the file or files in the directory.
         dir_ok : bool, default=False
             If ``True``, enable directory hashing.
+
+        Raises
+        ------
+        IsADirectory
+            If ``dir_ok`` is ``False`` and ``path`` is a directory.
 
         Returns
         -------
@@ -114,12 +119,12 @@ class Hasher(object):
         if start > stop:
             raise ValueError(f"require start <= stop, but {start} > {stop}")
 
-        # Setup the context.
-        ctx = self.ctx_proto.copy()
-        chunksize = self.chunksize
+        # Precompute some arguments for chunking.
         total = stop - start
-        # Precompute the chunk count and the remaining size.
+        chunksize = self.chunksize
         count, remainsize = divmod(total, chunksize)
+
+        ctx = self.ctx_proto.copy()
         with open(filepath, "rb") as f, tqdm(total=total, **self.tqdm_args) as bar:
             f.seek(start, io.SEEK_SET)
             for _ in range(count):
