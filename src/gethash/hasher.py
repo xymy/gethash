@@ -1,6 +1,7 @@
 import io
 import os
-from os import PathLike, fspath
+import stat
+from os import PathLike
 from typing import Any, AnyStr, Mapping, Optional, Union, cast
 
 from tqdm import tqdm
@@ -27,8 +28,8 @@ class Hasher(object):
     ctx_proto : hash context
         The hash context prototype used for generating hash values.
     chunksize : int or None, optional
-        The size of each data block in bytes used for chunking.
-    tqdm_args : dict or None, optional
+        The chunksize in bytes.
+    tqdm_args : mapping or None, optional
         The arguments passed to the ``tqdm`` constructor.
     tqdm_class : tqdm or None, optional
         The ``tqdm`` class.
@@ -78,14 +79,20 @@ class Hasher(object):
 
         Returns
         -------
-        hash_value : bytes
+        bytes
             The hash value of the file or the directory.
         """
 
-        if os.path.isdir(path):
+        if not isinstance(start, (int, type(None))):
+            raise TypeError(f"start must be int or None, got {start!r}")
+        if not isinstance(stop, (int, type(None))):
+            raise TypeError(f"stop must be int or None, got {stop!r}")
+
+        st = os.stat(path)
+        if stat.S_ISDIR(st.st_mode):
             if dir_ok:
                 return self._hash_dir(path, start, stop)
-            raise IsADirectory(f"{fspath(path)!r} is a directory")
+            raise IsADirectory(f"{path!r} is a directory")
         return self._hash_file(path, start, stop)
 
     def _hash_dir(
@@ -99,9 +106,9 @@ class Hasher(object):
         with os.scandir(dirpath) as it:
             for entry in it:
                 if entry.is_dir():
-                    other = self._hash_dir(cast(PathLike[str], entry), start, stop)
+                    other = self._hash_dir(cast(PathLike, entry), start, stop)
                 else:
-                    other = self._hash_file(cast(PathLike[str], entry), start, stop)
+                    other = self._hash_file(cast(PathLike, entry), start, stop)
                 # Just XOR each byte string as the result of hashing.
                 strxor(value, other, value)
         return bytes(value)
@@ -113,7 +120,7 @@ class Hasher(object):
         stop: Optional[int] = None,
     ) -> bytes:
         # Clamp ``(start, stop)`` to ``(0, filesize)``.
-        filesize = os.path.getsize(filepath)
+        filesize = os.stat(filepath).st_size
         if start is None or start < 0:
             start = 0
         if stop is None or stop > filesize:
