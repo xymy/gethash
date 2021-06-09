@@ -1,6 +1,6 @@
 import io
 import os
-from os import PathLike
+from os import PathLike, fspath
 from typing import Any, AnyStr, Mapping, Optional, Union, cast
 
 from tqdm import tqdm
@@ -81,8 +81,7 @@ class Hasher(object):
         if os.path.isdir(path):
             if dir_ok:
                 return self._hash_dir(path, start, stop)
-            path_str = str(os.fspath(path))
-            raise IsADirectory(f"'{path_str}' is a directory")
+            raise IsADirectory(f"{fspath(path)!r} is a directory")
         return self._hash_file(path, start, stop)
 
     def _hash_dir(
@@ -95,11 +94,10 @@ class Hasher(object):
         value = bytearray(self.ctx_proto.digest_size)
         with os.scandir(dirpath) as it:
             for entry in it:
-                path = cast(PathLike[str], entry)
                 if entry.is_dir():
-                    other = self._hash_dir(path, start, stop)
+                    other = self._hash_dir(cast(PathLike[str], entry), start, stop)
                 else:
-                    other = self._hash_file(path, start, stop)
+                    other = self._hash_file(cast(PathLike[str], entry), start, stop)
                 # Just XOR each byte string as the result of hashing.
                 strxor(value, other, value)
         return bytes(value)
@@ -117,7 +115,7 @@ class Hasher(object):
         if stop is None or stop > filesize:
             stop = filesize
         if start > stop:
-            raise ValueError(f"require start <= stop, but {start} > {stop}")
+            raise ValueError(f"require start <= stop, but {start!r} > {stop!r}")
 
         # Precompute some arguments for chunking.
         total = stop - start
