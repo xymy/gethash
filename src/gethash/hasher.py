@@ -1,6 +1,7 @@
 import io
 import os
 import stat
+import typing
 from os import PathLike
 from typing import Any, AnyStr, Mapping, Optional, Union, cast
 
@@ -20,15 +21,15 @@ class IsADirectory(OSError):
 class Hasher(object):
     """General hash values generator.
 
-    Generate hash values via the given hash context prototype. In addition, a
-    ``tqdm`` progressbar is available.
+    Generate hash values via the given hash context prototype. Additionally,
+    when calculating the hash value, a ``tqdm`` progress bar will be displayed.
 
     Parameters
     ----------
     ctx_proto : hash context
         The hash context prototype used for generating hash values.
     chunksize : int or None, optional
-        The chunksize in bytes.
+        The chunk size in bytes.
     tqdm_args : mapping or None, optional
         The arguments passed to the ``tqdm`` constructor.
     tqdm_class : tqdm or None, optional
@@ -50,6 +51,28 @@ class Hasher(object):
         self.tqdm_args.setdefault("unit_scale", True)
         self.tqdm_args.setdefault("unit_divisor", 1024)
         self.tqdm_class = tqdm if tqdm_class is None else tqdm_class
+
+    @typing.overload
+    def __call__(
+        self,
+        path: Union[str, PathLike[str]],
+        start: Optional[int] = None,
+        stop: Optional[int] = None,
+        *,
+        dir_ok: bool = False,
+    ) -> bytes:
+        ...
+
+    @typing.overload
+    def __call__(
+        self,
+        path: Union[bytes, PathLike[bytes]],
+        start: Optional[int] = None,
+        stop: Optional[int] = None,
+        *,
+        dir_ok: bool = False,
+    ) -> bytes:
+        ...
 
     def __call__(
         self,
@@ -84,9 +107,11 @@ class Hasher(object):
         """
 
         if not isinstance(start, (int, type(None))):
-            raise TypeError(f"start must be int or None, got {start!r}")
+            tn = type(start).__name__
+            raise TypeError(f"start must be int or None, got {tn!r}")
         if not isinstance(stop, (int, type(None))):
-            raise TypeError(f"stop must be int or None, got {stop!r}")
+            tn = type(stop).__name__
+            raise TypeError(f"stop must be int or None, got {tn!r}")
 
         st = os.stat(path)
         if stat.S_ISDIR(st.st_mode):
@@ -94,6 +119,24 @@ class Hasher(object):
                 return self._hash_dir(path, start, stop)
             raise IsADirectory(f"{path!r} is a directory")
         return self._hash_file(path, start, stop)
+
+    @typing.overload
+    def _hash_dir(
+        self,
+        dirpath: Union[str, PathLike[str]],
+        start: Optional[int] = None,
+        stop: Optional[int] = None,
+    ) -> bytes:
+        ...
+
+    @typing.overload
+    def _hash_dir(
+        self,
+        dirpath: Union[bytes, PathLike[bytes]],
+        start: Optional[int] = None,
+        stop: Optional[int] = None,
+    ) -> bytes:
+        ...
 
     def _hash_dir(
         self,
@@ -106,12 +149,30 @@ class Hasher(object):
         with os.scandir(dirpath) as it:
             for entry in it:
                 if entry.is_dir():
-                    other = self._hash_dir(cast(PathLike, entry), start, stop)
+                    other = self._hash_dir(cast(PathLike[AnyStr], entry), start, stop)
                 else:
-                    other = self._hash_file(cast(PathLike, entry), start, stop)
+                    other = self._hash_file(cast(PathLike[AnyStr], entry), start, stop)
                 # Just XOR each byte string as the result of hashing.
                 strxor(value, other, value)
         return bytes(value)
+
+    @typing.overload
+    def _hash_file(
+        self,
+        filepath: Union[str, PathLike[str]],
+        start: Optional[int] = None,
+        stop: Optional[int] = None,
+    ) -> bytes:
+        ...
+
+    @typing.overload
+    def _hash_file(
+        self,
+        filepath: Union[bytes, PathLike[bytes]],
+        start: Optional[int] = None,
+        stop: Optional[int] = None,
+    ) -> bytes:
+        ...
 
     def _hash_file(
         self,
