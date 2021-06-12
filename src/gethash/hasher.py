@@ -3,7 +3,7 @@ import os
 import stat
 import typing
 from os import PathLike
-from typing import Any, AnyStr, Mapping, Optional, Union, cast
+from typing import Any, AnyStr, Dict, Mapping, Optional, Union, cast
 
 from tqdm import tqdm
 
@@ -44,13 +44,36 @@ class Hasher(object):
         tqdm_args: Optional[Mapping[str, Any]] = None,
         tqdm_class: Optional[tqdm] = None,
     ) -> None:
+        if not isinstance(chunksize, (int, type(None))):
+            tn = type(chunksize).__name__
+            raise TypeError(f"chunksize must be int or None, got {tn}")
+
+        if chunksize is None or chunksize == 0:
+            chunksize = _CHUNKSIZE
+        elif chunksize < 0:
+            chunksize = -1
+
+        if not isinstance(tqdm_args, (Mapping, type(None))):
+            tn = type(tqdm_args).__name__
+            raise TypeError(f"tqdm_args must be Mapping or None, got {tn}")
+
+        if tqdm_args is None:
+            tqdm_args = {}
+        else:
+            tqdm_args = dict(tqdm_args)
+
+        # Set the progress bar meter style.
+        tqdm_args.setdefault("unit", "B")
+        tqdm_args.setdefault("unit_scale", True)
+        tqdm_args.setdefault("unit_divisor", 1024)
+
+        if tqdm_class is None:
+            tqdm_class = tqdm
+
         self.ctx_proto = ctx_proto.copy()
-        self.chunksize = _CHUNKSIZE if chunksize is None else int(chunksize)
-        self.tqdm_args = {} if tqdm_args is None else dict(tqdm_args)
-        self.tqdm_args.setdefault("unit", "B")
-        self.tqdm_args.setdefault("unit_scale", True)
-        self.tqdm_args.setdefault("unit_divisor", 1024)
-        self.tqdm_class = tqdm if tqdm_class is None else tqdm_class
+        self.chunksize: int = chunksize
+        self.tqdm_args: Dict[str, Any] = tqdm_args
+        self.tqdm_class: tqdm = tqdm_class
 
     @typing.overload
     def __call__(
