@@ -3,7 +3,7 @@ import os
 import stat
 import typing
 from os import PathLike
-from typing import Any, AnyStr, Dict, Mapping, Optional, Union, cast
+from typing import Any, AnyStr, Dict, Mapping, Optional, Union
 
 from tqdm import tqdm
 
@@ -143,24 +143,6 @@ class Hasher(object):
             raise IsADirectory(f"{path!r} is a directory")
         return self._hash_file(path, start, stop)
 
-    @typing.overload
-    def _hash_dir(
-        self,
-        dirpath: Union[str, PathLike[str]],
-        start: Optional[int] = None,
-        stop: Optional[int] = None,
-    ) -> bytes:
-        ...
-
-    @typing.overload
-    def _hash_dir(
-        self,
-        dirpath: Union[bytes, PathLike[bytes]],
-        start: Optional[int] = None,
-        stop: Optional[int] = None,
-    ) -> bytes:
-        ...
-
     def _hash_dir(
         self,
         dirpath: Union[AnyStr, PathLike[AnyStr]],
@@ -172,30 +154,12 @@ class Hasher(object):
         with os.scandir(dirpath) as it:
             for entry in it:
                 if entry.is_dir():
-                    other = self._hash_dir(cast(PathLike[AnyStr], entry), start, stop)
+                    other = self._hash_dir(entry.path, start, stop)
                 else:
-                    other = self._hash_file(cast(PathLike[AnyStr], entry), start, stop)
+                    other = self._hash_file(entry.path, start, stop)
                 # Just XOR each byte string as the result of hashing.
                 strxor(value, other, value)
         return bytes(value)
-
-    @typing.overload
-    def _hash_file(
-        self,
-        filepath: Union[str, PathLike[str]],
-        start: Optional[int] = None,
-        stop: Optional[int] = None,
-    ) -> bytes:
-        ...
-
-    @typing.overload
-    def _hash_file(
-        self,
-        filepath: Union[bytes, PathLike[bytes]],
-        start: Optional[int] = None,
-        stop: Optional[int] = None,
-    ) -> bytes:
-        ...
 
     def _hash_file(
         self,
