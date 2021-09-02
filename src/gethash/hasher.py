@@ -1,7 +1,6 @@
 import io
 import os
 import stat
-import typing
 from os import PathLike
 from typing import Any, AnyStr, Dict, Mapping, Optional, Union
 
@@ -27,7 +26,7 @@ class Hasher(object):
     Parameters
     ----------
     ctx_proto : hash context
-        The hash context prototype used for generating hash values.
+        The hash context prototype used to generate hash values.
     chunksize : int or None, optional
         The chunk size in bytes.
     tqdm_args : mapping or None, optional
@@ -44,21 +43,21 @@ class Hasher(object):
         tqdm_args: Optional[Mapping[str, Any]] = None,
         tqdm_class: Optional[tqdm] = None,
     ) -> None:
-        if not isinstance(chunksize, (int, type(None))):
+        if chunksize is None:
+            chunksize = _CHUNKSIZE
+        elif not isinstance(chunksize, int):
             tn = type(chunksize).__name__
             raise TypeError(f"chunksize must be int or None, got {tn}")
-
-        if chunksize is None or chunksize == 0:
+        elif chunksize == 0:
             chunksize = _CHUNKSIZE
         elif chunksize < 0:
             chunksize = -1
 
-        if not isinstance(tqdm_args, (Mapping, type(None))):
-            tn = type(tqdm_args).__name__
-            raise TypeError(f"tqdm_args must be Mapping or None, got {tn}")
-
         if tqdm_args is None:
             tqdm_args = {}
+        elif not isinstance(tqdm_args, Mapping):
+            tn = type(tqdm_args).__name__
+            raise TypeError(f"tqdm_args must be Mapping or None, got {tn}")
         else:
             tqdm_args = dict(tqdm_args)
 
@@ -74,28 +73,6 @@ class Hasher(object):
         self.chunksize: int = chunksize
         self.tqdm_args: Dict[str, Any] = tqdm_args
         self.tqdm_class: tqdm = tqdm_class
-
-    @typing.overload
-    def __call__(
-        self,
-        path: Union[str, PathLike[str]],
-        start: Optional[int] = None,
-        stop: Optional[int] = None,
-        *,
-        dir_ok: bool = False,
-    ) -> bytes:
-        ...
-
-    @typing.overload
-    def __call__(
-        self,
-        path: Union[bytes, PathLike[bytes]],
-        start: Optional[int] = None,
-        stop: Optional[int] = None,
-        *,
-        dir_ok: bool = False,
-    ) -> bytes:
-        ...
 
     def __call__(
         self,
