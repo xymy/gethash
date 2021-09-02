@@ -12,10 +12,10 @@
 import os
 import sys
 from importlib import import_module
+from pathlib import Path
 
-project_dir = os.path.dirname(os.path.dirname(__file__))
-src_dir = os.path.join(project_dir, "src")
-sys.path.insert(0, src_dir)
+src_dir = Path(__file__).resolve().parents[2].joinpath("src")
+sys.path.insert(0, os.fsdecode(src_dir))
 gethash = import_module("gethash")
 
 # -- Project information -----------------------------------------------------
@@ -34,11 +34,10 @@ release = gethash.__version__  # type: ignore [attr-defined]
 # ones.
 extensions = [
     "sphinx.ext.autodoc",
-    "sphinx.ext.autosummary",
     "sphinx.ext.intersphinx",
+    "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
-    "numpydoc",
-    "sphinx_toggleprompt",
+    "sphinx_copybutton",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -53,7 +52,7 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = "pydata_sphinx_theme"
+html_theme = "furo"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -64,6 +63,7 @@ html_static_path = ["_static"]
 
 intersphinx_mapping = {"python": ("https://docs.python.org/3", None)}
 
-# -- Options for numpydoc ----------------------------------------------------
+# -- Options for sphinx-copybutton -------------------------------------------
 
-numpydoc_show_class_members = False
+copybutton_prompt_text = r">>> |\.\.\. |\$ |In \[\d*\]: | {2,5}\.\.\.: | {5,8}: "
+copybutton_prompt_is_regexp = True

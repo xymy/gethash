@@ -4,7 +4,7 @@
 /.vscode/
 /build/
 /dist/
-/doc/_build/
+/docs/build/
 /temp/
 /venv/
 __pycache__/
