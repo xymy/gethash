@@ -13,7 +13,7 @@ In the terminal, run:
 Install from Source Code
 ------------------------
 
-In the project directory, run:
+In the project root directory, run:
 
 .. code-block:: shell
 
@@ -22,7 +22,7 @@ In the project directory, run:
 Install from Source Code in Development Mode
 --------------------------------------------
 
-In the project directory, activate the virtual environment and run:
+In the project root directory, activate the virtual environment and run:
 
 .. code-block:: shell
 

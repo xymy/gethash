@@ -1,7 +1,7 @@
 Gethash Documentation
 =====================
 
-A set of command-line tools that can generate or check various hash values.
+Gethash is a command-line hash utility.
 
 .. code-block:: shell
 
@@ -13,5 +13,5 @@ Table of Contents
 .. toctree::
     :maxdepth: 2
 
-    user/index
+    install
     api/index
