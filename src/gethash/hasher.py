@@ -37,11 +37,11 @@ class Hasher(object):
 
     def __init__(
         self,
-        ctx_proto,  # TODO
+        ctx_proto: Any,
         *,
         chunksize: Optional[int] = None,
         tqdm_args: Optional[Mapping[str, Any]] = None,
-        tqdm_class: Optional[tqdm] = None,
+        tqdm_class: Any = None,
     ) -> None:
         if chunksize is None:
             chunksize = _CHUNKSIZE
