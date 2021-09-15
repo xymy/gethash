@@ -1,6 +1,6 @@
 # Gethash
 
-A set of command-line tools that can generate or check various hash values.
+Gethash is a command-line hash utility
 
 ## Installation
 
