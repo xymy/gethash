@@ -21,23 +21,22 @@ class Hasher(object):
     """General hash values generator.
 
     Generate hash values via the given hash context prototype. Additionally,
-    when calculating the hash value, a ``tqdm`` progress bar will be displayed.
+    a ``tqdm`` progress bar will be displayed when hashing.
 
-    Parameters
-    ----------
-    ctx_proto : hash context
-        The hash context prototype used to generate hash values.
-    chunksize : int or None, optional
-        The chunk size in bytes.
-    tqdm_args : mapping or None, optional
-        The arguments passed to the ``tqdm`` constructor.
-    tqdm_class : tqdm or None, optional
-        The ``tqdm`` class.
+    Parameters:
+        ctx (hash context):
+            The hash context prototype used to generate hash values.
+        chunksize (int | None, optional):
+            The chunk size for reading data from files. Default: ``None``
+        tqdm_args (Mapping | None, optional):
+            The arguments passed to the ``tqdm_class``. Default: ``None``
+        tqdm_class (tqdm class | None, optional):
+            The ``tqdm`` class. Default: ``None``
     """
 
     def __init__(
         self,
-        ctx_proto: Any,
+        ctx: Any,
         *,
         chunksize: Optional[int] = None,
         tqdm_args: Optional[Mapping[str, Any]] = None,
@@ -45,21 +44,22 @@ class Hasher(object):
     ) -> None:
         if chunksize is None:
             chunksize = _CHUNKSIZE
-        elif not isinstance(chunksize, int):
+        elif isinstance(chunksize, int):
+            if chunksize == 0:
+                chunksize = _CHUNKSIZE
+            elif chunksize < 0:
+                chunksize = -1
+        else:
             tn = type(chunksize).__name__
             raise TypeError(f"chunksize must be int or None, got {tn}")
-        elif chunksize == 0:
-            chunksize = _CHUNKSIZE
-        elif chunksize < 0:
-            chunksize = -1
 
         if tqdm_args is None:
             tqdm_args = {}
-        elif not isinstance(tqdm_args, Mapping):
+        elif isinstance(tqdm_args, Mapping):
+            tqdm_args = dict(tqdm_args)
+        else:
             tn = type(tqdm_args).__name__
             raise TypeError(f"tqdm_args must be Mapping or None, got {tn}")
-        else:
-            tqdm_args = dict(tqdm_args)
 
         # Set the progress bar meter style.
         tqdm_args.setdefault("unit", "B")
@@ -69,10 +69,10 @@ class Hasher(object):
         if tqdm_class is None:
             tqdm_class = tqdm
 
-        self.ctx_proto = ctx_proto.copy()
+        self._ctx = ctx.copy()
         self.chunksize: int = chunksize
         self.tqdm_args: Dict[str, Any] = tqdm_args
-        self.tqdm_class: tqdm = tqdm_class
+        self.tqdm_class = tqdm_class
 
     def __call__(
         self,
@@ -84,26 +84,23 @@ class Hasher(object):
     ) -> bytes:
         """Return the hash value of a file or a directory.
 
-        Parameters
-        ----------
-        path : str, bytes or path-like
-            The path of a file or a directory.
-        start : int or None, optional
-            The start offset of the file or files in the directory.
-        stop : int or None, optional
-            The stop offset of the file or files in the directory.
-        dir_ok : bool, default=False
-            If ``True``, enable directory hashing.
+        Parameters:
+            path (str, bytes or path-like):
+                The path of a file or a directory.
+            start (int or None, optional):
+                The start offset of the file or files in the directory.
+            stop (int or None, optional):
+                The stop offset of the file or files in the directory.
+            dir_ok (bool, optional):
+                If ``True``, enable directory hashing. Default: ``False``
 
-        Raises
-        ------
-        IsADirectory
-            If ``dir_ok`` is ``False`` and ``path`` is a directory.
+        Raises:
+            IsADirectory
+                If ``dir_ok`` is ``False`` and ``path`` is a directory.
 
-        Returns
-        -------
-        bytes
-            The hash value of the file or the directory.
+        Returns:
+            bytes
+                The hash value of the file or the directory.
         """
 
         if not isinstance(start, (int, type(None))):
@@ -127,7 +124,7 @@ class Hasher(object):
         stop: Optional[int] = None,
     ) -> bytes:
         # The initial hash value is all zeros.
-        value = bytearray(self.ctx_proto.digest_size)
+        value = bytearray(self._ctx.digest_size)
         with os.scandir(dirpath) as it:
             for entry in it:
                 if entry.is_dir():
@@ -158,7 +155,7 @@ class Hasher(object):
         chunksize = self.chunksize
         count, remainsize = divmod(total, chunksize)
 
-        ctx = self.ctx_proto.copy()
+        ctx = self._ctx.copy()
         with open(filepath, "rb") as f:
             f.seek(start, io.SEEK_SET)
             with self.tqdm_class(total=total, **self.tqdm_args) as bar:
