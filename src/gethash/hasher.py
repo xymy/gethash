@@ -21,7 +21,7 @@ class Hasher(object):
     """General hash values generator.
 
     Generate hash values via the given hash context prototype. Additionally,
-    a ``tqdm`` progress bar will be displayed when hashing.
+    when calculating the hash value, a ``tqdm`` progress bar will be displayed.
 
     Parameters:
         ctx (hash context):
@@ -76,7 +76,7 @@ class Hasher(object):
 
     def __call__(
         self,
-        path: Union[AnyStr, PathLike[AnyStr]],
+        path: "Union[AnyStr, PathLike[AnyStr]]",
         start: Optional[int] = None,
         stop: Optional[int] = None,
         *,
@@ -103,10 +103,10 @@ class Hasher(object):
                 The hash value of the file or the directory.
         """
 
-        if not isinstance(start, (int, type(None))):
+        if start is not None and not isinstance(start, int):
             tn = type(start).__name__
             raise TypeError(f"start must be int or None, got {tn!r}")
-        if not isinstance(stop, (int, type(None))):
+        if stop is not None and not isinstance(stop, int):
             tn = type(stop).__name__
             raise TypeError(f"stop must be int or None, got {tn!r}")
 
@@ -119,7 +119,7 @@ class Hasher(object):
 
     def _hash_dir(
         self,
-        dirpath: Union[AnyStr, PathLike[AnyStr]],
+        dirpath: "Union[AnyStr, PathLike[AnyStr]]",
         start: Optional[int] = None,
         stop: Optional[int] = None,
     ) -> bytes:
@@ -137,7 +137,7 @@ class Hasher(object):
 
     def _hash_file(
         self,
-        filepath: Union[AnyStr, PathLike[AnyStr]],
+        filepath: "Union[AnyStr, PathLike[AnyStr]]",
         start: Optional[int] = None,
         stop: Optional[int] = None,
     ) -> bytes:
