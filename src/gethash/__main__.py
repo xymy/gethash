@@ -5,7 +5,7 @@ import click
 from click import Command, Context
 from importlib_metadata import entry_points
 
-from . import __title__, __version__
+from . import __version__
 from .utils.click import MultiCommand
 
 try:
@@ -15,6 +15,10 @@ except ImportError:
 else:
     PYCRYPTODOMEX_INSTALLED = True
     del Cryptodome
+
+PROGRAM_NAME = "gethash"
+
+CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"], max_content_width=120)
 
 PLUGINS = entry_points(group="gethash.plugins")
 LEGACY_PLUGINS = entry_points(group="gethash.legacy_plugins")
@@ -36,8 +40,8 @@ class Cli(MultiCommand):
         return None
 
 
-@click.command(__title__, cls=Cli)
-@click.version_option(__version__, "-V", "--version", prog_name=__title__)
+@click.command(PROGRAM_NAME, cls=Cli, context_settings=CONTEXT_SETTINGS)
+@click.version_option(__version__, "-V", "--version", prog_name=PROGRAM_NAME)
 def main() -> None:
     """Generate or check various hash values."""
 
