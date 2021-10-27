@@ -3,6 +3,8 @@ from typing import Any, Optional, Sequence
 
 import click
 
+__all__ = ["Command", "MultiCommand", "Group", "CommandCollection"]
+
 
 class Command(click.Command):
     def main(self, args: Optional[Sequence[str]] = None, *pargs: Any, **kwargs: Any) -> Any:
