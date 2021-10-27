@@ -1,8 +1,7 @@
 import glob
 import locale
 import os
-from os import PathLike
-from typing import Any, AnyStr, Callable, Iterable, Iterator, List, Union
+from typing import AnyStr, Callable, Iterable, Iterator, List
 
 from . import _check_int, _check_str
 
@@ -18,7 +17,7 @@ _ESCAPE_SQUARE = glob.escape("[")
 _ESCAPE_SQUARE_BYTES = glob.escape(b"[")
 
 
-def _expand(path: Union[AnyStr, PathLike[AnyStr]], *, user: bool = False, vars: bool = False) -> AnyStr:
+def _expand(path: AnyStr, *, user: bool = False, vars: bool = False) -> AnyStr:
     path = os.fspath(path)
     if user:
         path = os.path.expanduser(path)
@@ -27,23 +26,11 @@ def _expand(path: Union[AnyStr, PathLike[AnyStr]], *, user: bool = False, vars: 
     return path
 
 
-def _glob0(
-    path: Union[AnyStr, PathLike[AnyStr]],
-    *,
-    recursive: bool = False,
-    user: bool = False,
-    vars: bool = False,
-) -> Iterator[AnyStr]:
+def _glob0(path: AnyStr, *, recursive: bool = False, user: bool = False, vars: bool = False) -> Iterator[AnyStr]:
     yield _expand(path, user=user, vars=vars)
 
 
-def _glob1(
-    path: Union[AnyStr, PathLike[AnyStr]],
-    *,
-    recursive: bool = False,
-    user: bool = False,
-    vars: bool = False,
-) -> Iterator[AnyStr]:
+def _glob1(path: AnyStr, *, recursive: bool = False, user: bool = False, vars: bool = False) -> Iterator[AnyStr]:
     path = _expand(path, user=user, vars=vars)
     if isinstance(path, bytes):
         path = path.replace(b"[", _ESCAPE_SQUARE_BYTES)
@@ -52,19 +39,12 @@ def _glob1(
     yield from glob.iglob(path, recursive=recursive)
 
 
-def _glob2(
-    path: Union[AnyStr, PathLike[AnyStr]],
-    *,
-    recursive: bool = False,
-    user: bool = False,
-    vars: bool = False,
-) -> Iterator[AnyStr]:
+def _glob2(path: AnyStr, *, recursive: bool = False, user: bool = False, vars: bool = False) -> Iterator[AnyStr]:
     path = _expand(path, user=user, vars=vars)
     yield from glob.iglob(path, recursive=recursive)
 
 
-# TODO: Callable[..., Iterator[AnyStr]]
-def _get_glob(mode: int) -> Callable[..., Iterator[Any]]:
+def _get_glob(mode: int) -> Callable[..., Iterator]:
     _check_int(mode, "mode")
     if mode == 0:
         return _glob0
@@ -73,29 +53,25 @@ def _get_glob(mode: int) -> Callable[..., Iterator[Any]]:
     elif mode == 2:
         return _glob2
     else:
-        raise ValueError(f"mode must be in {{0, 1, 2}}, got {mode}")
+        raise ValueError(f"mode must be in {{0, 1, 2}}, got {mode!r}")
 
 
-def _path_filter(paths: Iterable[Union[AnyStr, PathLike[AnyStr]]], *, type: str) -> Iterator[AnyStr]:
+def _path_filter(paths: Iterable[AnyStr], *, type: str) -> Iterator[AnyStr]:
     _check_str(type, "type")
+    pred: Callable[..., bool]
     if type == "a":
         pred = os.path.exists
     elif type == "d":
-        pred = os.path.isdir  # type: ignore
+        pred = os.path.isdir
     elif type == "f":
-        pred = os.path.isfile  # type: ignore
+        pred = os.path.isfile
     else:
-        raise ValueError(f"type must be in {{'a', 'd', 'f'}}, got '{type}'")
-    yield from (os.fspath(path) for path in paths if pred(path))
+        raise ValueError(f"type must be in {{'a', 'd', 'f'}}, got {type!r}")
+    yield from filter(pred, map(os.fspath, paths))
 
 
 def glob_scanner(
-    path: Union[AnyStr, PathLike[AnyStr]],
-    *,
-    mode: int = 1,
-    recursive: bool = False,
-    user: bool = False,
-    vars: bool = False,
+    path: AnyStr, *, mode: int = 1, recursive: bool = False, user: bool = False, vars: bool = False
 ) -> Iterator[AnyStr]:
     """Match a path with glob patterns.
 
@@ -125,13 +101,7 @@ def glob_scanner(
 
 
 def glob_filter(
-    path: Union[AnyStr, PathLike[AnyStr]],
-    *,
-    mode: int = 1,
-    type: str = "a",
-    recursive: bool = False,
-    user: bool = False,
-    vars: bool = False,
+    path: AnyStr, *, mode: int = 1, type: str = "a", recursive: bool = False, user: bool = False, vars: bool = False
 ) -> Iterator[AnyStr]:
     """Match and filter a path with glob patterns.
 
@@ -164,12 +134,7 @@ def glob_filter(
 
 
 def glob_scanners(
-    paths: Iterable[Union[AnyStr, PathLike[AnyStr]]],
-    *,
-    mode: int = 1,
-    recursive: bool = False,
-    user: bool = False,
-    vars: bool = False,
+    paths: Iterable[AnyStr], *, mode: int = 1, recursive: bool = False, user: bool = False, vars: bool = False
 ) -> Iterator[AnyStr]:
     """Match a list of paths with glob patterns.
 
@@ -200,7 +165,7 @@ def glob_scanners(
 
 
 def glob_filters(
-    paths: Iterable[Union[AnyStr, PathLike[AnyStr]]],
+    paths: Iterable[AnyStr],
     *,
     mode: int = 1,
     type: str = "a",
