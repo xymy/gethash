@@ -18,9 +18,7 @@ _ESCAPE_SQUARE = glob.escape("[")
 _ESCAPE_SQUARE_BYTES = glob.escape(b"[")
 
 
-def _expand(
-    path: Union[AnyStr, PathLike[AnyStr]], *, user: bool = False, vars: bool = False
-) -> AnyStr:
+def _expand(path: Union[AnyStr, PathLike[AnyStr]], *, user: bool = False, vars: bool = False) -> AnyStr:
     path = os.fspath(path)
     if user:
         path = os.path.expanduser(path)
@@ -78,9 +76,7 @@ def _get_glob(mode: int) -> Callable[..., Iterator[Any]]:
         raise ValueError(f"mode must be in {{0, 1, 2}}, got {mode}")
 
 
-def _path_filter(
-    paths: Iterable[Union[AnyStr, PathLike[AnyStr]]], *, type: str
-) -> Iterator[AnyStr]:
+def _path_filter(paths: Iterable[Union[AnyStr, PathLike[AnyStr]]], *, type: str) -> Iterator[AnyStr]:
     _check_str(type, "type")
     if type == "a":
         pred = os.path.exists

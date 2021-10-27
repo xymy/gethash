@@ -113,9 +113,7 @@ def main():
         hashname = meta["hashname"]
         package = meta["package"]
         hasher = meta["hasher"]
-        code = TEMPLATE.format(
-            meta=str(meta), hashname=hashname, package=package, hasher=hasher
-        )
+        code = TEMPLATE.format(meta=str(meta), hashname=hashname, package=package, hasher=hasher)
         path = Path(__file__).with_stem(cmdname.replace("-", "_"))
         path.write_text(code)
 

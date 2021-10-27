@@ -6,13 +6,7 @@ import click
 from click_option_group import MutuallyExclusiveOptionGroup
 
 from . import __version__
-from .core import (
-    CheckHashLineError,
-    HashFileReader,
-    HashFileWriter,
-    check_hash_line,
-    generate_hash_line,
-)
+from .core import CheckHashLineError, HashFileReader, HashFileWriter, check_hash_line, generate_hash_line
 from .hasher import Hasher
 from .utils.click import Command
 from .utils.glob import glob_filters
@@ -239,8 +233,7 @@ def gethashcli(cmdname, hashname, suffix, **ignored):
             "-d",
             "--dir",
             is_flag=True,
-            help="Allow checksum for directories. "
-            "Just xor each checksum of files in a given directory.",
+            help="Allow checksum for directories. Just xor each checksum of files in a given directory.",
         )
         @click.option(
             "--suffix",
@@ -274,9 +267,7 @@ def gethashcli(cmdname, hashname, suffix, **ignored):
             is_flag=True,
             help="Update mtime of hash files to the same as data files.",
         )
-        @path_format.option(
-            "-i", "--inplace", is_flag=True, help="Use basename in checksum files."
-        )
+        @path_format.option("-i", "--inplace", is_flag=True, help="Use basename in checksum files.")
         @path_format.option(
             "-z",
             "--root",
@@ -301,9 +292,7 @@ def gethashcli(cmdname, hashname, suffix, **ignored):
         @click.option("--no-stdout", is_flag=True, help="Do not output to stdout.")
         @click.option("--no-stderr", is_flag=True, help="Do not output to stderr.")
         @click.option("--tqdm-ascii", type=click.BOOL, default=False, show_default=True)
-        @click.option(
-            "--tqdm-disable", type=click.BOOL, default=False, show_default=True
-        )
+        @click.option("--tqdm-disable", type=click.BOOL, default=False, show_default=True)
         @click.option("--tqdm-leave", type=click.BOOL, default=False, show_default=True)
         @click.version_option(__version__, prog_name=cmdname)
         @functools.wraps(func)
