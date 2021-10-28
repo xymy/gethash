@@ -1,14 +1,16 @@
+from typing import Optional
+
 from . import _check_bytes, _check_bytes_w_opt
 
 __all__ = ["strxor"]
 
 
-def _py_strxor(term1, term2, output=None):
+def _py_strxor(term1: bytes, term2: bytes, output: Optional[bytearray] = None) -> Optional[bytes]:
     if output is None:
         return bytes(x1 ^ x2 for x1, x2 in zip(term1, term2))
-    else:
-        for i, (x1, x2) in enumerate(zip(term1, term2)):
-            output[i] = x1 ^ x2
+    for i, (x1, x2) in enumerate(zip(term1, term2)):
+        output[i] = x1 ^ x2
+    return None
 
 
 try:
@@ -19,24 +21,22 @@ else:
     _strxor = _c_strxor
 
 
-def strxor(term1, term2, output=None):
+def strxor(term1: bytes, term2: bytes, output: Optional[bytearray] = None) -> Optional[bytes]:
     """XOR two byte strings.
 
-    Parameters
-    ----------
-    term1 : bytes-like
-        The first term of the XOR operation.
-    term2 : bytes-like
-        The second term of the XOR operation.
-    output : writable bytes-like or None, optional
-        The location where the result must be written to. If ``None``, the
-        result is returned.
+    Parameters:
+        term1 (bytes):
+            The first term of the XOR operation.
+        term2 (bytes):
+            The second term of the XOR operation.
+        output (bytearray | None, default=None)
+            The location where the result must be written to. If ``None``, the
+            result is returned.
 
-    Returns
-    -------
-    result : bytes or None
-        If ``output`` is ``None``, return a new byte string; otherwise return
-        ``None``.
+    Returns:
+        bytes | None:
+            If ``output`` is ``None``, return a new byte string; otherwise
+            return ``None``.
     """
 
     _check_bytes(term1, "term1")
