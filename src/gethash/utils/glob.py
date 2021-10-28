@@ -75,25 +75,23 @@ def glob_scanner(
 ) -> Iterator[AnyStr]:
     """Match a path with glob patterns.
 
-    Parameters
-    ----------
-    path : str, bytes or path-like
-        A path with glob patterns.
-    mode : int, default=1
-        The mode of glob. If ``0``, disable globbing; if ``1``, resolve ``*``
-        and ``?``; if ``2``, resolve ``*``, ``?`` and ``[]``.
-    recursive : bool, default=False
-        If ``True``, the pattern ``**`` will match any files and zero or more
-        directories, subdirectories and symbolic links to directories.
-    user : bool, default=False
-        If ``True``, user home directory will be expanded.
-    vars : bool, default=False
-        If ``True``, environment variables will be expanded.
+    Parameters:
+        path (AnyStr):
+            A path with glob patterns.
+        mode (int, default=1):
+            The mode of glob. If ``0``, disable globbing; if ``1``, resolve
+            ``*`` and ``?``; if ``2``, resolve ``*``, ``?`` and ``[]``.
+        recursive (bool, default=False):
+            If ``True``, the pattern ``**`` will match any files and zero or
+            more directories, subdirectories and symbolic links to directories.
+        user (bool, default=False):
+            If ``True``, user home directory will be expanded.
+        vars (bool, default=False):
+            If ``True``, environment variables will be expanded.
 
-    Yields
-    ------
-    matched_path : str or bytes
-        The matched path.
+    Yields:
+        AnyStr:
+            The matched path.
     """
 
     glob = _get_glob(mode)
@@ -105,28 +103,26 @@ def glob_filter(
 ) -> Iterator[AnyStr]:
     """Match and filter a path with glob patterns.
 
-    Parameters
-    ----------
-    path : str, bytes or path-like
-        A path with glob patterns.
-    mode : int, default=1
-        The mode of glob. If ``0``, disable globbing; if ``1``, resolve ``*``
-        and ``?``; if ``2``, resolve ``*``, ``?`` and ``[]``.
-    type : str, default='a'
-        The type of file. If ``a``, include all types; if ``d``, include
-        directories; if ``f``, include files.
-    recursive : bool, default=False
-        If ``True``, the pattern ``**`` will match any files and zero or more
-        directories, subdirectories and symbolic links to directories.
-    user : bool, default=False
-        If ``True``, user home directory will be expanded.
-    vars : bool, default=False
-        If ``True``, environment variables will be expanded.
+    Parameters:
+        path (AnyStr):
+            A path with glob patterns.
+        mode (int, default=1):
+            The mode of glob. If ``0``, disable globbing; if ``1``, resolve
+            ``*`` and ``?``; if ``2``, resolve ``*``, ``?`` and ``[]``.
+        type (str, default='a'):
+            The type of file. If ``a``, include all types; if ``d``, include
+            directories; if ``f``, include files.
+        recursive (bool, default=False):
+            If ``True``, the pattern ``**`` will match any files and zero or
+            more directories, subdirectories and symbolic links to directories.
+        user (bool, default=False):
+            If ``True``, user home directory will be expanded.
+        vars (bool, default=False):
+            If ``True``, environment variables will be expanded.
 
-    Yields
-    ------
-    matched_path : str or bytes
-        The matched path with the given file type.
+    Yields:
+        AnyStr:
+            The matched path with the given file type.
     """
 
     matched = glob_scanner(path, mode=mode, recursive=recursive, user=user, vars=vars)
@@ -138,25 +134,23 @@ def glob_scanners(
 ) -> Iterator[AnyStr]:
     """Match a list of paths with glob patterns.
 
-    Parameters
-    ----------
-    paths : iterable of str, bytes or path-like
-        A list of paths with glob patterns.
-    mode : int, default=1
-        The mode of glob. If ``0``, disable globbing; if ``1``, resolve ``*``
-        and ``?``; if ``2``, resolve ``*``, ``?`` and ``[]``.
-    recursive : bool, default=False
-        If ``True``, the pattern ``**`` will match any files and zero or more
-        directories, subdirectories and symbolic links to directories.
-    user : bool, default=False
-        If ``True``, user home directory will be expanded.
-    vars : bool, default=False
-        If ``True``, environment variables will be expanded.
+    Parameters:
+        paths (Iterable[AnyStr]):
+            A list of paths with glob patterns.
+        mode (int, default=1):
+            The mode of glob. If ``0``, disable globbing; if ``1``, resolve
+            ``*`` and ``?``; if ``2``, resolve ``*``, ``?`` and ``[]``.
+        recursive (bool, default=False):
+            If ``True``, the pattern ``**`` will match any files and zero or
+            more directories, subdirectories and symbolic links to directories.
+        user (bool, default=False):
+            If ``True``, user home directory will be expanded.
+        vars (bool, default=False):
+            If ``True``, environment variables will be expanded.
 
-    Yields
-    ------
-    matched_path : str or bytes
-        The matched path.
+    Yields:
+        AnyStr:
+            The matched path.
     """
 
     glob = _get_glob(mode)
@@ -175,28 +169,26 @@ def glob_filters(
 ) -> Iterator[AnyStr]:
     """Match and filter a list of paths with glob patterns.
 
-    Parameters
-    ----------
-    paths : iterable of str, bytes or path-like
-        A list of paths with glob patterns.
-    mode : int, default=1
-        The mode of glob. If ``0``, disable globbing; if ``1``, resolve ``*``
-        and ``?``; if ``2``, resolve ``*``, ``?`` and ``[]``.
-    type : str, default='a'
-        The type of file. If ``a``, include all types; if ``d``, include
-        directories; if ``f``, include files.
-    recursive : bool, default=False
-        If ``True``, the pattern ``**`` will match any files and zero or more
-        directories, subdirectories and symbolic links to directories.
-    user : bool, default=False
-        If ``True``, user home directory will be expanded.
-    vars : bool, default=False
-        If ``True``, environment variables will be expanded.
+    Parameters:
+        paths (Iterable[AnyStr]):
+            A list of paths with glob patterns.
+        mode (int, default=1):
+            The mode of glob. If ``0``, disable globbing; if ``1``, resolve
+            ``*`` and ``?``; if ``2``, resolve ``*``, ``?`` and ``[]``.
+        type (str, default='a'):
+            The type of file. If ``a``, include all types; if ``d``, include
+            directories; if ``f``, include files.
+        recursive (bool, default=False):
+            If ``True``, the pattern ``**`` will match any files and zero or
+            more directories, subdirectories and symbolic links to directories.
+        user (bool, default=False):
+            If ``True``, user home directory will be expanded.
+        vars (bool, default=False):
+            If ``True``, environment variables will be expanded.
 
-    Yields
-    ------
-    matched_path : str or bytes
-        The matched path with the given file type.
+    Yields:
+        AnyStr:
+            The matched path with the given file type.
     """
 
     matched = glob_scanners(paths, mode=mode, recursive=recursive, user=user, vars=vars)
@@ -206,17 +198,15 @@ def glob_filters(
 def sorted_locale(iterable: Iterable[str], *, reverse: bool = False) -> List[str]:
     """Sort a list of strings according to locale.
 
-    Parameters
-    ----------
-    iterable : iterable of str
-        A list of strings.
-    reverse : bool, default=False
-        If ``True``, reverse the sorted result.
+    Parameters:
+        iterable (Iterable[str]):
+            A list of strings.
+        reverse (bool, default=False):
+            If ``True``, reverse the sorted result.
 
-    Returns
-    -------
-    sorted_list : list
-        The sorted list of strings.
+    Returns:
+        List[str]:
+            The sorted list of strings.
     """
 
     return sorted(iterable, key=locale.strxfrm, reverse=reverse)
