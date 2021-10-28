@@ -294,7 +294,7 @@ def gethashcli(cmdname, hashname, suffix, **ignored):
         @click.option("--tqdm-ascii", type=click.BOOL, default=False, show_default=True)
         @click.option("--tqdm-disable", type=click.BOOL, default=False, show_default=True)
         @click.option("--tqdm-leave", type=click.BOOL, default=False, show_default=True)
-        @click.version_option(__version__, prog_name=cmdname)
+        @click.version_option(__version__, "-V", "--version", prog_name=cmdname)
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
             return func(*args, **kwargs)
