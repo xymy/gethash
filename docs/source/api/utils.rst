@@ -3,13 +3,6 @@ Utilities
 
 .. currentmodule:: gethash.utils
 
-CRC32
------
-
-.. currentmodule:: gethash.utils.crc32
-
-.. autoclass:: CRC32
-
 Glob
 ----
 
