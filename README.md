@@ -1,5 +1,12 @@
 # Gethash
 
+[![PyPI](https://img.shields.io/pypi/v/gethash)](https://pypi.org/project/gethash/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/gethash)](https://pypi.org/project/gethash/)
+[![PyPI - Wheel](https://img.shields.io/pypi/wheel/gethash)](https://pypi.org/project/gethash/)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/gethash)](https://pypi.org/project/gethash/)
+[![PyPI - License](https://img.shields.io/pypi/l/gethash)](https://pypi.org/project/gethash/)
+[![code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
 Gethash is a command-line hash utility.
 
 ## Installation
