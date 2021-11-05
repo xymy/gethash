@@ -67,7 +67,7 @@ def _path_filter(paths: Iterable[AnyStr], *, type: str) -> Iterator[AnyStr]:
         pred = os.path.isfile
     else:
         raise ValueError(f"type must be in {{'a', 'd', 'f'}}, got {type!r}")
-    yield from filter(pred, map(os.fspath, paths))
+    yield from filter(pred, paths)
 
 
 def glob_scanner(
