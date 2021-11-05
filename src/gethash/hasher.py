@@ -17,7 +17,7 @@ class IsADirectory(OSError):
     """Raised by :meth:`Hasher.__call__`."""
 
 
-class Hasher(object):
+class Hasher:
     """General hash values generator.
 
     Generate hash values via the given hash context prototype. Additionally,
@@ -26,12 +26,12 @@ class Hasher(object):
     Parameters:
         ctx (hash context):
             The hash context prototype used to generate hash values.
-        chunksize (int | None, optional):
-            The chunk size for reading data from files. Default: ``None``
-        tqdm_args (Mapping | None, optional):
-            The arguments passed to the ``tqdm_class``. Default: ``None``
-        tqdm_class (tqdm class | None, optional):
-            The ``tqdm`` class. Default: ``None``
+        chunksize (int | None, default=None):
+            The chunk size for reading data from files.
+        tqdm_args (Mapping | None, default=None):
+            The arguments passed to the ``tqdm_class``.
+        tqdm_class (tqdm class | None, default=None):
+            The ``tqdm`` class.
     """
 
     def __init__(
@@ -51,7 +51,7 @@ class Hasher(object):
                 chunksize = -1
         else:
             tn = type(chunksize).__name__
-            raise TypeError(f"chunksize must be int or None, got {tn}")
+            raise TypeError(f"chunksize must be int or None, not {tn}")
 
         if tqdm_args is None:
             tqdm_args = {}
@@ -59,7 +59,7 @@ class Hasher(object):
             tqdm_args = dict(tqdm_args)
         else:
             tn = type(tqdm_args).__name__
-            raise TypeError(f"tqdm_args must be Mapping or None, got {tn}")
+            raise TypeError(f"tqdm_args must be Mapping or None, not {tn}")
 
         # Set the progress bar meter style.
         tqdm_args.setdefault("unit", "B")
@@ -87,12 +87,12 @@ class Hasher(object):
         Parameters:
             path (str, bytes or path-like):
                 The path of a file or a directory.
-            start (int or None, optional):
+            start (int | None, default=None):
                 The start offset of the file or files in the directory.
-            stop (int or None, optional):
+            stop (int | None, default=None):
                 The stop offset of the file or files in the directory.
-            dir_ok (bool, optional):
-                If ``True``, enable directory hashing. Default: ``False``
+            dir_ok (bool, default=False):
+                If ``True``, enable directory hashing.
 
         Raises:
             IsADirectory
@@ -105,10 +105,10 @@ class Hasher(object):
 
         if start is not None and not isinstance(start, int):
             tn = type(start).__name__
-            raise TypeError(f"start must be int or None, got {tn!r}")
+            raise TypeError(f"start must be int or None, not {tn}")
         if stop is not None and not isinstance(stop, int):
             tn = type(stop).__name__
-            raise TypeError(f"stop must be int or None, got {tn!r}")
+            raise TypeError(f"stop must be int or None, not {tn}")
 
         st = os.stat(path)
         if stat.S_ISDIR(st.st_mode):
