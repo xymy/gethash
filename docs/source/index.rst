@@ -8,9 +8,6 @@ Gethash Documentation
 .. image:: https://img.shields.io/pypi/pyversions/gethash
     :target: https://pypi.org/project/gethash/
 
-.. image:: https://img.shields.io/pypi/wheel/gethash
-    :target: https://pypi.org/project/gethash/
-
 .. image:: https://img.shields.io/pypi/dm/gethash
     :target: https://pypi.org/project/gethash/
 
