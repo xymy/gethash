@@ -95,5 +95,5 @@ def _check_bytes_w_opt(obj: object, name: str, default: object = None) -> Any:
     return obj
 
 
-def _is_writable_memoryview(obj):
+def _is_writable_memoryview(obj: object) -> bool:
     return isinstance(obj, memoryview) and not obj.readonly

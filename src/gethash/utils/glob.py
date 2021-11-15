@@ -18,12 +18,11 @@ _ESCAPE_SQUARE_BYTES = glob.escape(b"[")
 
 
 def _expand(path: AnyStr, *, user: bool = False, vars: bool = False) -> AnyStr:
-    path = os.fspath(path)
     if user:
         path = os.path.expanduser(path)
     if vars:
         path = os.path.expandvars(path)
-    return path
+    return os.path.normpath(path)
 
 
 def _glob0(path: AnyStr, *, recursive: bool = False, user: bool = False, vars: bool = False) -> Iterator[AnyStr]:
