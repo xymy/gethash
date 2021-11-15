@@ -1,3 +1,5 @@
+from typing import Any, Tuple
+
 from gethash.script import gethashcli, script_main
 
 META = {
@@ -10,7 +12,7 @@ META = {
 
 
 @gethashcli(**META)
-def main(files, **kwargs):
+def main(files: Tuple[str, ...], **kwargs: Any) -> None:
     """Generate or check CRC32."""
 
     from gethash.utils.crc32 import CRC32 as H

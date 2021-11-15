@@ -1,3 +1,5 @@
+from typing import Any, Tuple
+
 from gethash.script import gethashcli, script_main
 
 META = {
@@ -10,7 +12,7 @@ META = {
 
 
 @gethashcli(**META)
-def main(files, **kwargs):
+def main(files: Tuple[str, ...], **kwargs: Any) -> None:
     """Generate or check RIPEMD160."""
 
     from Cryptodome.Hash.RIPEMD160 import new as H

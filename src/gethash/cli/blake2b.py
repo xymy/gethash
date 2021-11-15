@@ -1,16 +1,12 @@
+from typing import Any, Tuple
+
 from gethash.script import gethashcli, script_main
 
-META = {
-    "cmdname": "blake2b",
-    "hashname": "BLAKE2b",
-    "suffix": ".blake2b",
-    "package": "hashlib",
-    "hasher": "blake2b",
-}
+META = {"cmdname": "blake2b", "hashname": "BLAKE2b", "suffix": ".blake2b", "package": "hashlib", "hasher": "blake2b"}
 
 
 @gethashcli(**META)
-def main(files, **kwargs):
+def main(files: Tuple[str, ...], **kwargs: Any) -> None:
     """Generate or check BLAKE2b."""
 
     from hashlib import blake2b as H

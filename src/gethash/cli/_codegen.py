@@ -88,13 +88,15 @@ META_LIST = [
 ]
 
 TEMPLATE = """\
+from typing import Any, Tuple
+
 from gethash.script import gethashcli, script_main
 
 META = {meta}
 
 
 @gethashcli(**META)
-def main(files, **kwargs):
+def main(files: Tuple[str, ...], **kwargs: Any) -> None:
     \"""Generate or check {hashname}.\"""
 
     from {package} import {hasher} as H
