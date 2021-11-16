@@ -79,3 +79,11 @@ $ sha1 -c *.sha1
 [SUCCESS] 002.zip
 [SUCCESS] 003.zip
 ```
+
+## Project Links
+
+- Home Page: https://github.com/xymy/gethash
+- PyPI Release: https://pypi.org/project/gethash/
+- Documentation: https://github.com/xymy/gethash
+- Issue Tracker: https://github.com/xymy/gethash/issues
+- Source Code: https://github.com/xymy/gethash

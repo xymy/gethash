@@ -19,9 +19,33 @@ Gethash Documentation
 
 Gethash is a command-line hash utility.
 
+Getting Started
+---------------
+
+Install from PyPI:
+
+.. code-block:: shell
+
+    $ pip install gethash
+
+.. note::
+
+    Gethash requires Python 3.7 and later.
+
+Show command-line usage:
+
 .. code-block:: shell
 
     $ gethash --help
+
+Project Links
+-------------
+
+- Home Page: https://github.com/xymy/gethash
+- PyPI Release: https://pypi.org/project/gethash/
+- Documentation: https://github.com/xymy/gethash
+- Issue Tracker: https://github.com/xymy/gethash/issues
+- Source Code: https://github.com/xymy/gethash
 
 Table of Contents
 -----------------
@@ -29,5 +53,4 @@ Table of Contents
 .. toctree::
     :maxdepth: 2
 
-    install
     api/index
