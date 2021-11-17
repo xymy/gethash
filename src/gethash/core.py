@@ -1,6 +1,7 @@
 import os
 import re
 from hmac import compare_digest
+from typing import Optional
 
 __all__ = [
     "ParseHashLineError",
@@ -253,31 +254,28 @@ class HashFileWriter(object):
         self.file.write(f"# {comment}\n")
 
 
-def format_hash_line(hex_hash_value, path, *, root=None):
+def format_hash_line(hex_hash_value: str, path: str, *, root: Optional[str] = None):
     r"""Format hash line.
 
-    Parameters
-    ----------
-    hex_hash_value : str
-        The hexadecimal hash value string.
-    path : str or path-like
-        The path of a file or a directory with corresponding hash value. Three
-        representations are supported:
-        (1) Absolute path;
-        (2) Relative path;
-        (3) Relative to a given root directory.
-    root : str, path-like or None, optional
-        The root directory.
+    Parameters:
+        hex_hash_value (str):
+            The hexadecimal hash value string.
+        path (str):
+            The path of a file or a directory with corresponding hash value. Three
+            representations are supported:
+            (1) Absolute path;
+            (2) Relative path;
+            (3) Relative to a given root directory.
+        root (str | None, default=None):
+            The root directory.
 
-    Returns
-    -------
-    hash_line : str
-        A line of *hash* and *name* with GNU Coreutils style.
+    Returns:
+        str:
+            ``hash_line``.
 
-    Examples
-    --------
-    >>> format_hash_line('d41d8cd98f00b204e9800998ecf8427e', 'a.txt')
-    'd41d8cd98f00b204e9800998ecf8427e *a.txt\n'
+    Examples:
+        >>> format_hash_line('d41d8cd98f00b204e9800998ecf8427e', 'foo.txt')
+        'd41d8cd98f00b204e9800998ecf8427e *foo.txt\n'
     """
 
     if root is not None:
@@ -286,31 +284,22 @@ def format_hash_line(hex_hash_value, path, *, root=None):
     return f"{hex_hash_value} *{path}\n"
 
 
-def parse_hash_line(hash_line, *, root=None):
+def parse_hash_line(hash_line: str, *, root: Optional[str] = None):
     r"""Parse hash line.
 
-    Parameters
-    ----------
-    hash_line : str
-        A line of *hash* and *name* with GNU Coreutils style.
-    root : str, path-like or None, optional
-        The root directory.
+    Parameters:
+        hash_line (str):
+            A line of *hash* and *name* with GNU Coreutils style.
+        root (str | None, default=None):
+            The root directory.
 
-    Returns
-    -------
-    hex_hash_value : str
-        The hexadecimal hash value string.
-    path : str
-        The path of a file or a directory with corresponding hash value. Three
-        representations are supported:
-        (1) Absolute path;
-        (2) Relative path;
-        (3) Relative to a given root directory.
+    Returns:
+        Tuple[str, str]:
+            ``(hex_hash_value, path)``.
 
-    Examples
-    --------
-    >>> parse_hash_line('d41d8cd98f00b204e9800998ecf8427e *a.txt\n')
-    ('d41d8cd98f00b204e9800998ecf8427e', 'a.txt')
+    Examples:
+        >>> parse_hash_line('d41d8cd98f00b204e9800998ecf8427e *foo.txt\n')
+        ('d41d8cd98f00b204e9800998ecf8427e', 'foo.txt')
     """
 
     m = _HASH_LINE_RE.match(hash_line)
