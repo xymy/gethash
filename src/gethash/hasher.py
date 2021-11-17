@@ -85,7 +85,7 @@ class Hasher:
         """Return the hash value of a file or a directory.
 
         Parameters:
-            path (str, bytes or path-like):
+            path (AnyStr | PathLike[AnyStr]):
                 The path of a file or a directory.
             start (int | None, default=None):
                 The start offset of the file or files in the directory.
