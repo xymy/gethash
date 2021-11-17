@@ -21,15 +21,15 @@ _HASH_LINE_RE = re.compile(r"([0-9a-fA-F]+)(?:(?: \*|  | )(.+))?")
 class ParseHashLineError(ValueError):
     """Raised by :func:`parse_hash_line`."""
 
-    def __init__(self, hash_line):
-        super.__init__(hash_line)
+    def __init__(self, hash_line: str) -> None:
+        super().__init__(hash_line)
         self.hash_line = hash_line
 
 
 class CheckHashLineError(ValueError):
     """Raised by :func:`check_hash_line`."""
 
-    def __init__(self, hash_line, hash_value, path, curr_hash_value):
+    def __init__(self, hash_line: str, hash_value, path, curr_hash_value) -> None:
         super().__init__(hash_line, hash_value, path, curr_hash_value)
         self.hash_line = hash_line
         self.hash_value = hash_value
