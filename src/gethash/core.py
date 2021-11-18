@@ -30,7 +30,7 @@ class ParseHashLineError(ValueError):
 class CheckHashLineError(ValueError):
     """Raised by :func:`check_hash_line`."""
 
-    def __init__(self, hash_line: str, hash_value, path, curr_hash_value) -> None:
+    def __init__(self, hash_line: str, hash_value: bytes, path: str, curr_hash_value: bytes) -> None:
         super().__init__(hash_line, hash_value, path, curr_hash_value)
         self.hash_line = hash_line
         self.hash_value = hash_value
@@ -38,7 +38,7 @@ class CheckHashLineError(ValueError):
         self.curr_hash_value = curr_hash_value
 
 
-class HashFileReader(object):
+class HashFileReader:
     """General hash file reader.
 
     The :class:`HashFileReader` supports the context manager protocol for
@@ -204,7 +204,7 @@ class HashFileReader(object):
         return list(self.iter_name(root=root))
 
 
-class HashFileWriter(object):
+class HashFileWriter:
     """General hash file writer.
 
     The :class:`HashFileWriter` supports the context manager protocol for
