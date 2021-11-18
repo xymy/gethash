@@ -1,7 +1,7 @@
 import os
 import re
 from hmac import compare_digest
-from typing import Optional
+from typing import Callable, Optional, Tuple
 
 __all__ = [
     "ParseHashLineError",
@@ -254,15 +254,15 @@ class HashFileWriter(object):
         self.file.write(f"# {comment}\n")
 
 
-def format_hash_line(hex_hash_value: str, path: str, *, root: Optional[str] = None):
+def format_hash_line(hex_hash_value: str, path: str, *, root: Optional[str] = None) -> str:
     r"""Format hash line.
 
     Parameters:
         hex_hash_value (str):
             The hexadecimal hash value string.
         path (str):
-            The path of a file or a directory with corresponding hash value. Three
-            representations are supported:
+            The path of a file or a directory with corresponding hash value.
+            Three representations are supported:
             (1) Absolute path;
             (2) Relative path;
             (3) Relative to a given root directory.
@@ -284,7 +284,7 @@ def format_hash_line(hex_hash_value: str, path: str, *, root: Optional[str] = No
     return f"{hex_hash_value} *{path}\n"
 
 
-def parse_hash_line(hash_line: str, *, root: Optional[str] = None):
+def parse_hash_line(hash_line: str, *, root: Optional[str] = None) -> Tuple[str, str]:
     r"""Parse hash line.
 
     Parameters:
@@ -312,22 +312,24 @@ def parse_hash_line(hash_line: str, *, root: Optional[str] = None):
     return hex_hash_value, path
 
 
-def generate_hash_line(path, hash_function, *, root=None):
+def generate_hash_line(path: str, hash_function: Callable[[str], bytes], *, root: Optional[str] = None) -> str:
     """Generate hash line.
 
-    Parameters
-    ----------
-    path : str or path-like
-        The path of a file or a directory with corresponding hash value.
-    hash_function : callable(str or path-like) -> bytes
-        A function for generating hash value.
-    root : str, path-like or None, optional
-        The root directory.
+    Parameters:
+        path (str):
+            The path of a file or a directory with corresponding hash value.
+            Three representations are supported:
+            (1) Absolute path;
+            (2) Relative path;
+            (3) Relative to a given root directory.
+        hash_function (Callable[[str], bytes]):
+            A function for generating hash value.
+        root (str | None, default=None):
+            The root directory.
 
-    Returns
-    -------
-    hash_line : str
-        A line of *hash* and *name* with GNU Coreutils style.
+    Returns:
+        str:
+            ``hash_line``.
     """
 
     hash_value = hash_function(path)
@@ -335,22 +337,20 @@ def generate_hash_line(path, hash_function, *, root=None):
     return format_hash_line(hex_hash_value, path, root=root)
 
 
-def check_hash_line(hash_line, hash_function, *, root=None):
+def check_hash_line(hash_line: str, hash_function: Callable[[str], bytes], *, root: Optional[str] = None) -> str:
     """Check hash line.
 
-    Parameters
-    ----------
-    hash_line : str
-        A line of *hash* and *name* with GNU Coreutils style.
-    hash_function : callable(str or path-like) -> bytes
-        A function for generating hash value.
-    root : str, path-like or None, optional
-        The root directory.
+    Parameters:
+        hash_line (str):
+            A line of *hash* and *name* with GNU Coreutils style.
+        hash_function (Callable[[str], bytes]):
+            A function for generating hash value.
+        root (str | None, default=None):
+            The root directory.
 
-    Returns
-    -------
-    path : str
-        The path of a file or a directory with corresponding hash value.
+    Returns:
+        str:
+            ``path``.
     """
 
     hex_hash_value, path = parse_hash_line(hash_line, root=root)
