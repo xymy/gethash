@@ -9,39 +9,8 @@ from click_option_group import MutuallyExclusiveOptionGroup
 from . import __version__
 from .core import CheckHashLineError, HashFileReader, HashFileWriter, check_hash_line, generate_hash_line
 from .hasher import Hasher
-from .utils.click import Command
+from .utils.click import Command, PathWithSuffix
 from .utils.glob import glob_filters
-
-
-class FilePath(click.Path):
-    def __init__(
-        self,
-        exists=False,
-        writable=False,
-        readable=False,
-        resolve_path=False,
-        allow_dash=False,
-        path_type=None,
-        suffix=".sha",
-    ):
-        super().__init__(
-            exists=exists,
-            file_okay=True,
-            dir_okay=False,
-            writable=writable,
-            readable=readable,
-            resolve_path=resolve_path,
-            allow_dash=allow_dash,
-            path_type=path_type,
-        )
-        self.suffix = suffix
-
-    def convert(self, value, param, ctx):
-        suffix = self.suffix
-        # Add suffix automatically.
-        if value is not None and value[-len(suffix) :].lower() != suffix.lower():
-            value += suffix
-        return super().convert(value, param, ctx)
 
 
 class Output(object):
@@ -280,7 +249,7 @@ def gethashcli(cmdname: str, hashname: str, suffix: str, **ignored: Any) -> Call
         @output_mode.option(
             "-o",
             "--agg",
-            type=FilePath(suffix=suffix),
+            type=PathWithSuffix(suffix=suffix, dir_okay=False),
             help="Set the aggregate output file.",
         )
         @output_mode.option("-s", "--sep", is_flag=True, help="Separate output files.")
