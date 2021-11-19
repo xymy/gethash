@@ -31,6 +31,12 @@ Install from PyPI:
 
     $ pip install gethash
 
+or if you need legacy hash algorithms:
+
+.. code-block:: shell
+
+    $ pip install "gethash[all]"
+
 .. note::
 
     Gethash requires Python 3.7 and later.

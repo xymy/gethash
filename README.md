@@ -11,14 +11,16 @@ Gethash is a command-line hash utility.
 
 ## Installation
 
+Install from PyPI:
+
 ```shell
-$ pip install -U gethash
+$ pip install gethash
 ```
 
-or (if you need legacy hash algorithms)
+or if you need legacy hash algorithms:
 
 ```shell
-$ pip install -U "gethash[all]"
+$ pip install "gethash[all]"
 ```
 
 *Note: Gethash requires Python 3.7 and later.*
