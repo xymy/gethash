@@ -41,14 +41,6 @@ HashFileReader
 
 .. automethod:: HashFileReader.iter_name
 
-.. automethod:: HashFileReader.load
-
-.. automethod:: HashFileReader.load2
-
-.. automethod:: HashFileReader.load_hash
-
-.. automethod:: HashFileReader.load_name
-
 .. automethod:: HashFileReader.close
 
 HashFileWriter

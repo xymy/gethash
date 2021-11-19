@@ -1,7 +1,7 @@
 import os
 import re
 from hmac import compare_digest
-from typing import Callable, Optional, Tuple
+from typing import Any, Callable, Iterator, Optional, Tuple
 
 __all__ = [
     "ParseHashLineError",
@@ -44,34 +44,33 @@ class HashFileReader:
     The :class:`HashFileReader` supports the context manager protocol for
     calling :meth:`HashFileReader.close` automatically.
 
-    Parameters
-    ----------
-    filepath : str or path-like
-        The path of a hash file.
+    Parameters:
+        filepath (str):
+            The path of a hash file.
     """
 
-    def __init__(self, filepath):
+    def __init__(self, filepath: str) -> None:
         self.name = filepath
         self.file = open(filepath, "r", encoding="utf-8")
 
-    def __enter__(self):
+    def __enter__(self) -> "HashFileReader":
         return self
 
-    def __exit__(self, exc_type, exc_value, traceback):
+    def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None:
         self.close()
 
-    def close(self):
+    def close(self) -> None:
         """Close the underlying file."""
 
         self.file.close()
 
-    def read_hash_line(self):
+    def read_hash_line(self) -> str:
         """Read hash line.
 
-        Returns
-        -------
-        hash_line : str
-            A line of *hash* and *name* with GNU Coreutils style.
+        Returns:
+            str:
+                ``hash_line`` where ``hash_line`` a line of *hash* and *name*
+                with GNU Coreutils style.
         """
 
         while True:
@@ -83,13 +82,13 @@ class HashFileReader:
             break
         return line  # empty string for EOF
 
-    def iter(self):
+    def iter(self) -> Iterator[str]:
         """Yield hash line.
 
-        Yields
-        ------
-        hash_line : str
-            A line of *hash* and *name* with GNU Coreutils style.
+        Yields:
+            str:
+                ``hash_line`` where ``hash_line`` a line of *hash* and *name*
+                with GNU Coreutils style.
         """
 
         with self:
@@ -101,107 +100,49 @@ class HashFileReader:
 
     __iter__ = iter
 
-    def iter2(self, *, root=None):
+    def iter2(self, *, root: Optional[str] = None) -> Iterator[Tuple[str, str]]:
         """Yield hash and name.
 
-        Parameters
-        ----------
-        root : str, path-like or None, optional
-            The root directory.
+        Parameters:
+            root (str | None, default=None):
+                The root directory.
 
-        Yields
-        ------
-        hash : str
-            The hexadecimal hash value string.
-        name : str
-            The path of a file or a directory with corresponding hash value.
+        Yields:
+            Tuple[str, str]:
+                ``(hash, name)`` where ``hash`` is the hexadecimal hash value
+                string and ``name`` is the path of a file or a directory with
+                corresponding hash value.
         """
 
         for hash_line in self:
             yield parse_hash_line(hash_line, root=root)
 
-    def iter_hash(self):
+    def iter_hash(self) -> Iterator[str]:
         """Yield hash.
 
-        Yields
-        ------
-        hash : str
-            The hexadecimal hash value string.
+        Yields:
+            str:
+                ``hash`` where ``hash`` is the hexadecimal hash value string.
         """
 
         for entry in self.iter2():
             yield entry[0]
 
-    def iter_name(self, *, root=None):
+    def iter_name(self, *, root: Optional[str] = None) -> Iterator[str]:
         """Yield name.
 
-        Parameters
-        ----------
-        root : str, path-like or None, optional
-            The root directory.
+        Parameters:
+            root (str | None, default=None):
+                The root directory.
 
-        Yields
-        ------
-        name : str
-            The path of a file or a directory with corresponding hash value.
+        Yields:
+            str:
+                ``name`` where ``name`` is the path of a file or a directory
+                with corresponding hash value.
         """
 
         for entry in self.iter2(root=root):
             yield entry[1]
-
-    def load(self):
-        """Return a list of hash line.
-
-        Returns
-        -------
-        hash_line_list : list
-            A list of hash line.
-        """
-
-        return list(self)
-
-    def load2(self, *, root=None):
-        """Return a list of hash and name.
-
-        Parameters
-        ----------
-        root : str, path-like or None, optional
-            The root directory.
-
-        Returns
-        -------
-        hash_name_list : list
-            A list of hash and name.
-        """
-
-        return list(self.iter2(root=root))
-
-    def load_hash(self):
-        """Return a list of hash.
-
-        Returns
-        -------
-        hash_list : list
-            A list of hash.
-        """
-
-        return list(self.iter_hash())
-
-    def load_name(self, *, root=None):
-        """Return a list of name.
-
-        Parameters
-        ----------
-        root : str, path-like or None, optional
-            The root directory.
-
-        Returns
-        -------
-        name_list : list
-            A list of name.
-        """
-
-        return list(self.iter_name(root=root))
 
 
 class HashFileWriter:
@@ -210,45 +151,42 @@ class HashFileWriter:
     The :class:`HashFileWriter` supports the context manager protocol for
     calling :meth:`HashFileReader.close` automatically.
 
-    Parameters
-    ----------
-    filepath : str or path-like
-        The path of a hash file.
+    Parameters:
+        filepath (str):
+            The path of a hash file.
     """
 
-    def __init__(self, filepath):
+    def __init__(self, filepath: str) -> None:
         self.name = filepath
         self.file = open(filepath, "w", encoding="utf-8")
 
-    def __enter__(self):
+    def __enter__(self) -> "HashFileWriter":
         return self
 
-    def __exit__(self, exc_type, exc_value, traceback):
+    def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None:
         self.close()
 
-    def close(self):
+    def close(self) -> None:
         """Close the underlying file."""
 
         self.file.close()
 
-    def write_hash_line(self, hash_line):
+    def write_hash_line(self, hash_line: str) -> None:
         """Write hash line.
 
-        Parameters
-        ----------
-        hash_line : str
-            A line of *hash* and *name* with GNU Coreutils style.
+        Parameters:
+            hash_line (str):
+                A line of *hash* and *name* with GNU Coreutils style.
         """
 
         self.file.write(hash_line)
 
-    def write_comment(self, comment):
+    def write_comment(self, comment: str) -> None:
         """Write comment.
 
-        Parameters
-        ----------
-        comment : str
-            A line of comment without leading ``#`` and tailing newline.
+        Parameters:
+            comment (str):
+                A line of comment without leading ``#`` and tailing newline.
         """
 
         self.file.write(f"# {comment}\n")
