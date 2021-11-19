@@ -24,13 +24,13 @@ class Hasher:
     when calculating the hash value, a ``tqdm`` progress bar will be displayed.
 
     Parameters:
-        ctx (hash context):
+        ctx (hash-context):
             The hash context prototype used to generate hash values.
         chunksize (int | None, default=None):
             The chunk size for reading data from files.
         tqdm_args (Mapping | None, default=None):
             The arguments passed to the ``tqdm_class``.
-        tqdm_class (tqdm class | None, default=None):
+        tqdm_class (tqdm-class | None, default=None):
             The ``tqdm`` class.
     """
 
@@ -99,7 +99,7 @@ class Hasher:
                 If ``dir_ok`` is ``False`` and ``path`` is a directory.
 
         Returns:
-            bytes
+            bytes:
                 The hash value of the file or the directory.
         """
 
