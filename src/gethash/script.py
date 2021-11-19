@@ -1,6 +1,7 @@
 import functools
 import os
 import sys
+from typing import Any, Callable, Tuple
 
 import click
 from click_option_group import MutuallyExclusiveOptionGroup
@@ -201,7 +202,7 @@ class Gethash(object):
         self.close()
 
 
-def script_main(ctx, files, **options):
+def script_main(ctx: Any, files: Tuple[str, ...], **options: Any) -> None:
     """Execute the body for the main function."""
 
     no_stdout = options.pop("no_stdout", False)
@@ -214,14 +215,16 @@ def script_main(ctx, files, **options):
         gethash(check, files)
 
 
-def gethashcli(cmdname, hashname, suffix, **ignored):
+def gethashcli(cmdname: str, hashname: str, suffix: str, **ignored: Any) -> Callable:
     """Apply click decorators to the main function."""
 
-    def decorator(func):
+    def decorator(func: Callable) -> Callable:
+        context_settings = dict(help_option_names=["-h", "--help"], max_content_width=120)
+
         path_format = MutuallyExclusiveOptionGroup("Path Format")
         output_mode = MutuallyExclusiveOptionGroup("Output Mode")
 
-        @click.command(cmdname, cls=Command, no_args_is_help=True)
+        @click.command(cmdname, cls=Command, context_settings=context_settings, no_args_is_help=True)
         @click.argument("files", nargs=-1)
         @click.option(
             "-c",
@@ -296,7 +299,7 @@ def gethashcli(cmdname, hashname, suffix, **ignored):
         @click.option("--tqdm-leave", type=click.BOOL, default=False, show_default=True)
         @click.version_option(__version__, "-V", "--version", prog_name=cmdname)
         @functools.wraps(func)
-        def wrapper(*args, **kwargs):
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
             return func(*args, **kwargs)
 
         return wrapper
