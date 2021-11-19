@@ -361,28 +361,24 @@ def check_hash_line(hash_line: str, hash_function: Callable[[str], bytes], *, ro
     return path
 
 
-def _parse_for_re(hash_line, *, root=None):
+def _parse_for_re(hash_line: str, *, root: Optional[str] = None) -> Tuple[str, str]:
     hex_hash_value, naming_path = parse_hash_line(hash_line, root=root)
     hashing_path = os.path.join(os.path.dirname(naming_path), hex_hash_value)
     return hashing_path, naming_path
 
 
-def re_name_to_hash(hash_line, *, root=None):
+def re_name_to_hash(hash_line: str, *, root: Optional[str] = None) -> Tuple[str, str]:
     """Re name to hash.
 
-    Parameters
-    ----------
-    hash_line : str
-        A line of *hash* and *name* with GNU Coreutils style.
-    root : str, path-like or None, optional
-        The root directory.
+    Parameters:
+        hash_line (str):
+            A line of *hash* and *name* with GNU Coreutils style.
+        root (str | None, default=None):
+            The root directory.
 
-    Returns
-    -------
-    naming_path : str
-        The naming (source) path.
-    hashing_path : str
-        The hashing (destination) path.
+    Returns:
+        Tuple[str, str]:
+            ``(naming_path, hashing_path)``.
     """
 
     hashing_path, naming_path = _parse_for_re(hash_line, root=root)
@@ -390,22 +386,18 @@ def re_name_to_hash(hash_line, *, root=None):
     return naming_path, hashing_path
 
 
-def re_hash_to_name(hash_line, *, root=None):
+def re_hash_to_name(hash_line: str, *, root: Optional[str] = None) -> Tuple[str, str]:
     """Re hash to name.
 
-    Parameters
-    ----------
-    hash_line : str
-        A line of *hash* and *name* with GNU Coreutils style.
-    root : str, path-like or None, optional
-        The root directory.
+    Parameters:
+        hash_line (str):
+            A line of *hash* and *name* with GNU Coreutils style.
+        root (str | None, default=None):
+            The root directory.
 
-    Returns
-    -------
-    hashing_path : str
-        The hashing (source) path.
-    naming_path : str
-        The naming (destination) path.
+    Returns:
+        Tuple[str, str]:
+            ``(hashing_path, naming_path)``.
     """
 
     hashing_path, naming_path = _parse_for_re(hash_line, root=root)
