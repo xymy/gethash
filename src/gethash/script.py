@@ -1,7 +1,7 @@
 import functools
 import os
 import sys
-from typing import Any, Callable, Iterable, Optional, Tuple
+from typing import Any, Callable, Iterable, Optional, TextIO, Tuple
 
 import click
 from click_option_group import MutuallyExclusiveOptionGroup
@@ -58,8 +58,14 @@ class Output:
 class Gethash:
     """Provide uniform interface for CLI scripts."""
 
+    stdout: TextIO
+    stderr: TextIO
+
     glob_mode: int
     glob_type: str
+
+    inplace: bool
+    root: Optional[str]
 
     start: Optional[int]
     stop: Optional[int]
@@ -69,12 +75,11 @@ class Gethash:
         self.ctx = ctx
         self.suffix = kwargs.pop("suffix", ".sha")
 
-        self.glob_mode = kwargs.pop("glob", 1)
-        self.glob_type = kwargs.pop("type", "a")
-        self.sync = kwargs.pop("sync", False)
-
         self.stdout = kwargs.pop("stdout", sys.stdout)
         self.stderr = kwargs.pop("stderr", sys.stderr)
+
+        self.glob_mode = kwargs.pop("glob", 1)
+        self.glob_type = kwargs.pop("type", "a")
 
         # Determine the path format.
         self.inplace = kwargs.pop("inplace", False)
@@ -98,7 +103,8 @@ class Gethash:
         }
         self.hasher = Hasher(ctx, tqdm_args=tqdm_args)
 
-    def __call__(self, files: Iterable[str], *, check: bool) -> None:
+    def __call__(self, files: Iterable[str], *, check: bool, sync: bool) -> None:
+        self.sync = sync
         if check:
             self.check_hash(files)
         else:
@@ -180,8 +186,9 @@ def script_main(ctx: Any, files: Tuple[str, ...], **options: Any) -> None:
     stderr = open(os.devnull, "w") if no_stderr else sys.stderr
 
     check = options.pop("check", False)
+    sync = options.pop("sync", False)
     with Gethash(ctx, stdout=stdout, stderr=stderr, **options) as gethash:
-        gethash(files, check=check)
+        gethash(files, check=check, sync=sync)
 
 
 def gethashcli(cmdname: str, hashname: str, suffix: str, **ignored: Any) -> Callable:
@@ -202,10 +209,10 @@ def gethashcli(cmdname: str, hashname: str, suffix: str, **ignored: Any) -> Call
             help=f"Read {hashname} from FILES and check them.",
         )
         @click.option(
-            "-d",
-            "--dir",
+            "-y",
+            "--sync",
             is_flag=True,
-            help="Allow checksum for directories. Just xor each checksum of files in a given directory.",
+            help="Update mtime of hash files to the same as data files.",
         )
         @click.option(
             "--suffix",
@@ -233,12 +240,6 @@ def gethashcli(cmdname: str, hashname: str, suffix: str, **ignored: Any) -> Call
             help="Set file type. If ``a``, include all types; if ``d``, include "
             "directories; if ``f``, include files.",
         )
-        @click.option(
-            "-y",
-            "--sync",
-            is_flag=True,
-            help="Update mtime of hash files to the same as data files.",
-        )
         @path_format.option("-i", "--inplace", is_flag=True, help="Use basename in checksum files.")
         @path_format.option(
             "-z",
@@ -261,6 +262,12 @@ def gethashcli(cmdname: str, hashname: str, suffix: str, **ignored: Any) -> Call
         )
         @click.option("--start", type=click.INT, help="The start offset of files.")
         @click.option("--stop", type=click.INT, help="The stop offset of files.")
+        @click.option(
+            "-d",
+            "--dir",
+            is_flag=True,
+            help="Allow checksum for directories. Just xor each checksum of files in a given directory.",
+        )
         @click.option("--no-stdout", is_flag=True, help="Do not output to stdout.")
         @click.option("--no-stderr", is_flag=True, help="Do not output to stderr.")
         @click.option("--tqdm-ascii", type=click.BOOL, default=False, show_default=True)
