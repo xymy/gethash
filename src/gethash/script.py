@@ -1,7 +1,7 @@
 import functools
 import os
 import sys
-from typing import Any, Callable, Optional, Tuple
+from typing import Any, Callable, Iterable, Optional, Tuple
 
 import click
 from click_option_group import MutuallyExclusiveOptionGroup
@@ -98,11 +98,20 @@ class Gethash:
         }
         self.hasher = Hasher(ctx, tqdm_args=tqdm_args)
 
-    def __call__(self, check, files):
+    def __call__(self, files: Iterable[str], *, check: bool) -> None:
         if check:
             self.check_hash(files)
         else:
             self.generate_hash(files)
+
+    def __enter__(self) -> "Gethash":
+        return self
+
+    def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None:
+        self.close()
+
+    def close(self) -> None:
+        self.output.close()
 
     def echo(self, msg, **kwargs):
         click.secho(msg, file=self.stdout, **kwargs)
@@ -161,15 +170,6 @@ class Gethash:
             except Exception as e:
                 self.echo_error(hash_path, e)
 
-    def close(self):
-        self.output.close()
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        self.close()
-
 
 def script_main(ctx: Any, files: Tuple[str, ...], **options: Any) -> None:
     """Execute the body for the main function."""
@@ -181,7 +181,7 @@ def script_main(ctx: Any, files: Tuple[str, ...], **options: Any) -> None:
 
     check = options.pop("check", False)
     with Gethash(ctx, stdout=stdout, stderr=stderr, **options) as gethash:
-        gethash(check, files)
+        gethash(files, check=check)
 
 
 def gethashcli(cmdname: str, hashname: str, suffix: str, **ignored: Any) -> Callable:
