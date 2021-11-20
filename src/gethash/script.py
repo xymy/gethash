@@ -16,7 +16,9 @@ from .utils.glob import glob_filters
 class Output:
     """Determine the output mode and provide the output interface."""
 
-    def __init__(self, agg: Optional[str] = None, sep: Optional[bool] = None, null: Optional[bool] = None) -> None:
+    def __init__(
+        self, agg: Optional[str] = None, sep: Optional[bool] = None, null: Optional[bool] = None, sync: bool = False
+    ) -> None:
         if (agg and sep) or (agg and null) or (sep and null):
             raise ValueError("require exactly one argument")
 
@@ -33,6 +35,9 @@ class Output:
         elif null:
             self._dump = self.output_null
 
+        self.sync = sync
+        self.maxmtime = 0.0
+
     def close(self) -> None:
         try:
             agg_file = self.agg_file
@@ -40,18 +45,25 @@ class Output:
             pass
         else:
             agg_file.close()
+            if self.sync:
+                os.utime(agg_file.name, (self.maxmtime, self.maxmtime))
 
-    def dump(self, hash_line: str, hash_path: str) -> None:
-        self._dump(hash_line, hash_path)
+    def dump(self, hash_line: str, hash_path: str, path: str) -> None:
+        self._dump(hash_line, hash_path, path)
 
-    def output_agg(self, hash_line: str, hash_path: str) -> None:
+    def output_agg(self, hash_line: str, hash_path: str, path: str) -> None:
         self.agg_file.write_hash_line(hash_line)
+        if self.sync:
+            self.maxmtime = max(self.maxmtime, os.path.getmtime(path))
 
-    def output_sep(self, hash_line: str, hash_path: str) -> None:
+    def output_sep(self, hash_line: str, hash_path: str, path: str) -> None:
         with HashFileWriter(hash_path) as f:
             f.write_hash_line(hash_line)
+        if self.sync:
+            mtime = os.path.getmtime(path)
+            os.utime(hash_path, (mtime, mtime))
 
-    def output_null(self, hash_line: str, hash_path: str) -> None:
+    def output_null(self, hash_line: str, hash_path: str, path: str) -> None:
         pass
 
 
@@ -74,6 +86,7 @@ class Gethash:
     def __init__(self, ctx: Any, **kwargs: Any) -> None:
         self.ctx = ctx
         self.suffix = kwargs.pop("suffix", ".sha")
+        self.sync = kwargs.pop("sync", False)
 
         self.stdout = kwargs.pop("stdout", sys.stdout)
         self.stderr = kwargs.pop("stderr", sys.stderr)
@@ -89,7 +102,7 @@ class Gethash:
         agg = kwargs.pop("agg", None)
         sep = kwargs.pop("sep", None)
         null = kwargs.pop("null", None)
-        self.output = Output(agg, sep, null)
+        self.output = Output(agg, sep, null, sync=self.sync)
 
         # Prepare arguments and construct the hash function.
         self.start = kwargs.pop("start", None)
@@ -103,8 +116,7 @@ class Gethash:
         }
         self.hasher = Hasher(ctx, tqdm_args=tqdm_args)
 
-    def __call__(self, files: Iterable[str], *, check: bool, sync: bool) -> None:
-        self.sync = sync
+    def __call__(self, files: Iterable[str], *, check: bool) -> None:
         if check:
             self.check_hash(files)
         else:
@@ -125,8 +137,7 @@ class Gethash:
                 root = self.check_root(path)
                 hash_line = generate_hash_line(path, self.hash_function, root=root)
                 hash_path = path + self.suffix
-                self.output.dump(hash_line, hash_path)
-                self.check_sync(path, hash_path)
+                self.output.dump(hash_line, hash_path, path)
             except Exception as e:
                 self.echo_error(path, e)
             else:
@@ -141,27 +152,25 @@ class Gethash:
                 self.echo_error(hash_path, e)
 
     def _check_hash(self, hash_path: str) -> None:
+        maxmtime = 0.0
         for hash_line in HashFileReader(hash_path):
             try:
                 root = self.check_root(hash_path)
                 path = check_hash_line(hash_line, self.hash_function, root=root)
-                self.check_sync(path, hash_path)
+                maxmtime = max(maxmtime, os.path.getmtime(path))
             except CheckHashLineError as e:
                 self.echo(f"[FAILURE] {e.path}", fg="red")
             except Exception as e:
                 self.echo_error(hash_path, e)
             else:
                 self.echo(f"[SUCCESS] {path}", fg="green")
+        if self.sync:
+            os.utime(hash_path, (maxmtime, maxmtime))
 
     def check_root(self, path: str) -> Optional[str]:
         if self.inplace:
             return os.path.dirname(path)
         return self.root
-
-    def check_sync(self, path: str, hash_path: str) -> None:
-        if self.sync:
-            t = os.path.getmtime(path)
-            os.utime(hash_path, (t, t))
 
     def glob_function(self, pathnames: Iterable[str]) -> Iterator[str]:
         return glob_filters(pathnames, mode=self.glob_mode, type=self.glob_type, recursive=True, user=True, vars=True)
@@ -186,9 +195,8 @@ def script_main(ctx: Any, files: Tuple[str, ...], **options: Any) -> None:
     stderr = open(os.devnull, "w") if no_stderr else sys.stderr
 
     check = options.pop("check", False)
-    sync = options.pop("sync", False)
     with Gethash(ctx, stdout=stdout, stderr=stderr, **options) as gethash:
-        gethash(files, check=check, sync=sync)
+        gethash(files, check=check)
 
 
 def gethashcli(cmdname: str, hashname: str, suffix: str, **ignored: Any) -> Callable:
