@@ -2,7 +2,7 @@ import io
 import os
 import stat
 from os import PathLike
-from typing import Any, AnyStr, Dict, Mapping, Optional, Union
+from typing import Any, AnyStr, Mapping, Optional, Union
 
 from tqdm import tqdm
 
@@ -70,8 +70,8 @@ class Hasher:
             tqdm_class = tqdm
 
         self._ctx = ctx.copy()
-        self.chunksize: int = chunksize
-        self.tqdm_args: Dict[str, Any] = tqdm_args
+        self.chunksize = chunksize
+        self.tqdm_args = tqdm_args
         self.tqdm_class = tqdm_class
 
     def __call__(
