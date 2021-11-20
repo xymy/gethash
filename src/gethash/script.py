@@ -1,7 +1,7 @@
 import functools
 import os
 import sys
-from typing import Any, Callable, Tuple
+from typing import Any, Callable, Optional, Tuple
 
 import click
 from click_option_group import MutuallyExclusiveOptionGroup
@@ -13,10 +13,10 @@ from .utils.click import Command, PathWithSuffix
 from .utils.glob import glob_filters
 
 
-class Output(object):
+class Output:
     """Determine the output mode and provide the output interface."""
 
-    def __init__(self, agg=None, sep=None, null=None):
+    def __init__(self, agg: Optional[str] = None, sep: Optional[bool] = None, null: Optional[bool] = None) -> None:
         if (agg and sep) or (agg and null) or (sep and null):
             raise ValueError("require exactly one argument")
 
@@ -33,7 +33,7 @@ class Output(object):
         elif null:
             self._dump = self.output_null
 
-    def close(self):
+    def close(self) -> None:
         try:
             agg_file = self.agg_file
         except AttributeError:
@@ -41,24 +41,31 @@ class Output(object):
         else:
             agg_file.close()
 
-    def dump(self, hash_line, hash_path):
+    def dump(self, hash_line: str, hash_path: str) -> None:
         self._dump(hash_line, hash_path)
 
-    def output_agg(self, hash_line, hash_path):
+    def output_agg(self, hash_line: str, hash_path: str) -> None:
         self.agg_file.write_hash_line(hash_line)
 
-    def output_sep(self, hash_line, hash_path):
+    def output_sep(self, hash_line: str, hash_path: str) -> None:
         with HashFileWriter(hash_path) as f:
             f.write_hash_line(hash_line)
 
-    def output_null(self, hash_line, hash_path):
+    def output_null(self, hash_line: str, hash_path: str) -> None:
         pass
 
 
-class Gethash(object):
+class Gethash:
     """Provide uniform interface for CLI scripts."""
 
-    def __init__(self, ctx, **kwargs):
+    glob_mode: int
+    glob_type: str
+
+    start: Optional[int]
+    stop: Optional[int]
+    dir_ok: bool
+
+    def __init__(self, ctx: Any, **kwargs: Any) -> None:
         self.ctx = ctx
         self.suffix = kwargs.pop("suffix", ".sha")
 
@@ -105,14 +112,7 @@ class Gethash(object):
         click.secho(msg, file=self.stderr, fg="red")
 
     def glob_function(self, pathnames):
-        return glob_filters(
-            pathnames,
-            mode=self.glob_mode,
-            type=self.glob_type,
-            recursive=True,
-            user=True,
-            vars=True,
-        )
+        return glob_filters(pathnames, mode=self.glob_mode, type=self.glob_type, recursive=True, user=True, vars=True)
 
     def hash_function(self, path):
         return self.hasher(path, self.start, self.stop, dir_ok=self.dir_ok)
