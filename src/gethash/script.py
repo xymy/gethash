@@ -1,7 +1,7 @@
 import functools
 import os
 import sys
-from typing import Any, Callable, Iterable, Optional, TextIO, Tuple
+from typing import Any, Callable, Iterable, Iterator, Optional, TextIO, Tuple
 
 import click
 from click_option_group import MutuallyExclusiveOptionGroup
@@ -119,30 +119,7 @@ class Gethash:
     def close(self) -> None:
         self.output.close()
 
-    def echo(self, msg, **kwargs):
-        click.secho(msg, file=self.stdout, **kwargs)
-
-    def echo_error(self, path, exc):
-        msg = f"[ERROR] {path}\n\t{type(exc).__name__}: {exc}"
-        click.secho(msg, file=self.stderr, fg="red")
-
-    def glob_function(self, pathnames):
-        return glob_filters(pathnames, mode=self.glob_mode, type=self.glob_type, recursive=True, user=True, vars=True)
-
-    def hash_function(self, path):
-        return self.hasher(path, self.start, self.stop, dir_ok=self.dir_ok)
-
-    def check_root(self, path):
-        if self.inplace:
-            return os.path.dirname(path)
-        return self.root
-
-    def check_sync(self, path, hash_path):
-        if self.sync:
-            t = os.path.getmtime(path)
-            os.utime(hash_path, (t, t))
-
-    def generate_hash(self, patterns):
+    def generate_hash(self, patterns: Iterable[str]) -> None:
         for path in self.glob_function(patterns):
             try:
                 root = self.check_root(path)
@@ -156,7 +133,14 @@ class Gethash:
                 # The hash line already has a newline.
                 self.echo(hash_line, nl=False)
 
-    def _check_hash(self, hash_path):
+    def check_hash(self, patterns: Iterable[str]) -> None:
+        for hash_path in self.glob_function(patterns):
+            try:
+                self._check_hash(hash_path)
+            except Exception as e:
+                self.echo_error(hash_path, e)
+
+    def _check_hash(self, hash_path: str) -> None:
         for hash_line in HashFileReader(hash_path):
             try:
                 root = self.check_root(hash_path)
@@ -169,12 +153,28 @@ class Gethash:
             else:
                 self.echo(f"[SUCCESS] {path}", fg="green")
 
-    def check_hash(self, patterns):
-        for hash_path in self.glob_function(patterns):
-            try:
-                self._check_hash(hash_path)
-            except Exception as e:
-                self.echo_error(hash_path, e)
+    def check_root(self, path: str) -> Optional[str]:
+        if self.inplace:
+            return os.path.dirname(path)
+        return self.root
+
+    def check_sync(self, path: str, hash_path: str) -> None:
+        if self.sync:
+            t = os.path.getmtime(path)
+            os.utime(hash_path, (t, t))
+
+    def glob_function(self, pathnames: Iterable[str]) -> Iterator[str]:
+        return glob_filters(pathnames, mode=self.glob_mode, type=self.glob_type, recursive=True, user=True, vars=True)
+
+    def hash_function(self, path: str) -> bytes:
+        return self.hasher(path, self.start, self.stop, dir_ok=self.dir_ok)
+
+    def echo(self, msg: str, **kwargs: Any) -> None:
+        click.secho(msg, file=self.stdout, **kwargs)
+
+    def echo_error(self, path: str, exc: Exception) -> None:
+        msg = f"[ERROR] {path}\n\t{type(exc).__name__}: {exc}"
+        click.secho(msg, file=self.stderr, fg="red")
 
 
 def script_main(ctx: Any, files: Tuple[str, ...], **options: Any) -> None:
