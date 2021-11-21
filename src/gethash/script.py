@@ -7,7 +7,14 @@ import click
 from click_option_group import MutuallyExclusiveOptionGroup
 
 from . import __version__
-from .core import CheckHashLineError, HashFileReader, HashFileWriter, check_hash_line, generate_hash_line
+from .core import (
+    CheckHashLineError,
+    HashFileReader,
+    HashFileWriter,
+    ParseHashLineError,
+    check_hash_line,
+    generate_hash_line,
+)
 from .hasher import Hasher
 from .utils.click import Command, PathWithSuffix
 from .utils.glob import glob_filters
@@ -139,7 +146,7 @@ class Gethash:
                 hash_path = path + self.suffix
                 self.output.dump(hash_line, hash_path, path)
             except Exception as e:
-                self.echo_error(path, e)
+                self.echo_exception(path, e)
             else:
                 # The hash line already has a newline.
                 self.echo(hash_line, nl=False)
@@ -149,19 +156,21 @@ class Gethash:
             try:
                 self._check_hash(hash_path)
             except Exception as e:
-                self.echo_error(hash_path, e)
+                self.echo_exception(hash_path, e)
 
     def _check_hash(self, hash_path: str) -> None:
         maxmtime = 0.0
-        for hash_line in HashFileReader(hash_path):
+        for i, hash_line in enumerate(HashFileReader(hash_path)):
             try:
                 root = self.check_root(hash_path)
                 path = check_hash_line(hash_line, self.hash_function, root=root)
                 maxmtime = max(maxmtime, os.path.getmtime(path))
+            except ParseHashLineError as e:
+                msg = f"[ERROR] invalid hash {e.hash_line!r} in {hash_path!r} at line {i+1}"
+                self.echo_error(msg, fg="white", bg="red")
+                return
             except CheckHashLineError as e:
                 self.echo(f"[FAILURE] {e.path}", fg="red")
-            except Exception as e:
-                self.echo_error(hash_path, e)
             else:
                 self.echo(f"[SUCCESS] {path}", fg="green")
         if self.sync:
@@ -181,7 +190,10 @@ class Gethash:
     def echo(self, msg: str, **kwargs: Any) -> None:
         click.secho(msg, file=self.stdout, **kwargs)
 
-    def echo_error(self, path: str, exc: Exception) -> None:
+    def echo_error(self, msg: str, **kwargs: Any) -> None:
+        click.secho(msg, file=self.stderr, **kwargs)
+
+    def echo_exception(self, path: str, exc: Exception) -> None:
         msg = f"[ERROR] {path}\n\t{type(exc).__name__}: {exc}"
         click.secho(msg, file=self.stderr, fg="red")
 
