@@ -40,7 +40,7 @@ class Cli(MultiCommand):
         return None
 
 
-@click.command(PROGRAM_NAME, cls=Cli, context_settings=CONTEXT_SETTINGS)
+@click.command(PROGRAM_NAME, cls=Cli, context_settings=CONTEXT_SETTINGS, max_suggestions=5, cutoff=0.2)
 @click.version_option(__version__, "-V", "--version", prog_name=PROGRAM_NAME)
 def main() -> None:
     """Generate or check various hash values."""
