@@ -92,8 +92,8 @@ class Gethash:
 
     def __init__(self, ctx: Any, **kwargs: Any) -> None:
         self.ctx = ctx
-        self.suffix = kwargs.pop("suffix", ".sha")
         self.sync = kwargs.pop("sync", False)
+        self.suffix = kwargs.pop("suffix", ".sha")
 
         self.stdout = kwargs.pop("stdout", sys.stdout)
         self.stderr = kwargs.pop("stderr", sys.stderr)
@@ -235,13 +235,6 @@ def gethashcli(cmdname: str, hashname: str, suffix: str, **ignored: Any) -> Call
             help="Update mtime of hash files to the same as data files.",
         )
         @click.option(
-            "--suffix",
-            metavar="SUFFIX",
-            default=suffix,
-            show_default=True,
-            help="Set the filename extension of checksum files.",
-        )
-        @click.option(
             "-g",
             "--glob",
             type=click.IntRange(0, 2),
@@ -296,6 +289,7 @@ def gethashcli(cmdname: str, hashname: str, suffix: str, **ignored: Any) -> Call
         @click.version_option(__version__, "-V", "--version", prog_name=cmdname)
         @functools.wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
+            kwargs.setdefault("suffix", suffix)
             return func(*args, **kwargs)
 
         return wrapper
