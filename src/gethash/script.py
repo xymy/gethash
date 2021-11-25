@@ -20,6 +20,13 @@ from .utils.click import Command, PathWithSuffix
 from .utils.glob import glob_filters
 
 
+class ParseHashFileError(ValueError):
+    def __init__(self, hash_line: str, lineno: int) -> None:
+        super().__init__(hash_line, lineno)
+        self.hash_line = hash_line
+        self.lineno = lineno
+
+
 class Output:
     """Determine the output mode and provide the output interface."""
 
@@ -155,6 +162,11 @@ class Gethash:
         for hash_path in self.glob_function(patterns):
             try:
                 self._check_hash(hash_path)
+            except ParseHashFileError as e:
+                # Strip newline for pretty printing.
+                hash_line = e.hash_line.rstrip("\n")
+                msg = f"[ERROR] invalid hash '{hash_line}' in '{hash_path}' at line {e.lineno}"
+                self.echo_error(msg, fg="white", bg="red")
             except Exception as e:
                 self.echo_exception(hash_path, e)
 
@@ -166,9 +178,7 @@ class Gethash:
                 path = check_hash_line(hash_line, self.hash_function, root=root)
                 maxmtime = max(maxmtime, os.path.getmtime(path))
             except ParseHashLineError as e:
-                msg = f"[ERROR] invalid hash {e.hash_line!r} in {hash_path!r} at line {i+1}"
-                self.echo_error(msg, fg="white", bg="red")
-                return
+                raise ParseHashFileError(e.hash_line, i)
             except CheckHashLineError as e:
                 self.echo(f"[FAILURE] {e.path}", fg="red")
             else:
