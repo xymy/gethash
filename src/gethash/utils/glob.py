@@ -3,6 +3,8 @@ import locale
 import os
 from typing import AnyStr, Callable, Iterable, Iterator, List
 
+from natsort import os_sort_keygen
+
 from . import _check_int, _check_str
 
 __all__ = [
@@ -11,6 +13,7 @@ __all__ = [
     "glob_scanners",
     "glob_filters",
     "sorted_locale",
+    "sorted_path",
 ]
 
 _ESCAPE_SQUARE = glob.escape("[")
@@ -209,3 +212,20 @@ def sorted_locale(iterable: Iterable[str], *, reverse: bool = False) -> List[str
     """
 
     return sorted(iterable, key=locale.strxfrm, reverse=reverse)
+
+
+def sorted_path(iterable: Iterable[str], *, key: Callable = None, reverse: bool = False) -> List[str]:
+    dirs = []
+    files = []
+    for path in iterable:
+        if os.path.isdir(path):
+            dirs.append(path)
+        else:
+            files.append(path)
+    dirs.sort(key=os_sort_keygen(key), reverse=reverse)
+    files.sort(key=os_sort_keygen(key), reverse=reverse)
+
+    if reverse:
+        return files + dirs
+    else:
+        return dirs + files

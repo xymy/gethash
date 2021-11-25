@@ -1,7 +1,7 @@
 import functools
 import os
 import sys
-from typing import Any, Callable, Iterable, Iterator, Optional, TextIO, Tuple
+from typing import Any, Callable, Iterable, Optional, TextIO, Tuple
 
 import click
 from click_option_group import MutuallyExclusiveOptionGroup
@@ -17,7 +17,7 @@ from .core import (
 )
 from .hasher import Hasher
 from .utils.click import Command, PathWithSuffix
-from .utils.glob import glob_filters
+from .utils.glob import glob_filters, sorted_path
 
 
 class ParseHashFileError(ValueError):
@@ -191,8 +191,10 @@ class Gethash:
             return os.path.dirname(path)
         return self.root
 
-    def glob_function(self, pathnames: Iterable[str]) -> Iterator[str]:
-        return glob_filters(pathnames, mode=self.glob_mode, type=self.glob_type, recursive=True, user=True, vars=True)
+    def glob_function(self, paths: Iterable[str]) -> Iterable[str]:
+        return sorted_path(
+            glob_filters(paths, mode=self.glob_mode, type=self.glob_type, recursive=True, user=True, vars=True)
+        )
 
     def hash_function(self, path: str) -> bytes:
         return self.hasher(path, self.start, self.stop, dir_ok=self.dir_ok)
