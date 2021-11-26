@@ -47,6 +47,11 @@ class HashFileReader:
     Parameters:
         filepath (str):
             The path of a hash file.
+
+    Note:
+        - ``hash_line`` a line of *hash* and *name* with GNU Coreutils style.
+        - ``hash`` is the hexadecimal hash value string.
+        - ``name`` is the path with corresponding hash value.
     """
 
     def __init__(self, filepath: str) -> None:
@@ -69,8 +74,7 @@ class HashFileReader:
 
         Returns:
             str:
-                ``hash_line`` where ``hash_line`` a line of *hash* and *name*
-                with GNU Coreutils style.
+                ``hash_line``.
         """
 
         while True:
@@ -87,8 +91,7 @@ class HashFileReader:
 
         Yields:
             str:
-                ``hash_line`` where ``hash_line`` a line of *hash* and *name*
-                with GNU Coreutils style.
+                ``hash_line``.
         """
 
         with self:
@@ -109,9 +112,7 @@ class HashFileReader:
 
         Yields:
             Tuple[str, str]:
-                ``(hash, name)`` where ``hash`` is the hexadecimal hash value
-                string and ``name`` is the path of a file or a directory with
-                corresponding hash value.
+                ``(hash, name)``.
         """
 
         for hash_line in self:
@@ -122,7 +123,7 @@ class HashFileReader:
 
         Yields:
             str:
-                ``hash`` where ``hash`` is the hexadecimal hash value string.
+                ``hash``.
         """
 
         for entry in self.iter2():
@@ -137,8 +138,7 @@ class HashFileReader:
 
         Yields:
             str:
-                ``name`` where ``name`` is the path of a file or a directory
-                with corresponding hash value.
+                ``name``.
         """
 
         for entry in self.iter2(root=root):
@@ -180,16 +180,6 @@ class HashFileWriter:
         """
 
         self.file.write(hash_line)
-
-    def write_comment(self, comment: str) -> None:
-        """Write comment.
-
-        Parameters:
-            comment (str):
-                A line of comment without leading ``#`` and tailing newline.
-        """
-
-        self.file.write(f"# {comment}\n")
 
 
 def format_hash_line(hex_hash_value: str, path: str, *, root: Optional[str] = None) -> str:

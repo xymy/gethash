@@ -50,8 +50,6 @@ HashFileWriter
 
 .. automethod:: HashFileWriter.write_hash_line
 
-.. automethod:: HashFileWriter.write_comment
-
 .. automethod:: HashFileWriter.close
 
 Exceptions
