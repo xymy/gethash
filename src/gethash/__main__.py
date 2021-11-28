@@ -1,9 +1,10 @@
 from contextlib import suppress
-from typing import List, Optional
+from typing import List, Optional, cast
 
 import click
 from click import Command, Context
 from importlib_metadata import entry_points
+from natsort import natsorted
 
 from . import __version__
 from .utils.click import MultiCommand
@@ -29,7 +30,7 @@ class Cli(MultiCommand):
         plugins = list(PLUGINS.names)
         if PYCRYPTODOMEX_INSTALLED:
             plugins.extend(LEGACY_PLUGINS.names)
-        return sorted(plugins)
+        return cast(List[str], natsorted(plugins))
 
     def get_command(self, ctx: Context, name: str) -> Optional[Command]:
         with suppress(KeyError, ImportError):
