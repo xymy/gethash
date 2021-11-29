@@ -1,13 +1,18 @@
+import sys
 from contextlib import suppress
 from typing import List, Optional, cast
 
 import click
 from click import Command, Context
-from importlib_metadata import entry_points
 from natsort import natsorted
 
 from . import __version__
 from .utils.click import MultiCommand
+
+if sys.version_info[:2] < (3, 10):
+    from importlib_metadata import entry_points
+else:
+    from importlib.metadata import entry_points
 
 try:
     import Cryptodome
