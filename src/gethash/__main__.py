@@ -26,23 +26,23 @@ PROGRAM_NAME = "gethash"
 
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"], max_content_width=120)
 
-PLUGINS = entry_points(group="gethash.plugins")
-LEGACY_PLUGINS = entry_points(group="gethash.legacy_plugins")
+COMMANDS = entry_points(group="gethash.commands")
+LEGACY_COMMANDS = entry_points(group="gethash.legacy_commands")
 
 
 class Cli(MultiCommand):
     def list_commands(self, ctx: Context) -> List[str]:
-        plugins = list(PLUGINS.names)
+        commands = list(COMMANDS.names)
         if PYCRYPTODOMEX_INSTALLED:
-            plugins.extend(LEGACY_PLUGINS.names)
-        return cast(List[str], natsorted(plugins))
+            commands.extend(LEGACY_COMMANDS.names)
+        return cast(List[str], natsorted(commands))
 
     def get_command(self, ctx: Context, name: str) -> Optional[Command]:
         with suppress(KeyError, ImportError):
-            return PLUGINS[name].load()
+            return COMMANDS[name].load()
         if PYCRYPTODOMEX_INSTALLED:
             with suppress(KeyError, ImportError):
-                return LEGACY_PLUGINS[name].load()
+                return LEGACY_COMMANDS[name].load()
         return None
 
 
