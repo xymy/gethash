@@ -1,10 +1,10 @@
 import sys
 from contextlib import suppress
-from typing import List, Optional, cast
+from typing import List, Optional
 
 import click
 from click import Command, Context
-from natsort import natsorted
+from natsort import natsort_keygen
 
 from . import __version__
 from .utils.click import MultiCommand
@@ -35,7 +35,8 @@ class Cli(MultiCommand):
         commands = list(COMMANDS.names)
         if PYCRYPTODOMEX_INSTALLED:
             commands.extend(LEGACY_COMMANDS.names)
-        return cast(List[str], natsorted(commands))
+        commands.sort(key=natsort_keygen())
+        return commands
 
     def get_command(self, ctx: Context, name: str) -> Optional[Command]:
         with suppress(KeyError, ImportError):
