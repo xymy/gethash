@@ -1,7 +1,6 @@
 import glob
-import locale
 import os
-from typing import AnyStr, Callable, Iterable, Iterator, List
+from typing import AnyStr, Callable, Iterable, Iterator, List, Optional
 
 from natsort import os_sort_keygen
 
@@ -12,7 +11,6 @@ __all__ = [
     "glob_filter",
     "glob_scanners",
     "glob_filters",
-    "sorted_locale",
     "sorted_path",
 ]
 
@@ -197,30 +195,13 @@ def glob_filters(
     yield from _path_filter(matched, type=type)
 
 
-def sorted_locale(iterable: Iterable[str], *, reverse: bool = False) -> List[str]:
-    """Sort a list of strings according to locale.
-
-    Parameters:
-        iterable (Iterable[str]):
-            A list of strings.
-        reverse (bool, default=False):
-            If ``True``, reverse the sorted result.
-
-    Returns:
-        List[str]:
-            The sorted list of strings.
-    """
-
-    return sorted(iterable, key=locale.strxfrm, reverse=reverse)
-
-
-def sorted_path(iterable: Iterable[str], *, key: Callable = None, reverse: bool = False) -> List[str]:
+def sorted_path(iterable: Iterable[str], *, key: Optional[Callable] = None, reverse: bool = False) -> List[str]:
     """Sort a list of path strings the same as the underlying operating system.
 
     Parameters:
         iterable (Iterable[str]):
             A list of path strings.
-        key (Callable, default=None):
+        key (Callable | None, default=None):
             The same parameter as :func:`sorted`.
         reverse (bool, default=False):
             The same parameter as :func:`sorted`.
@@ -238,8 +219,9 @@ def sorted_path(iterable: Iterable[str], *, key: Callable = None, reverse: bool 
         else:
             files.append(path)
 
-    dirs.sort(key=os_sort_keygen(key), reverse=reverse)
-    files.sort(key=os_sort_keygen(key), reverse=reverse)
+    key = os_sort_keygen(key)
+    dirs.sort(key=key, reverse=reverse)
+    files.sort(key=key, reverse=reverse)
 
     if reverse:
         return files + dirs
