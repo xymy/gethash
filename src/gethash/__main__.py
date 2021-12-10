@@ -15,12 +15,12 @@ else:
     from importlib.metadata import entry_points
 
 try:
-    import Cryptodome
+    import Crypto
 except ImportError:
     PYCRYPTODOMEX_INSTALLED = False
 else:
     PYCRYPTODOMEX_INSTALLED = True
-    del Cryptodome
+    del Crypto
 
 PROGRAM_NAME = "gethash"
 

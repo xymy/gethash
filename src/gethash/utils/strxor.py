@@ -14,7 +14,7 @@ def _py_strxor(term1: bytes, term2: bytes, output: Optional[bytearray] = None) -
 
 
 try:
-    from Cryptodome.Util.strxor import strxor as _c_strxor
+    from Crypto.Util.strxor import strxor as _c_strxor
 except ImportError:
     _strxor = _py_strxor
 else:

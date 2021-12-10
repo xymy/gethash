@@ -6,7 +6,7 @@ META = {
     "cmdname": "ripemd160",
     "hashname": "RIPEMD160",
     "suffix": ".ripemd160",
-    "package": "Cryptodome.Hash.RIPEMD160",
+    "package": "Crypto.Hash.RIPEMD160",
     "hasher": "new",
 }
 
@@ -15,7 +15,7 @@ META = {
 def main(files: Tuple[str, ...], **kwargs: Any) -> None:
     """Generate or check RIPEMD160."""
 
-    from Cryptodome.Hash.RIPEMD160 import new as H
+    from Crypto.Hash.RIPEMD160 import new as H
 
     script_main(H(), files, **kwargs)
 
