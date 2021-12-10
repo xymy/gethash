@@ -215,6 +215,21 @@ def sorted_locale(iterable: Iterable[str], *, reverse: bool = False) -> List[str
 
 
 def sorted_path(iterable: Iterable[str], *, key: Callable = None, reverse: bool = False) -> List[str]:
+    """Sort a list of path strings the same as the underlying operating system.
+
+    Parameters:
+        iterable (Iterable[str]):
+            A list of path strings.
+        key (Callable, default=None):
+            The same parameter as :func:`sorted`.
+        reverse (bool, default=False):
+            The same parameter as :func:`sorted`.
+
+    Returns:
+        List[str]:
+            The sorted list of path strings.
+    """
+
     dirs = []
     files = []
     for path in iterable:
@@ -222,6 +237,7 @@ def sorted_path(iterable: Iterable[str], *, key: Callable = None, reverse: bool 
             dirs.append(path)
         else:
             files.append(path)
+
     dirs.sort(key=os_sort_keygen(key), reverse=reverse)
     files.sort(key=os_sort_keygen(key), reverse=reverse)
 
