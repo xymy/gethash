@@ -1,6 +1,5 @@
 import io
 import os
-import stat
 from os import PathLike
 from typing import Any, AnyStr, Mapping, Optional, Union
 
@@ -110,8 +109,7 @@ class Hasher:
             tn = type(stop).__name__
             raise TypeError(f"stop must be int or None, not {tn}")
 
-        st = os.stat(path)
-        if stat.S_ISDIR(st.st_mode):
+        if os.path.isdir(path):
             if dir_ok:
                 return self._hash_dir(path, start, stop)
             raise IsADirectory(f"{path!r} is a directory")
@@ -142,7 +140,7 @@ class Hasher:
         stop: Optional[int] = None,
     ) -> bytes:
         # Clamp ``(start, stop)`` to ``(0, filesize)``.
-        filesize = os.stat(filepath).st_size
+        filesize = os.path.getsize(filepath)
         if start is None or start < 0:
             start = 0
         if stop is None or stop > filesize:
