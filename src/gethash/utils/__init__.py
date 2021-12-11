@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Optional, cast
 
 __all__ = [
     "_check_int",
@@ -21,7 +21,7 @@ def _check_int(obj: object, name: str) -> None:
         raise TypeError(f"{name} must be int, not {tn}")
 
 
-def _check_int_opt(obj: object, name: str, default: object = None) -> Any:
+def _check_int_opt(obj: object, name: str, default: Optional[int] = None) -> Optional[int]:
     if obj is None:
         return default
 
@@ -37,7 +37,7 @@ def _check_float(obj: object, name: str) -> None:
         raise TypeError(f"{name} must be float, not {tn}")
 
 
-def _check_float_opt(obj: object, name: str, default: object = None) -> Any:
+def _check_float_opt(obj: object, name: str, default: Optional[float] = None) -> Optional[float]:
     if obj is None:
         return default
 
@@ -53,7 +53,7 @@ def _check_str(obj: object, name: str) -> None:
         raise TypeError(f"{name} must be str, not {tn}")
 
 
-def _check_str_opt(obj: object, name: str, default: object = None) -> Any:
+def _check_str_opt(obj: object, name: str, default: Optional[str] = None) -> Optional[str]:
     if obj is None:
         return default
 
@@ -69,7 +69,7 @@ def _check_bytes(obj: object, name: str) -> None:
         raise TypeError(f"{name} must be bytes-like, not {tn}")
 
 
-def _check_bytes_opt(obj: object, name: str, default: object = None) -> Any:
+def _check_bytes_opt(obj: object, name: str, default: Optional[bytes] = None) -> Optional[bytes]:
     if obj is None:
         return default
 
@@ -85,14 +85,14 @@ def _check_bytes_w(obj: object, name: str) -> None:
         raise TypeError(f"{name} must be writable bytes-like, not {tn}")
 
 
-def _check_bytes_w_opt(obj: object, name: str, default: object = None) -> Any:
+def _check_bytes_w_opt(obj: object, name: str, default: Optional[bytearray] = None) -> Optional[bytearray]:
     if obj is None:
         return default
 
     if not (isinstance(obj, bytearray) or _is_writable_memoryview(obj)):
         tn = type(obj).__name__
         raise TypeError(f"{name} must be writable bytes-like or None, not {tn}")
-    return obj
+    return cast(bytearray, obj)
 
 
 def _is_writable_memoryview(obj: object) -> bool:
