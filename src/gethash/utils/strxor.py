@@ -29,7 +29,7 @@ def strxor(term1: bytes, term2: bytes, output: Optional[bytearray] = None) -> Op
             The first term of the XOR operation.
         term2 (bytes):
             The second term of the XOR operation.
-        output (bytearray | None, default=None)
+        output (bytearray | None, default=None):
             The location where the result must be written to. If ``None``, the
             result is returned.
 
