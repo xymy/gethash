@@ -17,8 +17,6 @@ Glob
 
 .. autofunction:: glob_filters
 
-.. autofunction:: sorted_locale
-
 .. autofunction:: sorted_path
 
 Strxor
