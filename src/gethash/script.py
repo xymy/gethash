@@ -223,8 +223,10 @@ def script_main(ctx: Any, files: Tuple[str, ...], **options: Any) -> None:
         gethash(files, check=check)
 
 
-def gethashcli(cmdname: str, hashname: str, suffix: str, **ignored: Any) -> Callable:
+def gethashcli(command_name: str, display_name: str, **extras: Any) -> Callable:
     """Apply click decorators to the main function."""
+
+    suffix = extras.pop("suffix", "." + command_name.replace("-", "_"))
 
     def decorator(func: Callable) -> Callable:
         context_settings = dict(help_option_names=["-h", "--help"], max_content_width=120)
@@ -232,13 +234,13 @@ def gethashcli(cmdname: str, hashname: str, suffix: str, **ignored: Any) -> Call
         path_format = MutuallyExclusiveOptionGroup("Path Format")
         output_mode = MutuallyExclusiveOptionGroup("Output Mode")
 
-        @click.command(cmdname, cls=Command, context_settings=context_settings, no_args_is_help=True)
+        @click.command(command_name, cls=Command, context_settings=context_settings, no_args_is_help=True)
         @click.argument("files", nargs=-1)
         @click.option(
             "-c",
             "--check",
             is_flag=True,
-            help=f"Read {hashname} from FILES and check them.",
+            help=f"Read {display_name} from FILES and check them.",
         )
         @click.option(
             "-y",
@@ -298,7 +300,7 @@ def gethashcli(cmdname: str, hashname: str, suffix: str, **ignored: Any) -> Call
         @click.option("--tqdm-ascii", type=click.BOOL, default=False, show_default=True)
         @click.option("--tqdm-disable", type=click.BOOL, default=False, show_default=True)
         @click.option("--tqdm-leave", type=click.BOOL, default=False, show_default=True)
-        @click.version_option(__version__, "-V", "--version", prog_name=cmdname)
+        @click.version_option(__version__, "-V", "--version", prog_name=command_name)
         @functools.wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
             kwargs.setdefault("suffix", suffix)
