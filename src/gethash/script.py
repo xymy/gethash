@@ -227,8 +227,12 @@ def gethashcli(command_name: str, display_name: str, **extras: Any) -> Callable:
     """Apply click decorators to the main function."""
 
     suffix = extras.pop("suffix", "." + command_name.replace("-", "_"))
+    doc = extras.pop("doc", None)
 
     def decorator(func: Callable) -> click.Command:
+        if doc is not None:
+            func.__doc__ = doc
+
         context_settings = dict(help_option_names=["-h", "--help"], max_content_width=120)
 
         path_format = MutuallyExclusiveOptionGroup("Path Format")
