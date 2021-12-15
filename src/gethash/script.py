@@ -228,7 +228,7 @@ def gethashcli(command_name: str, display_name: str, **extras: Any) -> Callable:
 
     suffix = extras.pop("suffix", "." + command_name.replace("-", "_"))
 
-    def decorator(func: Callable) -> Callable:
+    def decorator(func: Callable) -> click.Command:
         context_settings = dict(help_option_names=["-h", "--help"], max_content_width=120)
 
         path_format = MutuallyExclusiveOptionGroup("Path Format")
