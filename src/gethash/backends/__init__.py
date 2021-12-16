@@ -2,7 +2,7 @@ import abc
 from contextlib import suppress
 from typing import Any, List, Set, Tuple
 
-import click
+from click import Command
 
 from gethash.script import gethashcli, script_main
 
@@ -30,7 +30,7 @@ class Backend(metaclass=abc.ABCMeta):
     def load_ctx(self, name: str) -> Any:
         """Load context."""
 
-    def load_cmd(self, name: str) -> click.Command:
+    def load_cmd(self, name: str) -> Command:
         """Load command."""
 
         if name not in self.algorithms_available:

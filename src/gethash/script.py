@@ -4,6 +4,7 @@ import sys
 from typing import Any, Callable, Iterable, Optional, TextIO, Tuple
 
 import click
+from click import Command
 from click_option_group import MutuallyExclusiveOptionGroup
 
 from . import __version__
@@ -229,7 +230,7 @@ def gethashcli(command_name: str, display_name: str, **extras: Any) -> Callable:
     suffix = extras.pop("suffix", "." + command_name.replace("-", "_"))
     doc = extras.pop("doc", None)
 
-    def decorator(func: Callable) -> click.Command:
+    def decorator(func: Callable) -> Command:
         if doc is not None:
             func.__doc__ = doc
 
