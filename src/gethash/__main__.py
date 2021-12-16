@@ -8,7 +8,7 @@ from natsort import natsort_keygen
 
 from . import __version__
 from .backends import Backend
-from .utils.click import MultiCommand
+from .utils.click import MultiCommandX
 
 if sys.version_info[:2] < (3, 10):
     from importlib_metadata import entry_points
@@ -22,7 +22,7 @@ CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"], max_content_width=12
 COMMANDS = entry_points(group="gethash.commands")
 
 
-class Cli(MultiCommand):
+class Cli(MultiCommandX):
     def list_commands(self, ctx: Context) -> List[str]:
         commands = set(COMMANDS.names)
         for backend in Backend.list_backends():

@@ -5,17 +5,17 @@ import click
 from click import Context, Parameter
 from click_didyoumean import DYMMixin
 
-__all__ = ["Command", "MultiCommand", "PathWithSuffix"]
+__all__ = ["CommandX", "MultiCommandX", "PathWithSuffix"]
 
 
-class Command(click.Command):
+class CommandX(click.Command):
     def main(self, args: Optional[Sequence[str]] = None, *pargs: Any, **kwargs: Any) -> Any:
         if args is None:
             args = sys.argv[1:]
         return super().main(args, *pargs, **kwargs)
 
 
-class MultiCommand(DYMMixin, click.MultiCommand):
+class MultiCommandX(DYMMixin, click.MultiCommand):
     def main(self, args: Optional[Sequence[str]] = None, *pargs: Any, **kwargs: Any) -> Any:
         if args is None:
             args = sys.argv[1:]

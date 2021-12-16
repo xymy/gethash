@@ -16,7 +16,7 @@ from .core import (
     generate_hash_line,
 )
 from .hasher import Hasher
-from .utils.click import Command, PathWithSuffix
+from .utils.click import CommandX, PathWithSuffix
 from .utils.glob import glob_filters, sorted_path
 
 
@@ -238,7 +238,7 @@ def gethashcli(command_name: str, display_name: str, **extras: Any) -> Callable:
         path_format = MutuallyExclusiveOptionGroup("Path Format")
         output_mode = MutuallyExclusiveOptionGroup("Output Mode")
 
-        @click.command(command_name, cls=Command, context_settings=context_settings, no_args_is_help=True)
+        @click.command(command_name, cls=CommandX, context_settings=context_settings, no_args_is_help=True)
         @click.argument("files", nargs=-1)
         @click.option(
             "-c",
