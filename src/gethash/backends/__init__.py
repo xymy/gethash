@@ -13,8 +13,8 @@ class Backend(metaclass=abc.ABCMeta):
     _registry: List["Backend"] = []
 
     @classmethod
-    def register_backend(cls, backend: "Backend") -> None:
-        cls._registry.append(backend)
+    def register_backend(cls) -> None:
+        cls._registry.append(cls())
 
     @classmethod
     def list_backends(cls) -> List["Backend"]:
@@ -33,9 +33,13 @@ class Backend(metaclass=abc.ABCMeta):
     def load_cmd(self, name: str) -> click.Command:
         """Load command."""
 
-        doc = f"""Generate or check {name.upper()}."""
+        if name not in self.algorithms_available:
+            raise ValueError(f"unkown algorithm {name!r}")
 
-        @gethashcli(command_name=name, display_name=name.upper(), doc=doc)
+        display_name = name.upper()
+        doc = f"""Generate or check {display_name}."""
+
+        @gethashcli(command_name=name, display_name=display_name, doc=doc)
         def main(files: Tuple[str, ...], **kwargs: Any) -> None:
 
             ctx = self.load_ctx(name)
@@ -47,13 +51,13 @@ class Backend(metaclass=abc.ABCMeta):
 def _load_backend() -> None:
     from .hashlib import HashlibBackend
 
-    Backend.register_backend(HashlibBackend())
+    HashlibBackend.register_backend()
 
     # For optional cryptographic backend.
     with suppress(ImportError):
         from .pycryptodome import PyCryptodomeBackend
 
-        Backend.register_backend(PyCryptodomeBackend())
+        PyCryptodomeBackend.register_backend()
 
 
 _load_backend()
