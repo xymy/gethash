@@ -7,6 +7,7 @@ from click import Command, Context
 from natsort import natsort_keygen
 
 from . import __version__
+from .backends import Backend
 from .utils.click import MultiCommand
 
 if sys.version_info[:2] < (3, 10):
@@ -14,36 +15,26 @@ if sys.version_info[:2] < (3, 10):
 else:
     from importlib.metadata import entry_points
 
-try:
-    import Crypto
-except ImportError:
-    PYCRYPTODOMEX_INSTALLED = False
-else:
-    PYCRYPTODOMEX_INSTALLED = True
-    del Crypto
-
 PROGRAM_NAME = "gethash"
 
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"], max_content_width=120)
 
 COMMANDS = entry_points(group="gethash.commands")
-LEGACY_COMMANDS = entry_points(group="gethash.legacy_commands")
 
 
 class Cli(MultiCommand):
     def list_commands(self, ctx: Context) -> List[str]:
-        commands = list(COMMANDS.names)
-        if PYCRYPTODOMEX_INSTALLED:
-            commands.extend(LEGACY_COMMANDS.names)
-        commands.sort(key=natsort_keygen())
-        return commands
+        commands = set(COMMANDS.names)
+        for backend in Backend.list_backends():
+            commands.update(backend.algorithms_available)
+        return sorted(commands, key=natsort_keygen())
 
     def get_command(self, ctx: Context, name: str) -> Optional[Command]:
         with suppress(KeyError, ImportError):
             return COMMANDS[name].load()
-        if PYCRYPTODOMEX_INSTALLED:
-            with suppress(KeyError, ImportError):
-                return LEGACY_COMMANDS[name].load()
+        for backend in Backend.list_backends():
+            with suppress(Exception):
+                return backend.load_cmd(name)
         return None
 
 
