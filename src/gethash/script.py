@@ -69,7 +69,8 @@ class Output:
     def output_agg(self, hash_line: str, hash_path: str, path: str) -> None:
         self.agg_file.write_hash_line(hash_line)
         if self.sync:
-            self.maxmtime = max(self.maxmtime, os.path.getmtime(path))
+            mtime = os.path.getmtime(path)
+            self.maxmtime = max(self.maxmtime, mtime)
 
     def output_sep(self, hash_line: str, hash_path: str, path: str) -> None:
         with HashFileWriter(hash_path) as f:
