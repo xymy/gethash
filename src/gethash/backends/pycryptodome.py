@@ -14,8 +14,6 @@ class PyCryptodomeBackend(Backend):
         return self._algorithms
 
     def load_ctx(self, name: str) -> Any:
-        if name not in self.algorithms_available:
-            raise ValueError(f"unkown algorithm {name!r}")
-
+        # The ``name`` has been checked in ``load_cmd``.
         module = import_module(f"Crypto.Hash.{name.upper()}")
-        return module.new()  # type: ignore
+        return module.new()  # type: ignore [attr-defined]

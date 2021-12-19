@@ -12,9 +12,7 @@ class HashlibBackend(Backend):
         return self._algorithms
 
     def load_ctx(self, name: str) -> Any:
-        if name not in self.algorithms_available:
-            raise ValueError(f"unkown algorithm {name!r}")
-
+        # The ``name`` has been checked in ``load_cmd``.
         try:
             return hashlib.new(name.replace("-", "_"))
         except ValueError:
