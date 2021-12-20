@@ -55,24 +55,6 @@ META_LIST = [
         "package": "hashlib",
         "hasher": "blake2s",
     },
-    {
-        "command_name": "md2",
-        "display_name": "MD2",
-        "package": "Crypto.Hash.MD2",
-        "hasher": "new",
-    },
-    {
-        "command_name": "md4",
-        "display_name": "MD4",
-        "package": "Crypto.Hash.MD4",
-        "hasher": "new",
-    },
-    {
-        "command_name": "ripemd160",
-        "display_name": "RIPEMD160",
-        "package": "Crypto.Hash.RIPEMD160",
-        "hasher": "new",
-    },
 ]
 
 TEMPLATE = """\
