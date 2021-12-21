@@ -17,10 +17,10 @@ else:
 
 PROGRAM_NAME = "gethash"
 
+COMMANDS = entry_points(group="gethash.commands")
+
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"], max_content_width=120)
 EXTRA_SETTINGS = dict(max_suggestions=5, cutoff=0.2)
-
-COMMANDS = entry_points(group="gethash.commands")
 
 
 class Cli(MultiCommandX):
