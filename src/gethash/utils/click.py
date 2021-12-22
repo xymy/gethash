@@ -10,6 +10,7 @@ __all__ = ["CommandX", "MultiCommandX", "PathWithSuffix"]
 
 class CommandX(click.Command):
     def main(self, args: Optional[Sequence[str]] = None, *pargs: Any, **kwargs: Any) -> Any:
+        # Avoid command-line arguments expansion on Windows.
         if args is None:
             args = sys.argv[1:]
         return super().main(args, *pargs, **kwargs)
@@ -17,6 +18,7 @@ class CommandX(click.Command):
 
 class MultiCommandX(DYMMixin, click.MultiCommand):
     def main(self, args: Optional[Sequence[str]] = None, *pargs: Any, **kwargs: Any) -> Any:
+        # Avoid command-line arguments expansion on Windows.
         if args is None:
             args = sys.argv[1:]
         return super().main(args, *pargs, **kwargs)
