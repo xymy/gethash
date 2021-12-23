@@ -16,4 +16,4 @@ class PyCryptodomeBackend(Backend):
     def load_ctx(self, name: str) -> Any:
         # The ``name`` has been checked in ``load_cmd``.
         module = import_module(f"Crypto.Hash.{name.upper()}")
-        return module.new()  # type: ignore [attr-defined]
+        return module.new()
