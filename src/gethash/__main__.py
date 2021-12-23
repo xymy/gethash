@@ -17,22 +17,22 @@ else:
 
 PROGRAM_NAME = "gethash"
 
-COMMANDS = entry_points(group="gethash.commands")
-
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"], max_content_width=120)
 EXTRA_SETTINGS = dict(max_suggestions=5, cutoff=0.2)
 
 
 class Cli(MultiCommandX):
+    _entry_points = entry_points(group="gethash.commands")
+
     def list_commands(self, ctx: Context) -> List[str]:
-        commands = set(COMMANDS.names)
+        commands = set(self._entry_points.names)
         for backend in Backend.list_backends():
             commands.update(backend.algorithms_available)
         return sorted(commands, key=natsort_keygen())
 
     def get_command(self, ctx: Context, name: str) -> Optional[Command]:
         with suppress(KeyError, ImportError):
-            return COMMANDS[name].load()
+            return self._entry_points[name].load()
         for backend in Backend.list_backends():
             with suppress(Exception):
                 return backend.load_cmd(name)
