@@ -27,7 +27,7 @@ $ pip install "gethash[all]"
 
 ## Usage
 
-After installation, 9 commands are available:
+After installation, 10 commands are available:
 
 - crc32
 - md5
@@ -38,12 +38,13 @@ After installation, 9 commands are available:
 - sha3-512
 - blake2b
 - blake2s
+- gethash
 
-If you use `[all]`, 3 additional commands are available:
+Show command-line usage:
 
-- md2
-- md4
-- ripemd160
+```shell
+$ gethash --help
+```
 
 ### Generate hash values
 
