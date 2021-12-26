@@ -44,6 +44,37 @@ Show command-line usage:
 
 ```shell
 $ gethash --help
+Usage: gethash [OPTIONS] COMMAND [ARGS]...
+
+  Generate or check various hash values.
+
+Options:
+  -V, --version  Show the version and exit.
+  -h, --help     Show this message and exit.
+
+Commands:
+  blake2b     Generate or check BLAKE2b.
+  blake2s     Generate or check BLAKE2s.
+  crc32       Generate or check CRC32.
+  md2         Generate or check MD2.
+  md4         Generate or check MD4.
+  md5         Generate or check MD5.
+  md5-sha1    Generate or check MD5-SHA1.
+  mdc2        Generate or check MDC2.
+  ripemd160   Generate or check RIPEMD160.
+  sha1        Generate or check SHA1.
+  sha3-224    Generate or check SHA3-224.
+  sha3-256    Generate or check SHA3-256.
+  sha3-384    Generate or check SHA3-384.
+  sha3-512    Generate or check SHA3-512.
+  sha224      Generate or check SHA224.
+  sha256      Generate or check SHA256.
+  sha384      Generate or check SHA384.
+  sha512      Generate or check SHA512.
+  sha512-224  Generate or check SHA512-224.
+  sha512-256  Generate or check SHA512-256.
+  sm3         Generate or check SM3.
+  whirlpool   Generate or check WHIRLPOOL.
 ```
 
 ### Generate hash values
