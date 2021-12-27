@@ -24,8 +24,8 @@ project = "Gethash"
 copyright = "2020-2021, xymy"
 author = "xymy"
 
-version = gethash.__version__  # type: ignore [attr-defined]
-release = gethash.__version__  # type: ignore [attr-defined]
+version = gethash.__version__
+release = gethash.__version__
 
 # -- General configuration ---------------------------------------------------
 
