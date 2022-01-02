@@ -37,6 +37,7 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
+    "myst_parser",
     "sphinx_copybutton",
 ]
 
@@ -62,6 +63,15 @@ html_static_path = ["_static"]
 # -- Options for intersphinx -------------------------------------------------
 
 intersphinx_mapping = {"python": ("https://docs.python.org/3", None)}
+
+# -- Options for myst-parser -------------------------------------------------
+
+myst_enable_extensions = [
+    "colon_fence",
+    "deflist",
+    "linkify",
+    "tasklist",
+]
 
 # -- Options for sphinx-copybutton -------------------------------------------
 
