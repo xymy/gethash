@@ -1,7 +1,7 @@
 import io
 import os
 from os import PathLike
-from typing import Any, AnyStr, Mapping, Optional, Union
+from typing import Any, AnyStr, Mapping, Optional, Union, cast
 
 from tqdm import tqdm
 
@@ -164,4 +164,4 @@ class Hasher:
                 remain = f.read(remainsize)
                 ctx.update(remain)
                 bar.update(remainsize)
-        return ctx.digest()
+        return cast(bytes, ctx.digest())

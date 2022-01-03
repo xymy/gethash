@@ -225,7 +225,7 @@ def script_main(ctx: Any, files: Tuple[str, ...], **options: Any) -> None:
         gethash(files, check=check)
 
 
-def gethashcli(command_name: str, display_name: str, **extras: Any) -> Callable:
+def gethashcli(command_name: str, display_name: str, **extras: Any) -> Callable[[Callable], Command]:
     """Apply click decorators to the main function."""
 
     suffix = extras.pop("suffix", "." + command_name.replace("-", "_"))

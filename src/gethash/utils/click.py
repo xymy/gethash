@@ -1,5 +1,5 @@
 import sys
-from typing import Any, Optional, Sequence
+from typing import Any, Optional, Sequence, cast
 
 import click
 from click import Context, Parameter
@@ -31,9 +31,9 @@ class PathWithSuffix(click.Path):
 
     def convert(self, value: str, param: Optional[Parameter], ctx: Optional[Context]) -> str:
         if self.file_okay and self.allow_dash and value == "-":
-            return super().convert(value, param, ctx)
+            return cast(str, super().convert(value, param, ctx))
 
         suffix = self.suffix
         if value is not None and value[-len(suffix) :].lower() != suffix.lower():
             value += suffix
-        return super().convert(value, param, ctx)
+        return cast(str, super().convert(value, param, ctx))

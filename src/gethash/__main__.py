@@ -1,6 +1,6 @@
 import sys
 from contextlib import suppress
-from typing import List, Optional
+from typing import List, Optional, cast
 
 import click
 from click import Command, Context
@@ -32,7 +32,7 @@ class Cli(MultiCommandX):
 
     def get_command(self, ctx: Context, name: str) -> Optional[Command]:
         with suppress(KeyError, ImportError):
-            return self._entry_points[name].load()
+            return cast(Command, self._entry_points[name].load())
         for backend in Backend.list_backends():
             with suppress(Exception):
                 return backend.load_cmd(name)
