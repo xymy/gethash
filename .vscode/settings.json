@@ -2,5 +2,11 @@
     "python.formatting.provider": "black",
     "python.linting.flake8Enabled": true,
     "python.linting.mypyEnabled": true,
-    "python.linting.pylintEnabled": false
+    "python.linting.pylintEnabled": false,
+    "myst.preview.extensions": [
+        "dollarmath",
+        "colon_fence",
+        "deflist",
+        "tasklist"
+    ]
 }
