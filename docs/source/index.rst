@@ -22,8 +22,8 @@ Gethash Documentation
 
 Gethash is a command-line hash utility.
 
-Getting Started
----------------
+Installation
+------------
 
 Install from PyPI:
 
@@ -40,6 +40,9 @@ or if you need legacy hash algorithms:
 .. note::
 
     Gethash requires Python 3.7 and later.
+
+Usage
+-----
 
 Show command-line usage:
 
