@@ -44,6 +44,19 @@ or if you need legacy hash algorithms:
 Usage
 -----
 
+After installation, 10 commands are available:
+
+- crc32
+- md5
+- sha1
+- sha256
+- sha512
+- sha3-256
+- sha3-512
+- blake2b
+- blake2s
+- gethash
+
 Show command-line usage:
 
 .. code-block:: shell
