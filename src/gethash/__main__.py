@@ -11,9 +11,9 @@ from .backends import Backend
 from .utils.click import MultiCommandX
 
 if sys.version_info[:2] < (3, 10):
-    from importlib_metadata import entry_points
+    from importlib_metadata import EntryPoints, entry_points
 else:
-    from importlib.metadata import entry_points
+    from importlib.metadata import EntryPoints, entry_points  # type: ignore
 
 PROGRAM_NAME = "gethash"
 
@@ -22,7 +22,7 @@ EXTRA_SETTINGS = dict(max_suggestions=5, cutoff=0.2)
 
 
 class Cli(MultiCommandX):
-    _entry_points = entry_points(group="gethash.commands")
+    _entry_points = cast(EntryPoints, entry_points(group="gethash.commands"))  # type: ignore
 
     def list_commands(self, ctx: Context) -> List[str]:
         commands = set(self._entry_points.names)
