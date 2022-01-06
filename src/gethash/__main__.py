@@ -1,28 +1,22 @@
-import sys
 from contextlib import suppress
-from typing import List, Optional, cast
+from typing import Any, List, Optional, cast
 
 import click
 from click import Command, Context
 from natsort import natsort_keygen
 
 from . import __version__
+from ._compat import entry_points
 from .backends import Backend
 from .utils.click import MultiCommandX
 
-if sys.version_info[:2] < (3, 10):
-    from importlib_metadata import EntryPoints, entry_points
-else:
-    from importlib.metadata import EntryPoints, entry_points  # type: ignore
-
 PROGRAM_NAME = "gethash"
-
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"], max_content_width=120)
 EXTRA_SETTINGS = dict(max_suggestions=5, cutoff=0.2)
 
 
 class Cli(MultiCommandX):
-    _entry_points = cast(EntryPoints, entry_points(group="gethash.commands"))  # type: ignore
+    _entry_points: Any = entry_points(group="gethash.commands")  # type: ignore
 
     def list_commands(self, ctx: Context) -> List[str]:
         commands = set(self._entry_points.names)
