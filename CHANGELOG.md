@@ -30,6 +30,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Switched `PyCryptodomex` dependency to `PyCryptodome` dependency.
 - Added PyPI classifier `Intended Audience :: Developers`.
 
-[Unreleased]: https://github.com/xymy/pydevenv/compare/v5.1...HEAD
-[5.1]: https://github.com/xymy/pydevenv/compare/v5.0...v5.1
-[5.0]: https://github.com/xymy/pydevenv/compare/v4.9...v5.0
+[Unreleased]: https://github.com/xymy/gethash/compare/v5.1...HEAD
+[5.1]: https://github.com/xymy/gethash/compare/v5.0...v5.1
+[5.0]: https://github.com/xymy/gethash/compare/v4.9...v5.0
