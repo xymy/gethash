@@ -1,4 +1,4 @@
-sphinx>=4.2
-furo>=2021.10
+sphinx>=4.4
+furo>=2022.1
 myst-parser[linkify]>=0.16
-sphinx-copybutton>=0.4
+sphinx-copybutton>=0.5
