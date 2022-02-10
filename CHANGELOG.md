@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `HashFileReader.iter_hash` now accepts `root` argument.
+
 ## [5.1] - 2022-01-18
 
 ### Documentation

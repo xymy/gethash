@@ -118,15 +118,19 @@ class HashFileReader:
         for hash_line in self:
             yield parse_hash_line(hash_line, root=root)
 
-    def iter_hash(self) -> Iterator[str]:
+    def iter_hash(self, *, root: Optional[str] = None) -> Iterator[str]:
         """Yield hash.
+
+        Parameters:
+            root (str | None, default=None):
+                The root directory.
 
         Yields:
             str:
                 ``hash``.
         """
 
-        for entry in self.iter2():
+        for entry in self.iter2(root=root):
             yield entry[0]
 
     def iter_name(self, *, root: Optional[str] = None) -> Iterator[str]:
