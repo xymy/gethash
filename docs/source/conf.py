@@ -67,8 +67,8 @@ intersphinx_mapping = {"python": ("https://docs.python.org/3", None)}
 # -- Options for myst-parser -------------------------------------------------
 
 myst_enable_extensions = [
-    "colon_fence",
     "deflist",
+    "dollarmath",
     "linkify",
     "tasklist",
 ]

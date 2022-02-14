@@ -1,5 +1,5 @@
 # Changelog
 
-:::{include} ../../CHANGELOG.md
+```{include} ../../CHANGELOG.md
 :start-line: 7
-:::
+```

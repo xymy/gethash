@@ -4,9 +4,9 @@
     "python.linting.mypyEnabled": true,
     "python.linting.pylintEnabled": false,
     "myst.preview.extensions": [
-        "dollarmath",
         "colon_fence",
         "deflist",
+        "dollarmath",
         "tasklist"
     ]
 }
