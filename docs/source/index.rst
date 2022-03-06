@@ -8,8 +8,8 @@ Gethash Documentation
 .. image:: https://img.shields.io/pypi/pyversions/gethash
     :target: https://pypi.org/project/gethash/
 
-.. image:: https://img.shields.io/pypi/dm/gethash
-    :target: https://pypi.org/project/gethash/
+.. image:: https://pepy.tech/badge/gethash/month
+    :target: https://pepy.tech/project/gethash
 
 .. image:: https://img.shields.io/pypi/l/gethash
     :target: https://pypi.org/project/gethash/
