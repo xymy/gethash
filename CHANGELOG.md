@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `HashFileReader.iter_hash` now accepts `root` argument.
 
+### Packaging
+
+- Removed `setup.py`. Now use `python -m build`.
+
 ## [5.1] - 2022-01-18
 
 ### Documentation
