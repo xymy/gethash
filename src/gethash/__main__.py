@@ -1,5 +1,5 @@
 from contextlib import suppress
-from typing import Any, List, Optional
+from typing import List, Optional
 
 import click
 from click import Command, Context
@@ -16,7 +16,7 @@ EXTRA_SETTINGS = dict(max_suggestions=5, cutoff=0.2)
 
 
 class Cli(MultiCommandX):
-    _entry_points: Any = entry_points(group="gethash.commands")  # type: ignore
+    _entry_points = entry_points(group="gethash.commands")
 
     def list_commands(self, ctx: Context) -> List[str]:
         commands = set(self._entry_points.names)
