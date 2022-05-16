@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.2] - 2022-05-16
+
 ### Changed
 
 - `HashFileReader.iter_hash` now accepts `root` argument.
@@ -38,6 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Switched `PyCryptodomex` dependency to `PyCryptodome` dependency.
 - Added PyPI classifier `Intended Audience :: Developers`.
 
-[Unreleased]: https://github.com/xymy/gethash/compare/v5.1...HEAD
+[Unreleased]: https://github.com/xymy/gethash/compare/v5.2...HEAD
+[5.2]: https://github.com/xymy/gethash/compare/v5.1...v5.2
 [5.1]: https://github.com/xymy/gethash/compare/v5.0...v5.1
 [5.0]: https://github.com/xymy/gethash/compare/v4.9...v5.0
