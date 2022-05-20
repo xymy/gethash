@@ -151,7 +151,11 @@ class Hasher:
         # Precompute some arguments for chunking.
         total = stop - start
         chunksize = self.chunksize
-        count, remainsize = divmod(total, chunksize)
+        if chunksize > 0:
+            count, remainsize = divmod(total, chunksize)
+        else:
+            count = 1
+            remainsize = 0
 
         ctx = self._ctx.copy()
         with open(filepath, "rb") as f:
