@@ -1,7 +1,7 @@
 import io
 import os
 from os import PathLike
-from typing import Any, AnyStr, Mapping, Optional, Union, cast
+from typing import Any, AnyStr, Dict, Optional, Union, cast
 
 from tqdm import tqdm
 
@@ -27,7 +27,7 @@ class Hasher:
             The hash context prototype used to generate hash values.
         chunksize (int | None, default=None):
             The chunk size for reading data from files.
-        tqdm_args (Mapping | None, default=None):
+        tqdm_args (Dict | None, default=None):
             The arguments passed to the ``tqdm_class``.
         tqdm_class (tqdm-class | None, default=None):
             The ``tqdm`` class.
@@ -38,7 +38,7 @@ class Hasher:
         ctx: Any,
         *,
         chunksize: Optional[int] = None,
-        tqdm_args: Optional[Mapping[str, Any]] = None,
+        tqdm_args: Optional[Dict[str, Any]] = None,
         tqdm_class: Any = None,
     ) -> None:
         if chunksize is None:
@@ -47,18 +47,18 @@ class Hasher:
             if chunksize == 0:
                 chunksize = _CHUNKSIZE
             elif chunksize < 0:
-                chunksize = -1
+                chunksize = -1  # -1 for read all bytes
         else:
             tn = type(chunksize).__name__
             raise TypeError(f"chunksize must be int or None, not {tn}")
 
         if tqdm_args is None:
             tqdm_args = {}
-        elif isinstance(tqdm_args, Mapping):
+        elif isinstance(tqdm_args, Dict):
             tqdm_args = dict(tqdm_args)
         else:
             tn = type(tqdm_args).__name__
-            raise TypeError(f"tqdm_args must be Mapping or None, not {tn}")
+            raise TypeError(f"tqdm_args must be Dict or None, not {tn}")
 
         # Set the progress bar meter style.
         tqdm_args.setdefault("unit", "B")
