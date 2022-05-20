@@ -77,13 +77,10 @@ class HashFileReader:
                 ``hash_line``.
         """
 
-        while True:
-            line = self.file.readline()
-            if not line:
+        while line := self.file.readline():
+            # Skip comments and empty lines.
+            if not (line.startswith("#") or line.isspace()):
                 break
-            if line.startswith("#") or line.isspace():
-                continue
-            break
         return line  # empty string for EOF
 
     def iter(self) -> Iterator[str]:
@@ -95,10 +92,7 @@ class HashFileReader:
         """
 
         with self:
-            while True:
-                hash_line = self.read_hash_line()
-                if not hash_line:
-                    break
+            while hash_line := self.read_hash_line():
                 yield hash_line
 
     __iter__ = iter
