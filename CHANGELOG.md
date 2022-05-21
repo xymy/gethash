@@ -7,11 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## Fixed
+### Fixed
 
 - Fixed a reading error when `chunksize < 0` for `Hasher._hash_file()`.
 
-## Packaging
+### Packaging
 
 - Dropped Python 3.7 support.
 
