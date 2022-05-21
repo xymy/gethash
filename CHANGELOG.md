@@ -7,11 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## Fixed
+
+- Fixed a reading error when `chunksize < 0` for `Hasher._hash_file()`.
+
+## Packaging
+
+- Dropped Python 3.7 support.
+
 ## [5.2] - 2022-05-16
 
 ### Changed
 
-- `HashFileReader.iter_hash` now accepts `root` argument.
+- `HashFileReader.iter_hash()` now accepts `root` argument.
 
 ### Packaging
 
