@@ -1,7 +1,7 @@
 import io
 import os
 from os import PathLike
-from typing import Any, AnyStr, Dict, Optional, Union, cast
+from typing import Any, AnyStr, Dict, Optional, Type, Union, cast
 
 from tqdm import tqdm
 
@@ -39,7 +39,7 @@ class Hasher:
         *,
         chunksize: Optional[int] = None,
         tqdm_args: Optional[Dict[str, Any]] = None,
-        tqdm_class: Any = None,
+        tqdm_class: Optional[Type[tqdm]] = None,
     ) -> None:
         if chunksize is None:
             chunksize = _CHUNKSIZE
