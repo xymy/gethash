@@ -50,7 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Packaging
 
-- Switched `PyCryptodomex` dependency to `PyCryptodome` dependency.
+- Switched dependency from `PyCryptodomex` to `PyCryptodome`.
 - Added PyPI classifier `Intended Audience :: Developers`.
 
 [Unreleased]: https://github.com/xymy/gethash/compare/v5.2...HEAD
