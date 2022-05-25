@@ -28,9 +28,9 @@ class Hasher:
         chunksize (int | None, default=None):
             The chunk size for reading data from files.
         tqdm_args (Dict | None, default=None):
-            The arguments passed to the ``tqdm_class``.
-        tqdm_class (tqdm-class | None, default=None):
-            The ``tqdm`` class.
+            The arguments passed to the ``tqdm_type``.
+        tqdm_type (tqdm-type | None, default=None):
+            The ``tqdm`` type.
     """
 
     def __init__(
@@ -39,7 +39,7 @@ class Hasher:
         *,
         chunksize: Optional[int] = None,
         tqdm_args: Optional[Dict[str, Any]] = None,
-        tqdm_class: Optional[Type[tqdm]] = None,
+        tqdm_type: Optional[Type[tqdm]] = None,
     ) -> None:
         if chunksize is None:
             chunksize = _CHUNKSIZE
@@ -65,13 +65,13 @@ class Hasher:
         tqdm_args.setdefault("unit_scale", True)
         tqdm_args.setdefault("unit_divisor", 1024)
 
-        if tqdm_class is None:
-            tqdm_class = tqdm
+        if tqdm_type is None:
+            tqdm_type = tqdm
 
         self._ctx = ctx.copy()
         self.chunksize = chunksize
         self.tqdm_args = tqdm_args
-        self.tqdm_class = tqdm_class
+        self.tqdm_type = tqdm_type
 
     def __call__(
         self,
@@ -160,7 +160,7 @@ class Hasher:
         ctx = self._ctx.copy()
         with open(filepath, "rb") as f:
             f.seek(start, io.SEEK_SET)
-            with self.tqdm_class(total=total, **self.tqdm_args) as bar:
+            with self.tqdm_type(total=total, **self.tqdm_args) as bar:
                 for _ in range(count):
                     chunk = f.read(chunksize)
                     ctx.update(chunk)

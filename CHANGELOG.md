@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Changed type annotations for `Hasher.__init__()`.
+- Renamed argument from `tqdm_class` to `tqdm_type` for `Hasher.__init__()`.
+
 ### Fixed
 
 - Fixed a reading error when `chunksize < 0` for `Hasher._hash_file()`.
