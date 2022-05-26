@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, overload
 
 from . import _check_bytes, _check_bytes_w_opt
 
@@ -19,6 +19,16 @@ except ImportError:
     _strxor = _py_strxor
 else:
     _strxor = _c_strxor
+
+
+@overload
+def strxor(term1: bytes, term2: bytes, output: None) -> bytes:
+    ...
+
+
+@overload
+def strxor(term1: bytes, term2: bytes, output: bytearray) -> None:
+    ...
 
 
 def strxor(term1: bytes, term2: bytes, output: Optional[bytearray] = None) -> Optional[bytes]:
