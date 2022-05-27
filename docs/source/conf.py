@@ -21,7 +21,7 @@ gethash = import_module("gethash")
 # -- Project information -----------------------------------------------------
 
 project = "Gethash"
-copyright = "2020-2021, xymy"
+copyright = "2020-2022, xymy"
 author = "xymy"
 
 version = gethash.__version__
