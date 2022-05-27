@@ -54,11 +54,11 @@ class Hasher:
 
         if tqdm_args is None:
             tqdm_args = {}
-        elif isinstance(tqdm_args, Dict):
+        elif isinstance(tqdm_args, dict):
             tqdm_args = dict(tqdm_args)
         else:
             tn = type(tqdm_args).__name__
-            raise TypeError(f"tqdm_args must be Dict or None, not {tn}")
+            raise TypeError(f"tqdm_args must be dict or None, not {tn}")
 
         # Set the progress bar meter style.
         tqdm_args.setdefault("unit", "B")
