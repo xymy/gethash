@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Changed type annotations for `Hasher.__init__()`.
 - Renamed argument from `tqdm_class` to `tqdm_type` for `Hasher.__init__()`.
+- `--start` and `--stop` now require non-negative integers.
 
 ### Fixed
 

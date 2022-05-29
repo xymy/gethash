@@ -293,8 +293,8 @@ def gethashcli(command_name: str, display_name: str, **extras: Any) -> Callable[
             is_flag=True,
             help="Do not output to files. This is the default output mode.",
         )
-        @click.option("--start", type=click.INT, help="The start offset of files.")
-        @click.option("--stop", type=click.INT, help="The stop offset of files.")
+        @click.option("--start", type=click.IntRange(min=0), help="The start offset of files.")
+        @click.option("--stop", type=click.IntRange(min=0), help="The stop offset of files.")
         @click.option(
             "-d",
             "--dir",
