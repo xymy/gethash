@@ -219,6 +219,10 @@ def parse_hash_line(hash_line: str, *, root: Optional[str] = None) -> Tuple[str,
         root (str | None, default=None):
             The root directory.
 
+    Raises:
+        ParseHashLineError:
+            If fails to parse hash line.
+
     Returns:
         Tuple[str, str]:
             ``(hex_hash_value, path)``.
@@ -273,6 +277,10 @@ def check_hash_line(hash_line: str, hash_function: Callable[[str], bytes], *, ro
             A function for generating hash value.
         root (str | None, default=None):
             The root directory.
+
+    Raises:
+        CheckHashLineError:
+            If fails to check hash line.
 
     Returns:
         str:

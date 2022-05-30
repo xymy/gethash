@@ -94,7 +94,7 @@ class Hasher:
                 If ``True``, enable directory hashing.
 
         Raises:
-            IsADirectory
+            IsADirectory:
                 If ``dir_ok`` is ``False`` and ``path`` is a directory.
 
         Returns:
