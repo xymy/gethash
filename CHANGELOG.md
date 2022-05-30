@@ -17,6 +17,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fixed a reading error when `chunksize < 0` for `Hasher._hash_file()`.
 
+### Configuration
+
+- Adopted `pre-commit` for running linters automatically.
+- Adopted `flake8-bugbear` and `flake8-implicit-str-concat`.
+
 ### Packaging
 
 - Dropped Python 3.7 support.
