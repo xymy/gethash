@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.3] - 2022-06-05
+
 ### Changed
 
 - Changed type annotations for `Hasher.__init__()`.
@@ -59,7 +61,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Switched dependency from `PyCryptodomex` to `PyCryptodome`.
 - Added PyPI classifier `Intended Audience :: Developers`.
 
-[Unreleased]: https://github.com/xymy/gethash/compare/v5.2...HEAD
+[Unreleased]: https://github.com/xymy/gethash/compare/v5.3...HEAD
+[5.3]: https://github.com/xymy/gethash/compare/v5.2...v5.3
 [5.2]: https://github.com/xymy/gethash/compare/v5.1...v5.2
 [5.1]: https://github.com/xymy/gethash/compare/v5.0...v5.1
 [5.0]: https://github.com/xymy/gethash/compare/v4.9...v5.0
