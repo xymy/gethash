@@ -1,5 +1,5 @@
 from contextlib import suppress
-from typing import List, Optional
+from typing import Any, List, Optional
 
 import click
 from click import Command, Context
@@ -11,12 +11,14 @@ from .backends import Backend
 from .utils.click import MultiCommandX
 
 PROGRAM_NAME = "gethash"
-CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"], max_content_width=120)
-EXTRA_SETTINGS = dict(max_suggestions=5, cutoff=0.2)
+CONTEXT_SETTINGS = {"help_option_names": ["-h", "--help"], "max_content_width": 120}
+EXTRA_SETTINGS = {"max_suggestions": 5, "cutoff": 0.2}
 
 
 class Cli(MultiCommandX):
-    _entry_points = entry_points(group="gethash.commands")
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+        self._entry_points = entry_points(group="gethash.commands")
 
     def list_commands(self, ctx: Context) -> List[str]:
         commands = set(self._entry_points.names)
