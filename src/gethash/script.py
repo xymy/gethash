@@ -217,8 +217,8 @@ def script_main(ctx: Any, files: Tuple[str, ...], **options: Any) -> None:
 
     no_stdout = options.pop("no_stdout", False)
     no_stderr = options.pop("no_stderr", False)
-    stdout = open(os.devnull, "w") if no_stdout else sys.stdout
-    stderr = open(os.devnull, "w") if no_stderr else sys.stderr
+    stdout = open(os.devnull, "w") if no_stdout else sys.stdout  # noqa
+    stderr = open(os.devnull, "w") if no_stderr else sys.stderr  # noqa
 
     check = options.pop("check", False)
     with Gethash(ctx, stdout=stdout, stderr=stderr, **options) as gethash:
@@ -235,7 +235,7 @@ def gethashcli(command_name: str, display_name: str, **extras: Any) -> Callable[
         if doc is not None:
             func.__doc__ = doc
 
-        context_settings = dict(help_option_names=["-h", "--help"], max_content_width=120)
+        context_settings = {"help_option_names": ["-h", "--help"], "max_content_width": 120}
 
         path_format = MutuallyExclusiveOptionGroup("Path Format")
         output_mode = MutuallyExclusiveOptionGroup("Output Mode")
