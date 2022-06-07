@@ -39,7 +39,7 @@ or if you need legacy hash algorithms:
 
 .. note::
 
-    Gethash requires Python 3.7 and later.
+    Gethash requires Python 3.8 and later.
 
 Usage
 -----

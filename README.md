@@ -23,7 +23,7 @@ or if you need legacy hash algorithms:
 $ pip install "gethash[all]"
 ```
 
-*Note: Gethash requires Python 3.7 and later.*
+*Note: Gethash requires Python 3.8 and later.*
 
 ## Usage
 
