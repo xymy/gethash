@@ -1,5 +1,7 @@
 import hashlib
-from typing import Any, Set
+from typing import Set
+
+from gethash.hasher import HashContext
 
 from . import Backend
 
@@ -11,7 +13,7 @@ class HashlibBackend(Backend):
     def algorithms_available(self) -> Set[str]:
         return self._algorithms
 
-    def load_ctx(self, name: str) -> Any:
+    def load_ctx(self, name: str) -> HashContext:
         # The ``name`` has been checked in ``load_cmd``.
         try:
             return hashlib.new(name.replace("-", "_"))

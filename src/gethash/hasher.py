@@ -1,19 +1,39 @@
 import io
 import os
 from os import PathLike
-from typing import Any, AnyStr, Dict, Optional, Type, Union, cast
+from typing import Any, AnyStr, Dict, Optional, Protocol, Type, TypeVar, Union
 
 from tqdm import tqdm
 
 from .utils.strxor import strxor
 
-__all__ = ["IsADirectory", "Hasher"]
+__all__ = ["IsADirectory", "HashContext", "Hasher"]
 
 _CHUNKSIZE = 0x100000  # 1 MiB
 
 
 class IsADirectory(OSError):
     """Raised by :meth:`Hasher.__call__`."""
+
+
+Self = TypeVar("Self", bound="HashContext")
+
+
+class HashContext(Protocol):
+    """Typing for hash context."""
+
+    @property
+    def digest_size(self) -> int:
+        ...
+
+    def update(self, data: bytes) -> None:
+        ...
+
+    def digest(self) -> bytes:
+        ...
+
+    def copy(self: Self) -> Self:
+        ...
 
 
 class Hasher:
@@ -23,7 +43,7 @@ class Hasher:
     when calculating the hash value, a ``tqdm`` progress bar will be displayed.
 
     Parameters:
-        ctx (hash-context):
+        ctx (HashContext):
             The hash context prototype used to generate hash values.
         chunksize (int | None, default=None):
             The chunk size for reading data from files.
@@ -35,7 +55,7 @@ class Hasher:
 
     def __init__(
         self,
-        ctx: Any,
+        ctx: HashContext,
         *,
         chunksize: Optional[int] = None,
         tqdm_args: Optional[Dict[str, Any]] = None,
@@ -168,4 +188,4 @@ class Hasher:
                 remain = f.read(remainsize)
                 ctx.update(remain)
                 bar.update(remainsize)
-        return cast(bytes, ctx.digest())
+        return ctx.digest()

@@ -1,7 +1,9 @@
 from importlib import import_module
-from typing import Any, Set
+from typing import Set, cast
 
 import Crypto  # noqa
+
+from gethash.hasher import HashContext
 
 from . import Backend
 
@@ -13,7 +15,7 @@ class PyCryptodomeBackend(Backend):
     def algorithms_available(self) -> Set[str]:
         return self._algorithms
 
-    def load_ctx(self, name: str) -> Any:
+    def load_ctx(self, name: str) -> HashContext:
         # The ``name`` has been checked in ``load_cmd``.
         module = import_module(f"Crypto.Hash.{name.upper()}")
-        return module.new()
+        return cast(HashContext, module.new())

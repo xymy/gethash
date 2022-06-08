@@ -4,6 +4,7 @@ from typing import Any, List, Set, Tuple
 
 from click import Command
 
+from gethash.hasher import HashContext
 from gethash.script import gethashcli, script_main
 
 __all__ = ["Backend"]
@@ -27,7 +28,7 @@ class Backend(metaclass=abc.ABCMeta):
         available in the backend."""
 
     @abc.abstractmethod
-    def load_ctx(self, name: str) -> Any:
+    def load_ctx(self, name: str) -> HashContext:
         """Load context."""
 
     def load_cmd(self, name: str) -> Command:

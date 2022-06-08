@@ -16,7 +16,7 @@ from .core import (
     check_hash_line,
     generate_hash_line,
 )
-from .hasher import Hasher
+from .hasher import HashContext, Hasher
 from .utils.click import CommandX, PathWithSuffix
 from .utils.glob import glob_filters, sorted_path
 
@@ -99,7 +99,7 @@ class Gethash:
     stop: Optional[int]
     dir_ok: bool
 
-    def __init__(self, ctx: Any, **kwargs: Any) -> None:
+    def __init__(self, ctx: HashContext, **kwargs: Any) -> None:
         self.ctx = ctx
         self.sync = kwargs.pop("sync", False)
         self.suffix = kwargs.pop("suffix", ".sha")
@@ -212,7 +212,7 @@ class Gethash:
         click.secho(msg, file=self.stderr, fg="red")
 
 
-def script_main(ctx: Any, files: Tuple[str, ...], **options: Any) -> None:
+def script_main(ctx: HashContext, files: Tuple[str, ...], **options: Any) -> None:
     """Execute the body for the main function."""
 
     no_stdout = options.pop("no_stdout", False)
