@@ -27,6 +27,8 @@ HashFileReader
 
 .. autoclass:: HashFileReader
 
+.. automethod:: HashFileReader.close
+
 .. automethod:: HashFileReader.read_hash_line
 
 .. automethod:: HashFileReader.iter
@@ -41,16 +43,14 @@ HashFileReader
 
 .. automethod:: HashFileReader.iter_name
 
-.. automethod:: HashFileReader.close
-
 HashFileWriter
 ~~~~~~~~~~~~~~
 
 .. autoclass:: HashFileWriter
 
-.. automethod:: HashFileWriter.write_hash_line
-
 .. automethod:: HashFileWriter.close
+
+.. automethod:: HashFileWriter.write_hash_line
 
 Exceptions
 ----------

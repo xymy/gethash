@@ -7,6 +7,8 @@ Hasher
 Classes
 -------
 
+.. autoclass:: HashContext
+
 .. autoclass:: Hasher
 
 .. automethod:: Hasher.__call__
