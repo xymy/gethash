@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added `HashContext` for annotating hash context type.
+
+### Changed
+
+- Changed type annotation of `ctx` argument from `Any` to `HashContext`.
+
 ### Configuration
 
 - Adopted `flake8-comprehensions` and `flake8-simplify`.
