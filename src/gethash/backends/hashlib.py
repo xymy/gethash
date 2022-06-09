@@ -1,8 +1,7 @@
 import hashlib
 from typing import Set
 
-from gethash.hasher import HashContext
-
+from ..hasher import HashContext
 from . import Backend
 
 
@@ -19,3 +18,7 @@ class HashlibBackend(Backend):
             return hashlib.new(name.replace("-", "_"))
         except ValueError:
             return hashlib.new(name)
+
+
+def load() -> HashlibBackend:
+    return HashlibBackend()

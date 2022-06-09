@@ -3,8 +3,7 @@ from typing import Set, cast
 
 import Crypto  # noqa
 
-from gethash.hasher import HashContext
-
+from ..hasher import HashContext
 from . import Backend
 
 
@@ -19,3 +18,7 @@ class PyCryptodomeBackend(Backend):
         # The ``name`` has been checked in ``load_cmd``.
         module = import_module(f"Crypto.Hash.{name.upper()}")
         return cast(HashContext, module.new())
+
+
+def load() -> PyCryptodomeBackend:
+    return PyCryptodomeBackend()
