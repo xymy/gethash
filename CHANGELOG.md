@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Configuration
 
 - Adopted `flake8-comprehensions` and `flake8-simplify`.
+- Moved mypy configuration to `pyproject.toml`.
 
 ## [5.3] - 2022-06-05
 

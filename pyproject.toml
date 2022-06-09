@@ -9,3 +9,13 @@ target-version = ["py38", "py39", "py310"]
 [tool.isort]
 profile = "black"
 line_length = 120
+
+[tool.mypy]
+ignore_missing_imports = true
+check_untyped_defs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+show_error_context = true
+show_column_numbers = true
+show_error_codes = true
+pretty = true
