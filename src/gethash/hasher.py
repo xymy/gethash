@@ -1,7 +1,7 @@
 import io
 import os
 from os import PathLike
-from typing import Any, AnyStr, Dict, Optional, Protocol, Type, TypeVar, Union
+from typing import Any, Dict, Optional, Protocol, Type, TypeVar, Union
 
 from tqdm import tqdm
 
@@ -95,7 +95,7 @@ class Hasher:
 
     def __call__(
         self,
-        path: "Union[AnyStr, PathLike[AnyStr]]",
+        path: "Union[str, PathLike[str]]",
         start: Optional[int] = None,
         stop: Optional[int] = None,
         *,
@@ -104,7 +104,7 @@ class Hasher:
         """Return the hash value of a file or a directory.
 
         Parameters:
-            path (AnyStr | PathLike[AnyStr]):
+            path (str | PathLike[str]):
                 The path of a file or a directory.
             start (int | None, default=None):
                 The start offset of the file or files in the directory.
@@ -136,10 +136,7 @@ class Hasher:
         return self._hash_file(path, start, stop)
 
     def _hash_dir(
-        self,
-        dirpath: "Union[AnyStr, PathLike[AnyStr]]",
-        start: Optional[int] = None,
-        stop: Optional[int] = None,
+        self, dirpath: "Union[str, PathLike[str]]", start: Optional[int] = None, stop: Optional[int] = None
     ) -> bytes:
         # The initial hash value is all zeros.
         value = bytearray(self._ctx.digest_size)
@@ -154,10 +151,7 @@ class Hasher:
         return bytes(value)
 
     def _hash_file(
-        self,
-        filepath: "Union[AnyStr, PathLike[AnyStr]]",
-        start: Optional[int] = None,
-        stop: Optional[int] = None,
+        self, filepath: "Union[str, PathLike[str]]", start: Optional[int] = None, stop: Optional[int] = None
     ) -> bytes:
         # Clamp ``(start, stop)`` to ``(0, filesize)``.
         filesize = os.path.getsize(filepath)
