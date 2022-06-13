@@ -18,20 +18,26 @@ EXTRA_SETTINGS = {"max_suggestions": 5, "cutoff": 0.2}
 class Cli(MultiCommandX):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
-        self._entry_points = entry_points(group="gethash.commands")
+        self._ep_commands = entry_points(group="gethash.commands")
+        self._ep_backends = entry_points(group="gethash.backends")
 
     def list_commands(self, ctx: Context) -> List[str]:
-        commands = set(self._entry_points.names)
-        for backend in Backend.list_backends():
+        commands = set(self._ep_commands.names)
+        for ep in self._ep_backends:
+            backend = ep.load()()
+            assert isinstance(backend, Backend)
             commands.update(backend.algorithms_available)
         return sorted(commands, key=natsort_keygen())
 
     def get_command(self, ctx: Context, name: str) -> Optional[Command]:
         with suppress(KeyError, ImportError):
-            cmd = self._entry_points[name].load()
+            cmd = self._ep_commands[name].load()
             assert isinstance(cmd, Command)
             return cmd
-        for backend in Backend.list_backends():
+
+        for ep in self._ep_backends:
+            backend = ep.load()()
+            assert isinstance(backend, Backend)
             with suppress(Exception):
                 return backend.load_cmd(name)
         return None

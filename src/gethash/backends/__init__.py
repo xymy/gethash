@@ -1,6 +1,5 @@
 import abc
-from contextlib import suppress
-from typing import Any, List, Set, Tuple
+from typing import Any, Set, Tuple
 
 from click import Command
 
@@ -11,16 +10,6 @@ __all__ = ["Backend"]
 
 
 class Backend(metaclass=abc.ABCMeta):
-    _registry: List["Backend"] = []
-
-    @classmethod
-    def register_backend(cls) -> None:
-        cls._registry.append(cls())
-
-    @classmethod
-    def list_backends(cls) -> List["Backend"]:
-        return cls._registry
-
     @property
     @abc.abstractmethod
     def algorithms_available(self) -> Set[str]:
@@ -47,18 +36,3 @@ class Backend(metaclass=abc.ABCMeta):
             script_main(ctx, files, **kwargs)
 
         return main
-
-
-def _load_backend() -> None:
-    from .hashlib import HashlibBackend
-
-    HashlibBackend.register_backend()
-
-    # For optional cryptographic backend.
-    with suppress(ImportError):
-        from .pycryptodome import PyCryptodomeBackend
-
-        PyCryptodomeBackend.register_backend()
-
-
-_load_backend()
