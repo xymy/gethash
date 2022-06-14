@@ -14,19 +14,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Changed type annotation of `ctx` argument from `Any` to `HashContext`.
+- Now load backends via entry points.
 
 ### Configuration
 
 - Adopted `flake8-comprehensions` and `flake8-simplify`.
 - Moved mypy configuration to `pyproject.toml`.
 
+### Packaging
+
+- Added `gethash.backends` entry points.
+
 ## [5.3] - 2022-06-05
 
 ### Changed
 
 - Changed type annotations for `Hasher.__init__()`.
-- Renamed argument from `tqdm_class` to `tqdm_type` for `Hasher.__init__()`.
-- `--start` and `--stop` now require non-negative integers.
+- Renamed argument of `Hasher.__init__()` from `tqdm_class` to `tqdm_type`.
+- `--start` and `--stop` options now require non-negative integers.
 
 ### Fixed
 
