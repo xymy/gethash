@@ -1,5 +1,5 @@
 from importlib import import_module
-from typing import Set, cast
+from typing import Set
 
 import Crypto  # noqa
 
@@ -17,7 +17,7 @@ class PyCryptodomeBackend(Backend):
     def load_ctx(self, name: str) -> HashContext:
         # The ``name`` has been checked in ``load_cmd``.
         module = import_module(f"Crypto.Hash.{name.upper()}")
-        return cast(HashContext, module.new())
+        return module.new()
 
 
 def load() -> PyCryptodomeBackend:

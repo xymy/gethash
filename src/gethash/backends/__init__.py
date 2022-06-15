@@ -3,8 +3,8 @@ from typing import Any, Set, Tuple
 
 from click import Command
 
-from gethash.hasher import HashContext
-from gethash.script import gethashcli, script_main
+from ..hasher import HashContext
+from ..script import gethashcli, script_main
 
 __all__ = ["Backend"]
 
