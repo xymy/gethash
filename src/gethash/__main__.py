@@ -1,5 +1,5 @@
 from contextlib import suppress
-from typing import Any, List, Optional
+from typing import Any, Iterator, List, Optional
 
 import click
 from click import Command, Context
@@ -21,11 +21,15 @@ class Cli(MultiCommandX):
         self._ep_commands = entry_points(group="gethash.commands")
         self._ep_backends = entry_points(group="gethash.backends")
 
-    def list_commands(self, ctx: Context) -> List[str]:
-        commands = set(self._ep_commands.names)
+    def _iter_backends(self) -> Iterator[Backend]:
         for ep in self._ep_backends:
             backend = ep.load()()
             assert isinstance(backend, Backend)
+            yield backend
+
+    def list_commands(self, ctx: Context) -> List[str]:
+        commands = set(self._ep_commands.names)
+        for backend in self._iter_backends():
             commands.update(backend.algorithms_available)
         return sorted(commands, key=natsort_keygen())
 
@@ -35,9 +39,7 @@ class Cli(MultiCommandX):
             assert isinstance(cmd, Command)
             return cmd
 
-        for ep in self._ep_backends:
-            backend = ep.load()()
-            assert isinstance(backend, Backend)
+        for backend in self._iter_backends():
             with suppress(Exception):
                 return backend.load_cmd(name)
         return None
