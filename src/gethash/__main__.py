@@ -23,9 +23,10 @@ class Cli(MultiCommandX):
 
     def _iter_backends(self) -> Iterator[Backend]:
         for ep in self._ep_backends:
-            backend = ep.load()()
-            assert isinstance(backend, Backend)
-            yield backend
+            with suppress(ImportError):
+                backend = ep.load()()
+                assert isinstance(backend, Backend)
+                yield backend
 
     def list_commands(self, ctx: Context) -> List[str]:
         commands = set(self._ep_commands.names)
@@ -38,7 +39,6 @@ class Cli(MultiCommandX):
             cmd = self._ep_commands[name].load()
             assert isinstance(cmd, Command)
             return cmd
-
         for backend in self._iter_backends():
             with suppress(Exception):
                 return backend.load_cmd(name)
