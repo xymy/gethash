@@ -23,6 +23,7 @@ class Backend(metaclass=abc.ABCMeta):
     def load_cmd(self, name: str) -> Command:
         """Load command."""
 
+        # Check `name` before invoking `main` for fast failure.
         if name not in self.algorithms_available:
             raise ValueError(f"unkown algorithm {name!r}")
 

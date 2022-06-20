@@ -15,7 +15,7 @@ class PyCryptodomeBackend(Backend):
         return self._algorithms
 
     def load_ctx(self, name: str) -> HashContext:
-        # The ``name`` has been checked in ``load_cmd``.
+        # The `name` has been checked in `load_cmd`.
         module = import_module(f"Crypto.Hash.{name.upper()}")
         return module.new()
 
