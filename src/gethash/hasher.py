@@ -153,7 +153,7 @@ class Hasher:
     def _hash_file(
         self, filepath: "Union[str, PathLike[str]]", start: Optional[int] = None, stop: Optional[int] = None
     ) -> bytes:
-        # Clamp ``(start, stop)`` to ``(0, filesize)``.
+        # Clamp `(start, stop)` to `(0, filesize)`.
         filesize = os.path.getsize(filepath)
         if start is None or start < 0:
             start = 0
