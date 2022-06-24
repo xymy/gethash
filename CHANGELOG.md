@@ -7,9 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.4] - 2022-06-24
+
 ### Added
 
-- Added `HashContext` for annotating hash context type.
+- Added `HashContext` protocol class for annotating hash context type.
 
 ### Changed
 
@@ -79,7 +81,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Switched dependency from `PyCryptodomex` to `PyCryptodome`.
 - Added PyPI classifier `Intended Audience :: Developers`.
 
-[Unreleased]: https://github.com/xymy/gethash/compare/v5.3...HEAD
+[Unreleased]: https://github.com/xymy/gethash/compare/v5.4...HEAD
+[5.4]: https://github.com/xymy/gethash/compare/v5.3...v5.4
 [5.3]: https://github.com/xymy/gethash/compare/v5.2...v5.3
 [5.2]: https://github.com/xymy/gethash/compare/v5.1...v5.2
 [5.1]: https://github.com/xymy/gethash/compare/v5.0...v5.1
