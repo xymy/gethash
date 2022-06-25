@@ -1,7 +1,7 @@
 import zlib
 from typing import Optional, cast
 
-from . import _check_bytes, _check_bytes_opt, _check_int, _check_int_opt
+from ..utils import _check_bytes, _check_bytes_opt, _check_int, _check_int_opt
 
 __all__ = ["CRC32"]
 
@@ -47,3 +47,7 @@ class CRC32:
 
     def copy(self) -> "CRC32":
         return type(self)(value=self._value)
+
+
+def new() -> CRC32:
+    return CRC32()

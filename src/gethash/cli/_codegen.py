@@ -4,7 +4,7 @@ META_LIST = [
     {
         "command_name": "crc32",
         "display_name": "CRC32",
-        "package": "gethash.utils.crc32",
+        "package": "gethash.wrappers.crc32",
         "hasher": "CRC32",
     },
     {
