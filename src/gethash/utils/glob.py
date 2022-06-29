@@ -1,6 +1,6 @@
 import glob
 import os
-from typing import AnyStr, Callable, Iterable, Iterator, List, Optional
+from typing import AnyStr, Callable, Iterable, Iterator, List, Optional, Union
 
 from natsort import os_sort_keygen
 
@@ -58,7 +58,7 @@ def _get_glob(mode: int) -> Callable[..., Iterator]:
 
 def _path_filter(paths: Iterable[AnyStr], *, type: str) -> Iterator[AnyStr]:
     _check_str(type, "type")
-    pred: Callable[..., bool]
+    pred: Callable[[Union[str, bytes]], bool]
     if type == "a":
         pred = os.path.exists
     elif type == "d":
