@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added `gethash.wrappers` package.
-- Added `WrappersBackend` for loading commands from `gethash.wrappers`.
+- Added `WrappersBackend` class for loading commands from `gethash.wrappers`.
 
 ### Changed
 
@@ -30,7 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Configuration
 
 - Adopted `flake8-comprehensions` and `flake8-simplify`.
-- Moved mypy configuration to `pyproject.toml`.
+- Moved `mypy` configuration to `pyproject.toml`.
 
 ### Packaging
 
@@ -71,14 +71,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
-- Sphinx now uses `MyST-Parser` for writing markdown documentation.
+- Sphinx now uses `myst-parser` for writing markdown documentation.
 - Added changelog to documentation.
 
 ## [5.0] - 2021-12-24
 
 ### Added
 
-- Added backends for `Hashlib` and `PyCryptodome`.
+- Added backends for `hashlib` and `pycryptodome`.
 
 ### Removed
 
@@ -87,7 +87,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Packaging
 
-- Switched dependency from `PyCryptodomex` to `PyCryptodome`.
+- Switched dependency from `pycryptodomex` to `pycryptodome`.
 - Added PyPI classifier `Intended Audience :: Developers`.
 
 [Unreleased]: https://github.com/xymy/gethash/compare/v5.4...HEAD
