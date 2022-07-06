@@ -78,7 +78,7 @@ class HashFileReader:
         """
 
         while line := self.file.readline():
-            # Skip comments and empty lines.
+            # Skip comments and blank lines.
             if not (line.startswith("#") or line.isspace()):
                 break
         return line  # empty string for EOF
