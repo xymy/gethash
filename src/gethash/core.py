@@ -56,7 +56,7 @@ class HashFileReader:
 
     def __init__(self, filepath: str) -> None:
         self.name = filepath
-        self.file = open(filepath, "r", encoding="utf-8")  # noqa
+        self.file = open(filepath, encoding="utf-8")  # noqa
 
     def __enter__(self) -> "HashFileReader":
         return self
