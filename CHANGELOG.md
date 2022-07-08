@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Moved `crc32` module from `gethash.utils` to `gethash.wrappers`.
 
+### Configuration
+
+- Adopted `pyupgrade`.
+
 ## [5.4] - 2022-06-24
 
 ### Added
