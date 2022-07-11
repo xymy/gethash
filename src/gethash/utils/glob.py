@@ -1,6 +1,6 @@
 import glob
 import os
-from typing import AnyStr, Callable, Iterable, Iterator, List, Optional, Union
+from typing import Any, AnyStr, Callable, Iterable, Iterator, List, Optional, Union
 
 from natsort import os_sort_keygen
 
@@ -195,13 +195,15 @@ def glob_filters(
     yield from _path_filter(matched, type=type)
 
 
-def sorted_path(iterable: Iterable[str], *, key: Optional[Callable] = None, reverse: bool = False) -> List[str]:
+def sorted_path(
+    iterable: Iterable[str], *, key: Optional[Callable[[str], Any]] = None, reverse: bool = False
+) -> List[str]:
     """Sort a list of path strings the same as the underlying operating system.
 
     Parameters:
         iterable (Iterable[str]):
             A list of path strings.
-        key (Callable | None, default=None):
+        key (Callable[[str], Any] | None, default=None):
             The same parameter as :func:`sorted`.
         reverse (bool, default=False):
             The same parameter as :func:`sorted`.
