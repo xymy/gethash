@@ -196,20 +196,20 @@ def glob_filters(
 
 
 def sorted_path(
-    iterable: Iterable[str], *, key: Optional[Callable[[str], Any]] = None, reverse: bool = False
-) -> List[str]:
+    iterable: Iterable[AnyStr], *, key: Optional[Callable[[AnyStr], Any]] = None, reverse: bool = False
+) -> List[AnyStr]:
     """Sort a list of path strings the same as the underlying operating system.
 
     Parameters:
-        iterable (Iterable[str]):
+        iterable (Iterable[AnyStr]):
             A list of path strings.
-        key (Callable[[str], Any] | None, default=None):
+        key (Callable[[AnyStr], Any] | None, default=None):
             The same parameter as :func:`sorted`.
         reverse (bool, default=False):
             The same parameter as :func:`sorted`.
 
     Returns:
-        List[str]:
+        List[AnyStr]:
             The sorted list of path strings.
     """
 
