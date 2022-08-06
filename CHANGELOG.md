@@ -78,7 +78,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
-- Sphinx now uses `myst-parser` for writing markdown documentation.
+- Adopted `myst-parser` for writing Markdown documentation.
 - Added changelog to documentation.
 
 ## [5.0] - 2021-12-24
