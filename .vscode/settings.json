@@ -3,10 +3,5 @@
     "python.linting.flake8Enabled": true,
     "python.linting.mypyEnabled": true,
     "python.linting.pylintEnabled": false,
-    "myst.preview.extensions": [
-        "colon_fence",
-        "deflist",
-        "dollarmath",
-        "tasklist"
-    ]
+    "python.testing.pytestEnabled": true
 }
