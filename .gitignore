@@ -1,4 +1,6 @@
+/.idea/
 /.tox/
+/.vscode/
 /build/
 /dist/
 /docs/build/
