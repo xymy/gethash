@@ -1,13 +1,13 @@
-/.idea/
-/.tox/
-/.vscode/
 /build/
 /dist/
 /docs/build/
-/htmlcov/
+/docs/dist/
 /temp/
 /venv/
+/.tox/
+/htmlcov/
 /.coverage
+/.coverage.*
 __pycache__/
 *.egg-info/
 .DS_Store
