@@ -1,4 +1,7 @@
-vectors = [
+from pathlib import Path
+from typing import Dict, Iterator, Tuple
+
+_vectors = [
     {
         "data": "",
         "crc32": "00000000",
@@ -14,3 +17,13 @@ vectors = [
         "sha256": "ef537f25c895bfa782526529a9b63d97aa631564d5d789c2b765448c8635fb6c",
     },
 ]
+
+
+class Vectors:
+    def __init__(self, root: Path) -> None:
+        self.root = root
+
+    def iter_path_vector(self) -> Iterator[Tuple[Path, Dict[str, str]]]:
+        for i, vector in enumerate(_vectors):
+            path = self.root / str(i)
+            yield path, vector

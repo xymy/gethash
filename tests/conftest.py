@@ -1,15 +1,13 @@
-from pathlib import Path
-
 import pytest
 from pytest import TempPathFactory
 
-from .utils import vectors
+from .utils import Vectors
 
 
 @pytest.fixture(scope="session")
-def data_dir(tmp_path_factory: TempPathFactory) -> Path:
-    dir = tmp_path_factory.mktemp("data")
-    for i, vector in enumerate(vectors):
-        path = dir / str(i)
+def vectors(tmp_path_factory: TempPathFactory) -> Vectors:
+    root = tmp_path_factory.mktemp("vectors")
+    vectors = Vectors(root)
+    for path, vector in vectors.iter_path_vector():
         path.write_text(vector["data"], encoding="utf-8")
-    return dir
+    return vectors
