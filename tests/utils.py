@@ -10,6 +10,23 @@ class Vector(TypedDict):
     sha256: str
 
 
+class Vectors:
+    def __init__(self, root: Path) -> None:
+        self.root = root
+
+    def iter_path_vector(self) -> Iterator[Tuple[Path, Vector]]:
+        for i, vector in enumerate(_vectors):
+            yield self.root.joinpath(str(i)), vector
+
+    def init_data_files(self) -> None:
+        for path, vector in self.iter_path_vector():
+            path.write_bytes(vector["data"])
+
+    def finalize_data_files(self) -> None:
+        for path, _ in self.iter_path_vector():
+            path.unlink(missing_ok=True)
+
+
 _vectors: List[Vector] = [
     {
         "data": b"",
@@ -54,20 +71,3 @@ _vectors: List[Vector] = [
         "sha256": "ef537f25c895bfa782526529a9b63d97aa631564d5d789c2b765448c8635fb6c",
     },
 ]
-
-
-class Vectors:
-    def __init__(self, root: Path) -> None:
-        self.root = root
-
-    def iter_path_vector(self) -> Iterator[Tuple[Path, Vector]]:
-        for i, vector in enumerate(_vectors):
-            yield self.root.joinpath(str(i)), vector
-
-    def init_data_files(self) -> None:
-        for path, vector in self.iter_path_vector():
-            path.write_bytes(vector["data"])
-
-    def finalize_data_files(self) -> None:
-        for path, _ in self.iter_path_vector():
-            path.unlink(missing_ok=True)
