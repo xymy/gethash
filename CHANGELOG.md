@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Configuration
+
+- Migrated development dependencies to `requirements-dev.txt`.
+
 ### Documentation
 
 - Added a script `release.py` for building documentation.
