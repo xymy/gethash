@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Configuration
 
 - Migrated development dependencies to `requirements-dev.txt`.
+- Adopted `yesqa`.
 
 ### Documentation
 
@@ -49,7 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Configuration
 
 - Adopted `flake8-comprehensions` and `flake8-simplify`.
-- Moved `mypy` configuration to `pyproject.toml`.
+- Migrated `mypy` configuration to `pyproject.toml`.
 
 ### Packaging
 
