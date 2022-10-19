@@ -1,5 +1,5 @@
-Core
-====
+gethash.core
+============
 
 .. currentmodule:: gethash.core
 
@@ -25,31 +25,19 @@ HashFileReader
 ~~~~~~~~~~~~~~
 
 .. autoclass:: HashFileReader
-
-.. automethod:: HashFileReader.close
-
-.. automethod:: HashFileReader.read_hash_line
-
-.. automethod:: HashFileReader.iter
+    :members:
+    :show-inheritance:
 
 .. note::
 
     :meth:`Hasher.__iter__` is an alias of :meth:`HashFileReader.iter`.
 
-.. automethod:: HashFileReader.iter2
-
-.. automethod:: HashFileReader.iter_hash
-
-.. automethod:: HashFileReader.iter_name
-
 HashFileWriter
 ~~~~~~~~~~~~~~
 
 .. autoclass:: HashFileWriter
-
-.. automethod:: HashFileWriter.close
-
-.. automethod:: HashFileWriter.write_hash_line
+    :members:
+    :show-inheritance:
 
 Exceptions
 ----------

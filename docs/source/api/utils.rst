@@ -1,5 +1,5 @@
-Utilities
-=========
+gethash.utils
+=============
 
 .. currentmodule:: gethash.utils
 

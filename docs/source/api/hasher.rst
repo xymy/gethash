@@ -1,5 +1,5 @@
-Hasher
-======
+gethash.hasher
+==============
 
 .. currentmodule:: gethash.hasher
 
@@ -7,10 +7,13 @@ Classes
 -------
 
 .. autoclass:: HashContext
+    :members:
+    :show-inheritance:
 
 .. autoclass:: Hasher
-
-.. automethod:: Hasher.__call__
+    :members:
+    :special-members: __call__
+    :show-inheritance:
 
 Exceptions
 ----------

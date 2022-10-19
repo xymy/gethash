@@ -60,6 +60,10 @@ html_theme = "furo"
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
 
+# -- Options for autodoc -------------------------------------------------
+
+autodoc_member_order = "bysource"
+
 # -- Options for intersphinx -------------------------------------------------
 
 intersphinx_mapping = {"python": ("https://docs.python.org/3", None)}
