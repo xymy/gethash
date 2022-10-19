@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.6] - 2022-09-19
+
 ### Configuration
 
 - Migrated development dependencies to `requirements-dev.txt`.
@@ -110,7 +112,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Switched dependency from `pycryptodomex` to `pycryptodome`.
 - Added PyPI classifier `Intended Audience :: Developers`.
 
-[Unreleased]: https://github.com/xymy/gethash/compare/v5.5...HEAD
+[Unreleased]: https://github.com/xymy/gethash/compare/v5.6...HEAD
+[5.6]: https://github.com/xymy/gethash/compare/v5.5...v5.6
 [5.5]: https://github.com/xymy/gethash/compare/v5.4...v5.5
 [5.4]: https://github.com/xymy/gethash/compare/v5.3...v5.4
 [5.3]: https://github.com/xymy/gethash/compare/v5.2...v5.3
