@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [5.6] - 2022-09-19
+## [5.6] - 2022-10-19
 
 ### Configuration
 
@@ -16,7 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
-- Added a script `release.py` for building documentation.
+- Added `docs/release.py` script for building documentation.
+- Improved documentation.
 
 ### Testing
 
