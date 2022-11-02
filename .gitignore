@@ -4,6 +4,8 @@
 /docs/dist/
 /temp/
 /venv/
+/.*cache/
+/.hypothesis/
 /.tox/
 /htmlcov/
 /.coverage
