@@ -2,7 +2,7 @@
 black>=22.10
 isort>=5.10
 flake8>=5.0
-flake8-bugbear>=22.9
+flake8-bugbear>=22.10
 flake8-comprehensions>=3.10
 flake8-implicit-str-concat>=0.3
 flake8-simplify>=0.19
@@ -10,5 +10,6 @@ mypy>=0.980
 
 # test
 coverage>=6.5
-pytest>=7.1
+hypothesis[cli,codemods]>=6.56
+pytest>=7.2
 pytest-cov>=4.0
