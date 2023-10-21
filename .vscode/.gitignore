@@ -1,3 +1,5 @@
 *
 !.gitignore
+!extensions.json
 !settings.json
+!tasks.json
