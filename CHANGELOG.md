@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Documentation
+
+- Migrated documentation dependencies to `setup.cfg`.
+
 ## [5.7] - 2023-10-21
 
 ### Configuration
