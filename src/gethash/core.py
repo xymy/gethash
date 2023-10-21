@@ -56,7 +56,7 @@ class HashFileReader:
 
     def __init__(self, filepath: str) -> None:
         self.name = filepath
-        self.file = open(filepath, encoding="utf-8")  # noqa
+        self.file = open(filepath, encoding="utf-8")  # noqa: SIM115
 
     def __enter__(self) -> "HashFileReader":
         return self
@@ -156,7 +156,7 @@ class HashFileWriter:
 
     def __init__(self, filepath: str) -> None:
         self.name = filepath
-        self.file = open(filepath, "w", encoding="utf-8")  # noqa
+        self.file = open(filepath, "w", encoding="utf-8")  # noqa: SIM115
 
     def __enter__(self) -> "HashFileWriter":
         return self

@@ -154,7 +154,7 @@ class Gethash:
                 hash_line = generate_hash_line(path, self.hash_function, root=root)
                 hash_path = path + self.suffix
                 self.output.dump(hash_line, hash_path, path)
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 self.echo_exception(path, e)
             else:
                 # The hash line already has a newline.
@@ -169,7 +169,7 @@ class Gethash:
                 hash_line = e.hash_line.rstrip("\n")
                 msg = f"[ERROR] invalid hash '{hash_line}' in '{hash_path}' at line {e.lineno}"
                 self.echo_error(msg, fg="white", bg="red")
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 self.echo_exception(hash_path, e)
 
     def _check_hash(self, hash_path: str) -> None:
@@ -180,7 +180,7 @@ class Gethash:
                 path = check_hash_line(hash_line, self.hash_function, root=root)
                 maxmtime = max(maxmtime, os.path.getmtime(path))
             except ParseHashLineError as e:
-                raise ParseHashFileError(e.hash_line, i)
+                raise ParseHashFileError(e.hash_line, i) from None
             except CheckHashLineError as e:
                 self.echo(f"[FAILURE] {e.path}", fg="red")
             else:
@@ -217,8 +217,8 @@ def script_main(ctx: HashContext, files: Tuple[str, ...], **options: Any) -> Non
 
     no_stdout = options.pop("no_stdout", False)
     no_stderr = options.pop("no_stderr", False)
-    stdout = open(os.devnull, "w") if no_stdout else sys.stdout  # noqa
-    stderr = open(os.devnull, "w") if no_stderr else sys.stderr  # noqa
+    stdout = open(os.devnull, "w") if no_stdout else sys.stdout  # noqa: SIM115
+    stderr = open(os.devnull, "w") if no_stderr else sys.stderr  # noqa: SIM115
 
     check = options.pop("check", False)
     with Gethash(ctx, stdout=stdout, stderr=stderr, **options) as gethash:
