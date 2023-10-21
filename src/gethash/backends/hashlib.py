@@ -1,15 +1,21 @@
-import hashlib
-from typing import Set
+from __future__ import annotations
 
-from ..hasher import HashContext
+import hashlib
+from typing import TYPE_CHECKING
+
 from . import Backend
+
+if TYPE_CHECKING:
+    from ..hasher import HashContext
 
 
 class HashlibBackend(Backend):
-    _algorithms = {name.replace("_", "-") for name in hashlib.algorithms_available} - {"shake-128", "shake-256"}
+    _algorithms = frozenset(
+        {name.replace("_", "-") for name in hashlib.algorithms_available} - {"shake-128", "shake-256"}
+    )
 
     @property
-    def algorithms_available(self) -> Set[str]:
+    def algorithms_available(self) -> frozenset[str]:
         return self._algorithms
 
     def load_ctx(self, name: str) -> HashContext:

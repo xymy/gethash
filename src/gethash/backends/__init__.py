@@ -1,10 +1,14 @@
+from __future__ import annotations
+
 import abc
-from typing import Any, Set, Tuple
+from typing import TYPE_CHECKING, Any
 
-from click import Command
-
-from ..hasher import HashContext
 from ..script import gethashcli, script_main
+
+if TYPE_CHECKING:
+    from click import Command
+
+    from ..hasher import HashContext
 
 __all__ = ["Backend"]
 
@@ -12,7 +16,7 @@ __all__ = ["Backend"]
 class Backend(metaclass=abc.ABCMeta):
     @property
     @abc.abstractmethod
-    def algorithms_available(self) -> Set[str]:
+    def algorithms_available(self) -> frozenset[str]:
         """Return a set containing the names of the hash algorithms that are
         available in the backend."""
 
@@ -31,8 +35,7 @@ class Backend(metaclass=abc.ABCMeta):
         doc = f"""Generate or check {display_name}."""
 
         @gethashcli(command_name=name, display_name=display_name, doc=doc)
-        def main(files: Tuple[str, ...], **kwargs: Any) -> None:
-
+        def main(files: tuple[str, ...], **kwargs: Any) -> None:
             ctx = self.load_ctx(name)
             script_main(ctx, files, **kwargs)
 

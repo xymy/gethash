@@ -1,15 +1,19 @@
-from importlib import import_module
-from typing import Set
+from __future__ import annotations
 
-from ..hasher import HashContext
+from importlib import import_module
+from typing import TYPE_CHECKING
+
 from . import Backend
+
+if TYPE_CHECKING:
+    from ..hasher import HashContext
 
 
 class WrappersBackend(Backend):
-    _algorithms = {"crc32"}
+    _algorithms = frozenset({"crc32"})
 
     @property
-    def algorithms_available(self) -> Set[str]:
+    def algorithms_available(self) -> frozenset[str]:
         return self._algorithms
 
     def load_ctx(self, name: str) -> HashContext:
