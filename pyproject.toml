@@ -4,14 +4,74 @@ build-backend = "setuptools.build_meta"
 
 [tool.black]
 line-length = 120
-target-version = ["py38", "py39", "py310"]
+target-version = ["py38"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py38"
+src = ["src"]
+show-fixes = true
+show-source = true
+select = [
+    "F",   # pyflakes
+    "E",   # pycodestyle error
+    "W",   # pycodestyle warning
+    "D3",  # pydocstyle
+    "YTT", # flake8-2020
+    "BLE", # flake8-blind-except
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "ISC", # flake8-implicit-str-concat
+    "ICN", # flake8-import-conventions
+    "PIE", # flake8-pie
+    "Q",   # flake8-quotes
+    "SIM", # flake8-simplify
+    "TCH", # flake8-type-checking
+    "FLY", # flynt
+    "I",   # isort
+    "PGH", # pygrep-hooks
+    "UP",  # pyupgrade
+    "RUF",
+]
+ignore = [
+    # Module level import not at top of file
+    "E402",
+    # Line too long ({width} > {limit} characters)
+    "E501",
+    # Use a single if statement instead of nested if statements
+    "SIM102",
+    # Use ternary operator {contents} instead of if-else-block
+    "SIM108",
+]
+
+[tool.ruff.flake8-comprehensions]
+allow-dict-calls-with-keyword-arguments = true
+
+[tool.ruff.flake8-type-checking]
+exempt-modules = [
+    "typing",
+    "typing_extensions",
+    "collections",
+    "collections.abc",
+    "enum",
+    "datetime",
+    "pathlib",
+    "pytest",
+    "_pytest",
+]
 
 [tool.mypy]
 ignore_missing_imports = true
+disallow_untyped_defs = true
 check_untyped_defs = true
+no_implicit_optional = true
 warn_redundant_casts = true
 warn_unused_ignores = true
 show_error_context = true
 show_column_numbers = true
 show_error_codes = true
 pretty = true
+
+[tool.pyright]
+pythonVersion = "3.8"
+pythonPlatform = "All"
