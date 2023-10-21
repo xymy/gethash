@@ -1,29 +1,49 @@
-import os
+import argparse
+import shutil
 import subprocess
 import sys
 import tarfile
-from importlib import import_module
 from pathlib import Path
 
-if not (python := sys.executable):
-    print("Error: Python is unable to retrieve the real path to its executable.", file=sys.stderr)
+from rich.console import Console
+from rich.markup import escape
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--clean", action="store_true", help="clean the build directory")
+parser.add_argument("--dist", action="store_true", help="build a distribution")
+args = parser.parse_args()
+
+console = Console(soft_wrap=True, emoji=False, highlight=False)
+
+try:
+    import gethash as pkg
+except ImportError:
+    console.print("Package [u]gethash[/u] should be installed in the environment", style="b red")
     sys.exit(1)
 
-src_dir = Path(__file__).resolve().parents[1].joinpath("src")
-sys.path.insert(0, os.fsdecode(src_dir))
-gethash = import_module("gethash")
-
 docs_dir = Path(__file__).resolve().parent
-build_dir = docs_dir / "build"
-build_dir.mkdir(parents=True, exist_ok=True)
-dist_dir = docs_dir / "dist"
-dist_dir.mkdir(parents=True, exist_ok=True)
-
-doctrees_dir = build_dir / "doctrees"
 source_dir = docs_dir / "source"
+build_dir = docs_dir / "build"
 html_dir = build_dir / "html"
-subprocess.run([python, "-m", "sphinx.cmd.build", "-b", "html", "-d", doctrees_dir, source_dir, html_dir])
+doctrees_dir = build_dir / "doctrees"
 
-name = f"{gethash.__title__}-{gethash.__version__}-doc"
-with tarfile.open(dist_dir / f"{name}.tar.gz", "w:gz") as tar:
-    tar.add(html_dir, name)
+console.print(f"Docs dir: [u]{docs_dir}[/u]", style="b magenta")
+console.print(f"Source dir: [u]{source_dir}[/u]", style="b magenta")
+console.print(f"Build dir: [u]{build_dir}[/u]", style="b magenta")
+console.print()
+
+if args.clean and build_dir.exists():
+    shutil.rmtree(build_dir)
+    console.print(f"Clean the build directory [u]{escape(str(build_dir))}[/u]", style="b blue")
+
+subprocess.run([sys.executable, "-m", "sphinx.cmd.build", "-b", "html", "-d", doctrees_dir, source_dir, html_dir])
+
+if args.dist:
+    dist_dir = docs_dir / "dist"
+    dist_dir.mkdir(parents=True, exist_ok=True)
+    dist_name = f"{pkg.__title__}-{pkg.__version__}-docs"
+    dist_path = dist_dir / f"{dist_name}.tar.xz"
+
+    with tarfile.open(dist_path, "w:xz") as tar:
+        tar.add(html_dir, dist_name)
+    console.print(f"Build a distribution [u]{escape(str(dist_path))}[/u]", style="b green")
