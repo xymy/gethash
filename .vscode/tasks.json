@@ -1,0 +1,29 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build",
+            "type": "shell",
+            "command": "hatch build",
+            "problemMatcher": []
+        },
+        {
+            "label": "Build docs",
+            "type": "shell",
+            "command": "tox run -e docs",
+            "problemMatcher": []
+        },
+        {
+            "label": "Open docs in browser",
+            "type": "shell",
+            "command": "open ${workspaceFolder}/docs/build/html/index.html",
+            "windows": {
+                "command": "start ${workspaceFolder}\\docs\\build\\html\\index.html"
+            },
+            "presentation": {
+                "reveal": "silent"
+            },
+            "problemMatcher": []
+        }
+    ]
+}
