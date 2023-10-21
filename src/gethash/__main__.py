@@ -3,10 +3,10 @@ from typing import Any, Iterator, List, Optional
 
 import click
 from click import Command, Context
+from importlib_metadata import entry_points
 from natsort import natsort_keygen
 
 from . import __version__
-from ._compat import entry_points
 from .backends import Backend
 from .utils.click import MultiCommandX
 
