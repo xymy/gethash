@@ -11,6 +11,6 @@ api/index
 :caption: Project
 :hidden:
 
-changelog
+changelog/index
 GitHub <https://github.com/xymy/gethash>
 ```

@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `pre-commit` and `ruff` badges to documentation.
 - Removed `isort` badge from documentation.
 - Changed title for HTML documentation to `{project} {release}`.
+- Improved changelog.
 
 ### Testing
 
