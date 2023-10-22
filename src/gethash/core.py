@@ -107,7 +107,7 @@ class HashFileReader:
                 The root directory.
 
         Yields:
-            Tuple[str, str]:
+            tuple[str, str]:
                 ``(hash, name)``.
         """
 
@@ -226,7 +226,7 @@ def parse_hash_line(hash_line: str, *, root: str | None = None) -> tuple[str, st
             If fails to parse hash line.
 
     Returns:
-        Tuple[str, str]:
+        tuple[str, str]:
             ``(hex_hash_value, path)``.
 
     Examples:
@@ -313,7 +313,7 @@ def re_name_to_hash(hash_line: str, *, root: str | None = None) -> tuple[str, st
             The root directory.
 
     Returns:
-        Tuple[str, str]:
+        tuple[str, str]:
             ``(naming_path, hashing_path)``.
     """
 
@@ -332,7 +332,7 @@ def re_hash_to_name(hash_line: str, *, root: str | None = None) -> tuple[str, st
             The root directory.
 
     Returns:
-        Tuple[str, str]:
+        tuple[str, str]:
             ``(hashing_path, naming_path)``.
     """
 
