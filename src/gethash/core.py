@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 import os
 import re
 from hmac import compare_digest
-from typing import Any, Callable, Iterator, Optional, Tuple
+from typing import Any, Callable, Iterator
 
 __all__ = [
     "ParseHashLineError",
@@ -58,7 +60,7 @@ class HashFileReader:
         self.name = filepath
         self.file = open(filepath, encoding="utf-8")  # noqa: SIM115
 
-    def __enter__(self) -> "HashFileReader":
+    def __enter__(self) -> HashFileReader:
         return self
 
     def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None:
@@ -97,7 +99,7 @@ class HashFileReader:
 
     __iter__ = iter
 
-    def iter2(self, *, root: Optional[str] = None) -> Iterator[Tuple[str, str]]:
+    def iter2(self, *, root: str | None = None) -> Iterator[tuple[str, str]]:
         """Yield hash and name.
 
         Parameters:
@@ -112,7 +114,7 @@ class HashFileReader:
         for hash_line in self:
             yield parse_hash_line(hash_line, root=root)
 
-    def iter_hash(self, *, root: Optional[str] = None) -> Iterator[str]:
+    def iter_hash(self, *, root: str | None = None) -> Iterator[str]:
         """Yield hash.
 
         Parameters:
@@ -127,7 +129,7 @@ class HashFileReader:
         for entry in self.iter2(root=root):
             yield entry[0]
 
-    def iter_name(self, *, root: Optional[str] = None) -> Iterator[str]:
+    def iter_name(self, *, root: str | None = None) -> Iterator[str]:
         """Yield name.
 
         Parameters:
@@ -158,7 +160,7 @@ class HashFileWriter:
         self.name = filepath
         self.file = open(filepath, "w", encoding="utf-8")  # noqa: SIM115
 
-    def __enter__(self) -> "HashFileWriter":
+    def __enter__(self) -> HashFileWriter:
         return self
 
     def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None:
@@ -180,7 +182,7 @@ class HashFileWriter:
         self.file.write(hash_line)
 
 
-def format_hash_line(hex_hash_value: str, path: str, *, root: Optional[str] = None) -> str:
+def format_hash_line(hex_hash_value: str, path: str, *, root: str | None = None) -> str:
     r"""Format hash line.
 
     Parameters:
@@ -210,7 +212,7 @@ def format_hash_line(hex_hash_value: str, path: str, *, root: Optional[str] = No
     return f"{hex_hash_value} *{path}\n"
 
 
-def parse_hash_line(hash_line: str, *, root: Optional[str] = None) -> Tuple[str, str]:
+def parse_hash_line(hash_line: str, *, root: str | None = None) -> tuple[str, str]:
     r"""Parse hash line.
 
     Parameters:
@@ -242,7 +244,7 @@ def parse_hash_line(hash_line: str, *, root: Optional[str] = None) -> Tuple[str,
     return hex_hash_value, path
 
 
-def generate_hash_line(path: str, hash_function: Callable[[str], bytes], *, root: Optional[str] = None) -> str:
+def generate_hash_line(path: str, hash_function: Callable[[str], bytes], *, root: str | None = None) -> str:
     """Generate hash line.
 
     Parameters:
@@ -267,7 +269,7 @@ def generate_hash_line(path: str, hash_function: Callable[[str], bytes], *, root
     return format_hash_line(hex_hash_value, path, root=root)
 
 
-def check_hash_line(hash_line: str, hash_function: Callable[[str], bytes], *, root: Optional[str] = None) -> str:
+def check_hash_line(hash_line: str, hash_function: Callable[[str], bytes], *, root: str | None = None) -> str:
     """Check hash line.
 
     Parameters:
@@ -295,13 +297,13 @@ def check_hash_line(hash_line: str, hash_function: Callable[[str], bytes], *, ro
     return path
 
 
-def _parse_for_re(hash_line: str, *, root: Optional[str] = None) -> Tuple[str, str]:
+def _parse_for_re(hash_line: str, *, root: str | None = None) -> tuple[str, str]:
     hex_hash_value, naming_path = parse_hash_line(hash_line, root=root)
     hashing_path = os.path.join(os.path.dirname(naming_path), hex_hash_value)
     return hashing_path, naming_path
 
 
-def re_name_to_hash(hash_line: str, *, root: Optional[str] = None) -> Tuple[str, str]:
+def re_name_to_hash(hash_line: str, *, root: str | None = None) -> tuple[str, str]:
     """Re name to hash.
 
     Parameters:
@@ -320,7 +322,7 @@ def re_name_to_hash(hash_line: str, *, root: Optional[str] = None) -> Tuple[str,
     return naming_path, hashing_path
 
 
-def re_hash_to_name(hash_line: str, *, root: Optional[str] = None) -> Tuple[str, str]:
+def re_hash_to_name(hash_line: str, *, root: str | None = None) -> tuple[str, str]:
     """Re hash to name.
 
     Parameters:

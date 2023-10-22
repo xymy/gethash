@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 import sys
-from typing import Any, Optional, Sequence, cast
+from typing import Any, Sequence, cast
 
 import click
 from click import Context, Parameter
@@ -9,7 +11,7 @@ __all__ = ["CommandX", "MultiCommandX", "PathWithSuffix"]
 
 
 class CommandX(click.Command):
-    def main(self, args: Optional[Sequence[str]] = None, *pargs: Any, **kwargs: Any) -> Any:
+    def main(self, args: Sequence[str] | None = None, *pargs: Any, **kwargs: Any) -> Any:
         # Avoid command-line arguments expansion on Windows.
         if args is None:
             args = sys.argv[1:]
@@ -17,7 +19,7 @@ class CommandX(click.Command):
 
 
 class MultiCommandX(DYMMixin, click.MultiCommand):
-    def main(self, args: Optional[Sequence[str]] = None, *pargs: Any, **kwargs: Any) -> Any:
+    def main(self, args: Sequence[str] | None = None, *pargs: Any, **kwargs: Any) -> Any:
         # Avoid command-line arguments expansion on Windows.
         if args is None:
             args = sys.argv[1:]
@@ -29,7 +31,7 @@ class PathWithSuffix(click.Path):
         super().__init__(**kwargs)
         self.suffix = suffix
 
-    def convert(self, value: str, param: Optional[Parameter], ctx: Optional[Context]) -> str:
+    def convert(self, value: str, param: Parameter | None, ctx: Context | None) -> str:
         if self.file_okay and self.allow_dash and value == "-":
             return cast(str, super().convert(value, param, ctx))
 

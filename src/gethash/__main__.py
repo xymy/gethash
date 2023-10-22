@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from contextlib import suppress
-from typing import Any, Iterator, List, Optional
+from typing import Any, Iterator
 
 import click
 from click import Command, Context
@@ -28,13 +30,13 @@ class Cli(MultiCommandX):
                 assert isinstance(backend, Backend)
                 yield backend
 
-    def list_commands(self, ctx: Context) -> List[str]:
+    def list_commands(self, ctx: Context) -> list[str]:
         commands = set(self._ep_commands.names)
         for backend in self._iter_backends():
             commands.update(backend.algorithms_available)
         return sorted(commands, key=natsort_keygen())
 
-    def get_command(self, ctx: Context, name: str) -> Optional[Command]:
+    def get_command(self, ctx: Context, name: str) -> Command | None:
         with suppress(KeyError, ImportError):
             cmd = self._ep_commands[name].load()
             assert isinstance(cmd, Command)

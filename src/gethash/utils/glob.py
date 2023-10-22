@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import glob
 import os
-from typing import Any, AnyStr, Callable, Iterable, Iterator, List, Optional, Union
+from typing import Any, AnyStr, Callable, Iterable, Iterator
 
 from natsort import os_sort_keygen
 
@@ -58,7 +60,7 @@ def _get_glob(mode: int) -> Callable[..., Iterator]:
 
 def _path_filter(paths: Iterable[AnyStr], *, type: str) -> Iterator[AnyStr]:
     _check_str(type, "type")
-    pred: Callable[[Union[str, bytes]], bool]
+    pred: Callable[[str | bytes], bool]
     if type == "a":
         pred = os.path.exists
     elif type == "d":
@@ -196,8 +198,8 @@ def glob_filters(
 
 
 def sorted_path(
-    iterable: Iterable[AnyStr], *, key: Optional[Callable[[AnyStr], Any]] = None, reverse: bool = False
-) -> List[AnyStr]:
+    iterable: Iterable[AnyStr], *, key: Callable[[AnyStr], Any] | None = None, reverse: bool = False
+) -> list[AnyStr]:
     """Sort a list of path strings the same as the underlying operating system.
 
     Parameters:

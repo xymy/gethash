@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 import functools
 import os
 import sys
-from typing import Any, Callable, Iterable, Optional, TextIO, Tuple
+from typing import Any, Callable, Iterable, TextIO
 
 import click
 from click import Command
@@ -32,7 +34,7 @@ class Output:
     """Determine the output mode and provide the output interface."""
 
     def __init__(
-        self, agg: Optional[str] = None, sep: Optional[bool] = None, null: Optional[bool] = None, sync: bool = False
+        self, agg: str | None = None, sep: bool | None = None, null: bool | None = None, sync: bool = False
     ) -> None:
         if (agg and sep) or (agg and null) or (sep and null):
             raise ValueError("require exactly one argument")
@@ -93,10 +95,10 @@ class Gethash:
     glob_type: str
 
     inplace: bool
-    root: Optional[str]
+    root: str | None
 
-    start: Optional[int]
-    stop: Optional[int]
+    start: int | None
+    stop: int | None
     dir_ok: bool
 
     def __init__(self, ctx: HashContext, **kwargs: Any) -> None:
@@ -138,7 +140,7 @@ class Gethash:
         else:
             self.generate_hash(files)
 
-    def __enter__(self) -> "Gethash":
+    def __enter__(self) -> Gethash:
         return self
 
     def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None:
@@ -188,7 +190,7 @@ class Gethash:
         if self.sync:
             os.utime(hash_path, (maxmtime, maxmtime))
 
-    def check_root(self, path: str) -> Optional[str]:
+    def check_root(self, path: str) -> str | None:
         if self.inplace:
             return os.path.dirname(path)
         return self.root
@@ -212,7 +214,7 @@ class Gethash:
         click.secho(msg, file=self.stderr, fg="red")
 
 
-def script_main(ctx: HashContext, files: Tuple[str, ...], **options: Any) -> None:
+def script_main(ctx: HashContext, files: tuple[str, ...], **options: Any) -> None:
     """Execute the body for the main function."""
 
     no_stdout = options.pop("no_stdout", False)

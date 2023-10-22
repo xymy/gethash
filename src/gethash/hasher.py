@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 import io
 import os
 from os import PathLike
-from typing import Any, Dict, Optional, Protocol, Type, TypeVar, Union
+from typing import Any, Protocol, TypeVar
 
 from tqdm import tqdm
 
@@ -57,9 +59,9 @@ class Hasher:
         self,
         ctx: HashContext,
         *,
-        chunksize: Optional[int] = None,
-        tqdm_args: Optional[Dict[str, Any]] = None,
-        tqdm_type: Optional[Type[tqdm]] = None,
+        chunksize: int | None = None,
+        tqdm_args: dict[str, Any] | None = None,
+        tqdm_type: type[tqdm] | None = None,
     ) -> None:
         if chunksize is None:
             chunksize = _CHUNKSIZE
@@ -95,9 +97,9 @@ class Hasher:
 
     def __call__(
         self,
-        path: "Union[str, PathLike[str]]",
-        start: Optional[int] = None,
-        stop: Optional[int] = None,
+        path: str | PathLike[str],
+        start: int | None = None,
+        stop: int | None = None,
         *,
         dir_ok: bool = False,
     ) -> bytes:
@@ -135,9 +137,7 @@ class Hasher:
             raise IsADirectory(f"{path!r} is a directory")
         return self._hash_file(path, start, stop)
 
-    def _hash_dir(
-        self, dirpath: "Union[str, PathLike[str]]", start: Optional[int] = None, stop: Optional[int] = None
-    ) -> bytes:
+    def _hash_dir(self, dirpath: str | PathLike[str], start: int | None = None, stop: int | None = None) -> bytes:
         # The initial hash value is all zeros.
         value = bytearray(self._ctx.digest_size)
         with os.scandir(dirpath) as it:
@@ -150,9 +150,7 @@ class Hasher:
                 strxor(value, other, value)
         return bytes(value)
 
-    def _hash_file(
-        self, filepath: "Union[str, PathLike[str]]", start: Optional[int] = None, stop: Optional[int] = None
-    ) -> bytes:
+    def _hash_file(self, filepath: str | PathLike[str], start: int | None = None, stop: int | None = None) -> bytes:
         # Clamp `(start, stop)` to `(0, filesize)`.
         filesize = os.path.getsize(filepath)
         if start is None or start < 0:

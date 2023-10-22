@@ -1,11 +1,13 @@
-from typing import Optional, overload
+from __future__ import annotations
+
+from typing import overload
 
 from . import _check_bytes, _check_bytes_w_opt
 
 __all__ = ["strxor"]
 
 
-def _py_strxor(term1: bytes, term2: bytes, output: Optional[bytearray] = None) -> Optional[bytes]:
+def _py_strxor(term1: bytes, term2: bytes, output: bytearray | None = None) -> bytes | None:
     if output is None:
         return bytes(x1 ^ x2 for x1, x2 in zip(term1, term2))
     for i, (x1, x2) in enumerate(zip(term1, term2)):
@@ -31,7 +33,7 @@ def strxor(term1: bytes, term2: bytes, output: bytearray) -> None:
     ...
 
 
-def strxor(term1: bytes, term2: bytes, output: Optional[bytearray] = None) -> Optional[bytes]:
+def strxor(term1: bytes, term2: bytes, output: bytearray | None = None) -> bytes | None:
     """XOR two byte strings.
 
     Parameters:
