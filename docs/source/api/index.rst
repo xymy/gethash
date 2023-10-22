@@ -2,7 +2,7 @@ API Reference
 =============
 
 .. toctree::
-    :maxdepth: 1
+    :titlesonly:
 
     core
     hasher
