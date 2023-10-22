@@ -15,6 +15,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `pre-commit` and `ruff` badges to documentation.
 - Removed `isort` badge from documentation.
 
+### Testing
+
+- Now require `tox>=4.4`.
+- Fixed and improved configuration for `tox`.
+
 ## [5.7] - 2023-10-21
 
 ### Configuration
@@ -23,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Linting
 
+- Now require `pre-commit>=3.0`.
 - Adopted `ruff`.
 - Removed `isort`, `flake8` and `yesqa`.
 
