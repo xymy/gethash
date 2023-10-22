@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Configuration
+
+- Now allow to setup development environment via `tox devenv -e dev .venv`.
+
 ### Documentation
 
 - Migrated documentation dependencies to `setup.cfg`.
