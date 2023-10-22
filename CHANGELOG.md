@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Migrated documentation dependencies to `setup.cfg`.
 - Updated `docs/release.py` script.
+- Added `pre-commit` and `ruff` badges to documentation.
+- Removed `isort` badge from documentation.
 
 ## [5.7] - 2023-10-21
 
