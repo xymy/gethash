@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Now require `tox>=4.4`.
 - Fixed and improved configuration for `tox`.
+- Added exclude lines for `coverage`.
 
 ## [5.7] - 2023-10-21
 
