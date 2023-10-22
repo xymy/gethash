@@ -11,9 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Migrated documentation dependencies to `setup.cfg`.
 - Updated `docs/release.py` script.
+- Updated `docs/source/conf.py`.
 - Refactored root doc from `index.rst` to `index.md`.
 - Added `pre-commit` and `ruff` badges to documentation.
 - Removed `isort` badge from documentation.
+- Changed title for HTML documentation to `{project} {release}`.
 
 ### Testing
 
