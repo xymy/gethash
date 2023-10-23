@@ -14,8 +14,6 @@ __all__ = [
     "parse_hash_line",
     "generate_hash_line",
     "check_hash_line",
-    "re_name_to_hash",
-    "re_hash_to_name",
 ]
 
 _HASH_LINE_RE = re.compile(r"([0-9a-fA-F]+)(?:(?: \*|  | )(.+))?")
@@ -295,47 +293,3 @@ def check_hash_line(hash_line: str, hash_function: Callable[[str], bytes], *, ro
     if not compare_digest(hash_value, curr_hash_value):
         raise CheckHashLineError(hash_line, hash_value, path, curr_hash_value)
     return path
-
-
-def _parse_for_re(hash_line: str, *, root: str | None = None) -> tuple[str, str]:
-    hex_hash_value, naming_path = parse_hash_line(hash_line, root=root)
-    hashing_path = os.path.join(os.path.dirname(naming_path), hex_hash_value)
-    return hashing_path, naming_path
-
-
-def re_name_to_hash(hash_line: str, *, root: str | None = None) -> tuple[str, str]:
-    """Re name to hash.
-
-    Parameters:
-        hash_line (str):
-            A line of *hash* and *name* with GNU Coreutils style.
-        root (str | None, default=None):
-            The root directory.
-
-    Returns:
-        tuple[str, str]:
-            ``(naming_path, hashing_path)``.
-    """
-
-    hashing_path, naming_path = _parse_for_re(hash_line, root=root)
-    os.rename(naming_path, hashing_path)
-    return naming_path, hashing_path
-
-
-def re_hash_to_name(hash_line: str, *, root: str | None = None) -> tuple[str, str]:
-    """Re hash to name.
-
-    Parameters:
-        hash_line (str):
-            A line of *hash* and *name* with GNU Coreutils style.
-        root (str | None, default=None):
-            The root directory.
-
-    Returns:
-        tuple[str, str]:
-            ``(hashing_path, naming_path)``.
-    """
-
-    hashing_path, naming_path = _parse_for_re(hash_line, root=root)
-    os.rename(hashing_path, naming_path)
-    return hashing_path, naming_path
