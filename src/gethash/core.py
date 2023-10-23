@@ -5,6 +5,8 @@ import re
 from hmac import compare_digest
 from typing import Any, Callable, Iterator
 
+from typing_extensions import Self
+
 __all__ = [
     "ParseHashLineError",
     "CheckHashLineError",
@@ -58,7 +60,7 @@ class HashFileReader:
         self.name = filepath
         self.file = open(filepath, encoding="utf-8")  # noqa: SIM115
 
-    def __enter__(self) -> HashFileReader:
+    def __enter__(self) -> Self:
         return self
 
     def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None:
@@ -147,7 +149,7 @@ class HashFileWriter:
     """General hash file writer.
 
     The :class:`HashFileWriter` supports the context manager protocol for
-    calling :meth:`HashFileReader.close` automatically.
+    calling :meth:`HashFileWriter.close` automatically.
 
     Parameters:
         filepath (str):
@@ -158,7 +160,7 @@ class HashFileWriter:
         self.name = filepath
         self.file = open(filepath, "w", encoding="utf-8")  # noqa: SIM115
 
-    def __enter__(self) -> HashFileWriter:
+    def __enter__(self) -> Self:
         return self
 
     def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None:
