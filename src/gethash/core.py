@@ -18,7 +18,7 @@ __all__ = [
     "check_hash_line",
 ]
 
-_HASH_LINE_RE = re.compile(r"([0-9a-fA-F]+)(?:(?: \*|  | )(.+))?")
+_HASH_LINE_RE = re.compile(r"([0-9a-fA-F]+)(?: \*|  | )(.+)")
 
 
 class ParseHashLineError(ValueError):
@@ -51,9 +51,9 @@ class HashFileReader:
             The path of a hash file.
 
     Note:
-        - ``hash_line`` a line of *hash* and *name* with GNU Coreutils style.
+        - ``hash_line`` is a line of *hash* and *name* with GNU Coreutils style.
         - ``hash`` is the hexadecimal hash value string.
-        - ``name`` is the path with corresponding hash value.
+        - ``name`` is the path of a file or a directory with corresponding hash value.
     """
 
     def __init__(self, filepath: str) -> None:
