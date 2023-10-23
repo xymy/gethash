@@ -1,3 +1,4 @@
+import os
 from typing import Generator
 
 import pytest
@@ -13,3 +14,8 @@ def vectors(tmp_path_factory: TempPathFactory) -> Generator[Vectors, None, None]
     vectors.init_data_files()
     yield vectors
     vectors.finalize_data_files()
+
+
+@pytest.fixture(scope="session")
+def root() -> str:
+    return os.path.join(os.path.dirname(__file__), "data")
