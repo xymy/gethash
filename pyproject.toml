@@ -1,6 +1,115 @@
 [build-system]
-requires = ["setuptools>=51.0", "wheel>=0.36"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling>=1.18"]
+build-backend = "hatchling.build"
+
+[project]
+name = "gethash"
+description = "Command-line hash utility"
+readme = "README.md"
+license = "MIT"
+authors = [{ name = "xymy", email = "thyfan@163.com" }]
+maintainers = [{ name = "xymy", email = "thyfan@163.com" }]
+keywords = ["cryptography", "hash", "utility"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Security",
+    "Topic :: Security :: Cryptography",
+    "Topic :: Utilities",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "click>=8.1",
+    "click-didyoumean>=0.3",
+    "click-option-group>=0.5",
+    "importlib-metadata>=4.4",
+    "natsort>=8.1",
+    "tqdm>=4.60",
+    "typing-extensions",
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+all = [
+    # https://www.pycryptodome.org/
+    "pycryptodome>=3.16",
+]
+docs = [
+    "rich",
+    # https://www.sphinx-doc.org/en/master/
+    "sphinx>=7.2",
+    # https://pradyunsg.me/furo/
+    "furo>=2023.9",
+    # https://myst-parser.readthedocs.io/en/latest/
+    "myst-parser>=2.0",
+    # https://sphinx-copybutton.readthedocs.io/en/latest/
+    "sphinx-copybutton>=0.5",
+]
+lint = [
+    # https://black.readthedocs.io/en/stable/
+    "black>=23.10",
+    # https://docs.astral.sh/ruff/
+    "ruff>=0.1",
+    # https://www.mypy-lang.org/
+    "mypy>=1.6",
+]
+test = [
+    # https://coverage.readthedocs.io/en/latest/
+    "coverage>=7.3",
+    # https://hypothesis.readthedocs.io/en/latest/
+    "hypothesis>=6.86",
+    # https://docs.pytest.org/en/latest/
+    "pytest>=7.4",
+    # https://pytest-cov.readthedocs.io/en/latest/
+    "pytest-cov>=4.1",
+]
+
+[project.scripts]
+gethash = "gethash.__main__:main"
+blake2b = "gethash.cli.blake2b:main"
+blake2s = "gethash.cli.blake2s:main"
+crc32 = "gethash.cli.crc32:main"
+md5 = "gethash.cli.md5:main"
+sha1 = "gethash.cli.sha1:main"
+sha256 = "gethash.cli.sha256:main"
+sha3-256 = "gethash.cli.sha3_256:main"
+sha3-512 = "gethash.cli.sha3_512:main"
+sha512 = "gethash.cli.sha512:main"
+
+[project.entry-points."gethash.backends"]
+hashlib = "gethash.backends.hashlib:load"
+pycryptodome = "gethash.backends.pycryptodome:load"
+wrappers = "gethash.backends.wrappers:load"
+
+[project.entry-points."gethash.commands"]
+blake2b = "gethash.cli.blake2b:main"
+blake2s = "gethash.cli.blake2s:main"
+crc32 = "gethash.cli.crc32:main"
+md5 = "gethash.cli.md5:main"
+sha1 = "gethash.cli.sha1:main"
+sha256 = "gethash.cli.sha256:main"
+sha3-256 = "gethash.cli.sha3_256:main"
+sha3-512 = "gethash.cli.sha3_512:main"
+sha512 = "gethash.cli.sha512:main"
+
+[project.urls]
+Homepage = "https://github.com/xymy/gethash"
+Documentation = "https://github.com/xymy/gethash"
+"Issue Tracker" = "https://github.com/xymy/gethash/issues"
+"Source Code" = "https://github.com/xymy/gethash"
+
+[tool.hatch.version]
+path = "gethash/__init__.py"
 
 [tool.black]
 line-length = 120
