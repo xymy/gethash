@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.8] - 2023-10-24
+
 ### Configuration
 
 - Now allow to setup development environment via `tox devenv -e dev .venv`.
@@ -27,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Now require `tox>=4.4`.
 - Fixed and improved configuration for `tox`.
 - Added exclude lines for `coverage`.
+- Added more test cases.
 
 ## [5.7] - 2023-10-21
 
@@ -152,7 +155,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added PyPI classifier `Intended Audience :: Developers`.
 
-[Unreleased]: https://github.com/xymy/gethash/compare/v5.7...HEAD
+[Unreleased]: https://github.com/xymy/gethash/compare/v5.8...HEAD
+[5.8]: https://github.com/xymy/gethash/compare/v5.7...v5.8
 [5.7]: https://github.com/xymy/gethash/compare/v5.6...v5.7
 [5.6]: https://github.com/xymy/gethash/compare/v5.5...v5.6
 [5.5]: https://github.com/xymy/gethash/compare/v5.4...v5.5
