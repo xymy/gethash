@@ -17,17 +17,11 @@ Functions
 Classes
 -------
 
-HashFileReader
-~~~~~~~~~~~~~~
-
 .. autoclass:: HashFileReader
 
 .. note::
 
     :meth:`HashFileReader.__iter__` is an alias of :meth:`HashFileReader.iter`.
-
-HashFileWriter
-~~~~~~~~~~~~~~
 
 .. autoclass:: HashFileWriter
 
