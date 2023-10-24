@@ -51,9 +51,9 @@ class HashFileReader:
             The path of a hash file.
 
     Note:
-        - ``hash_line`` is a line of *hash* and *name* with GNU Coreutils style.
-        - ``hash`` is the hexadecimal hash value string.
-        - ``name`` is the path of a file or a directory with corresponding hash value.
+        - ``hash_line``: The line of *hash* and *name* with GNU Coreutils style.
+        - ``hash``: The hexadecimal hash value string.
+        - ``name``: The path of a file or a directory with corresponding hash value.
     """
 
     def __init__(self, filepath: str) -> None:
@@ -176,7 +176,7 @@ class HashFileWriter:
 
         Parameters:
             hash_line (str):
-                A line of *hash* and *name* with GNU Coreutils style.
+                The line of *hash* and *name* with GNU Coreutils style.
         """
 
         self.file.write(hash_line)
@@ -217,7 +217,7 @@ def parse_hash_line(hash_line: str, *, root: str | None = None) -> tuple[str, st
 
     Parameters:
         hash_line (str):
-            A line of *hash* and *name* with GNU Coreutils style.
+            The line of *hash* and *name* with GNU Coreutils style.
         root (str | None, default=None):
             The root directory.
 
@@ -255,7 +255,7 @@ def generate_hash_line(path: str, hash_function: Callable[[str], bytes], *, root
             (2) Relative path;
             (3) Relative to a given root directory.
         hash_function (Callable[[str], bytes]):
-            A function for generating hash value.
+            The function used to generate hash value.
         root (str | None, default=None):
             The root directory.
 
@@ -274,9 +274,9 @@ def check_hash_line(hash_line: str, hash_function: Callable[[str], bytes], *, ro
 
     Parameters:
         hash_line (str):
-            A line of *hash* and *name* with GNU Coreutils style.
+            The line of *hash* and *name* with GNU Coreutils style.
         hash_function (Callable[[str], bytes]):
-            A function for generating hash value.
+            The function used to generate hash value.
         root (str | None, default=None):
             The root directory.
 
