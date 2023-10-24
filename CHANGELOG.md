@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Configuration
 
 - Migrated build system from `setuptools` to `hatch`.
+- Now use `hatch` to setup development environment.
 
 ## [5.8] - 2023-10-24
 
