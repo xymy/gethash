@@ -1,7 +1,7 @@
 import os
 from hashlib import md5
 
-from gethash.core import check_hash_line, format_hash_line, generate_hash_line, parse_hash_line
+from gethash.core import HashFileReader, check_hash_line, format_hash_line, generate_hash_line, parse_hash_line
 
 
 def md5_digest(path: str) -> bytes:
@@ -27,3 +27,21 @@ def test_generate_hash_line(root: str) -> None:
 def test_check_hash_line(root: str) -> None:
     result = check_hash_line("d41d8cd98f00b204e9800998ecf8427e *foo.txt\n", md5_digest, root=root)
     assert result == os.path.join(root, "foo.txt")
+
+
+class TestHashFileReader:
+    def test_iter(self, root: str) -> None:
+        for hash_line in HashFileReader(os.path.join(root, "foo.txt.md5")):
+            assert hash_line == "d41d8cd98f00b204e9800998ecf8427e *foo.txt\n"
+
+    def test_iter2(self, root: str) -> None:
+        for hash, name in HashFileReader(os.path.join(root, "foo.txt.md5")).iter2():
+            assert (hash, name) == ("d41d8cd98f00b204e9800998ecf8427e", "foo.txt")
+
+    def test_iter_hash(self, root: str) -> None:
+        for hash in HashFileReader(os.path.join(root, "foo.txt.md5")).iter_hash():
+            assert hash == "d41d8cd98f00b204e9800998ecf8427e"
+
+    def test_iter_name(self, root: str) -> None:
+        for name in HashFileReader(os.path.join(root, "foo.txt.md5")).iter_name():
+            assert name == "foo.txt"
