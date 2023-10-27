@@ -1,11 +1,13 @@
 import os
 from hashlib import sha256
+from pathlib import Path
 
 import pytest
 
 from gethash.core import (
     CheckHashLineError,
     HashFileReader,
+    HashFileWriter,
     ParseHashLineError,
     check_hash_line,
     format_hash_line,
@@ -17,6 +19,11 @@ from gethash.core import (
 def sha256_digest(path: str) -> bytes:
     with open(path, "rb") as f:
         return sha256(f.read()).digest()
+
+
+def read_text(path: str) -> str:
+    with open(path, encoding="utf-8") as f:
+        return f.read()
 
 
 @pytest.fixture(scope="module")
@@ -86,3 +93,11 @@ class TestHashFileReader:
     def test_iter_name(self, foo_hash_path: str, foo_name: str) -> None:
         for name in HashFileReader(foo_hash_path).iter_name():
             assert name == foo_name
+
+
+class TestHashFileWriter:
+    def test_write_hash_line(self, tmp_path: Path, foo_hash_path: str, foo_hash_line: str) -> None:
+        tmp_foo_hash_path = str(tmp_path / os.path.basename(foo_hash_path))
+        with HashFileWriter(tmp_foo_hash_path) as hash_file:
+            hash_file.write_hash_line(foo_hash_line)
+        assert read_text(tmp_foo_hash_path) == read_text(foo_hash_path)
