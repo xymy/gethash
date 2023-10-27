@@ -51,6 +51,11 @@ def foo_hash_path(root: str) -> str:
     return os.path.join(root, "foo.txt.sha256")
 
 
+@pytest.fixture(scope="module")
+def foo_a_hash_path(root: str) -> str:
+    return os.path.join(root, "foo.txt.a.sha256")
+
+
 def test_format_hash_line(foo_hash_line: str, foo_hash: str, foo_name: str) -> None:
     result = format_hash_line(foo_hash, foo_name)
     assert result == foo_hash_line
@@ -78,6 +83,15 @@ def test_check_hash_line(root: str, foo_path: str, foo_hash_line: str) -> None:
 
 
 class TestHashFileReader:
+    def test_read_hash_line(self, foo_hash_path: str, foo_a_hash_path: str, foo_hash_line: str) -> None:
+        with HashFileReader(foo_hash_path) as hash_file:
+            assert hash_file.read_hash_line() == foo_hash_line
+            assert hash_file.read_hash_line() == ""
+
+        with HashFileReader(foo_a_hash_path) as hash_file:
+            assert hash_file.read_hash_line() == foo_hash_line
+            assert hash_file.read_hash_line() == ""
+
     def test_iter(self, foo_hash_path: str, foo_hash_line: str) -> None:
         for hash_line in HashFileReader(foo_hash_path):
             assert hash_line == foo_hash_line
