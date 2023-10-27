@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import os
 from hashlib import sha256
 from pathlib import Path
@@ -21,7 +23,7 @@ def sha256_digest(path: str) -> bytes:
         return sha256(f.read()).digest()
 
 
-def read_text(path: str) -> str:
+def read_text(path: str | Path) -> str:
     with open(path, encoding="utf-8") as f:
         return f.read()
 
@@ -111,7 +113,7 @@ class TestHashFileReader:
 
 class TestHashFileWriter:
     def test_write_hash_line(self, tmp_path: Path, foo_hash_path: str, foo_hash_line: str) -> None:
-        tmp_foo_hash_path = str(tmp_path / os.path.basename(foo_hash_path))
+        tmp_foo_hash_path = tmp_path / os.path.basename(foo_hash_path)
         with HashFileWriter(tmp_foo_hash_path) as hash_file:
             hash_file.write_hash_line(foo_hash_line)
         assert read_text(tmp_foo_hash_path) == read_text(foo_hash_path)

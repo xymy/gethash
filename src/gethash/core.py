@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 import re
 from hmac import compare_digest
+from pathlib import Path
 from typing import Any, Callable, Iterator
 
 from typing_extensions import Self
@@ -162,7 +163,7 @@ class HashFileReader:
     calling :meth:`HashFileReader.close` automatically.
 
     Parameters:
-        filepath (str):
+        filepath (str | Path):
             The path of a hash file.
 
     Note:
@@ -171,8 +172,8 @@ class HashFileReader:
         - ``name``: The path of a file or a directory with corresponding hash value.
     """
 
-    def __init__(self, filepath: str) -> None:
-        self.name = filepath
+    def __init__(self, filepath: str | Path) -> None:
+        self.name = str(filepath)
         self.file = open(filepath, encoding="utf-8")  # noqa: SIM115
 
     def __enter__(self) -> Self:
@@ -267,12 +268,12 @@ class HashFileWriter:
     calling :meth:`HashFileWriter.close` automatically.
 
     Parameters:
-        filepath (str):
+        filepath (str | Path):
             The path of a hash file.
     """
 
-    def __init__(self, filepath: str) -> None:
-        self.name = filepath
+    def __init__(self, filepath: str | Path) -> None:
+        self.name = str(filepath)
         self.file = open(filepath, "w", encoding="utf-8")  # noqa: SIM115
 
     def __enter__(self) -> Self:
