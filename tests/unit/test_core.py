@@ -93,20 +93,32 @@ class TestHashFileReader:
             assert hash_file.read_hash_line() == foo_hash_line
             assert hash_file.read_hash_line() == ""
 
-    def test_iter(self, foo_hash_path: Path, foo_hash_line: str) -> None:
+    def test_iter(self, foo_hash_path: Path, foo_a_hash_path: Path, foo_hash_line: str) -> None:
         for hash_line in HashFileReader(foo_hash_path):
             assert hash_line == foo_hash_line
 
-    def test_iter2(self, foo_hash_path: Path, foo_hash: str, foo_name: str) -> None:
+        for hash_line in HashFileReader(foo_a_hash_path):
+            assert hash_line == foo_hash_line
+
+    def test_iter2(self, foo_hash_path: Path, foo_a_hash_path: Path, foo_hash: str, foo_name: str) -> None:
         for hash, name in HashFileReader(foo_hash_path).iter2():
             assert (hash, name) == (foo_hash, foo_name)
 
-    def test_iter_hash(self, foo_hash_path: Path, foo_hash: str) -> None:
+        for hash, name in HashFileReader(foo_a_hash_path).iter2():
+            assert (hash, name) == (foo_hash, foo_name)
+
+    def test_iter_hash(self, foo_hash_path: Path, foo_a_hash_path: Path, foo_hash: str) -> None:
         for hash in HashFileReader(foo_hash_path).iter_hash():
             assert hash == foo_hash
 
-    def test_iter_name(self, foo_hash_path: Path, foo_name: str) -> None:
+        for hash in HashFileReader(foo_a_hash_path).iter_hash():
+            assert hash == foo_hash
+
+    def test_iter_name(self, foo_hash_path: Path, foo_a_hash_path: Path, foo_name: str) -> None:
         for name in HashFileReader(foo_hash_path).iter_name():
+            assert name == foo_name
+
+        for name in HashFileReader(foo_a_hash_path).iter_name():
             assert name == foo_name
 
 
