@@ -103,9 +103,7 @@ def parse_hash_line(hash_line: str, *, root: str | Path | None = None) -> tuple[
     return hex_hash_value, path
 
 
-def generate_hash_line(
-    path: str, hash_function: Callable[[str | Path], bytes], *, root: str | Path | None = None
-) -> str:
+def generate_hash_line(path: str, hash_function: Callable[[str], bytes], *, root: str | Path | None = None) -> str:
     """Generate hash line.
 
     Parameters:
@@ -115,7 +113,7 @@ def generate_hash_line(
             (1) Absolute path;
             (2) Relative path;
             (3) Relative to a given root directory.
-        hash_function (Callable[[str | Path], bytes]):
+        hash_function (Callable[[str], bytes]):
             The function used to generate hash value.
         root (str | Path | None, default=None):
             The root directory.
@@ -130,15 +128,13 @@ def generate_hash_line(
     return format_hash_line(hex_hash_value, path, root=root)
 
 
-def check_hash_line(
-    hash_line: str, hash_function: Callable[[str | Path], bytes], *, root: str | Path | None = None
-) -> str:
+def check_hash_line(hash_line: str, hash_function: Callable[[str], bytes], *, root: str | Path | None = None) -> str:
     """Check hash line.
 
     Parameters:
         hash_line (str):
             The line of *hash* and *name* with GNU Coreutils style.
-        hash_function (Callable[[str | Path], bytes]):
+        hash_function (Callable[[str], bytes]):
             The function used to generate hash value.
         root (str | Path | None, default=None):
             The root directory.
