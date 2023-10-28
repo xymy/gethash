@@ -41,7 +41,7 @@ class CheckHashLineError(ValueError):
         self.curr_hash_value = curr_hash_value
 
 
-def format_hash_line(hex_hash_value: str, path: str, *, root: str | None = None) -> str:
+def format_hash_line(hex_hash_value: str, path: str, *, root: str | Path | None = None) -> str:
     r"""Format hash line.
 
     Parameters:
@@ -53,7 +53,7 @@ def format_hash_line(hex_hash_value: str, path: str, *, root: str | None = None)
             (1) Absolute path;
             (2) Relative path;
             (3) Relative to a given root directory.
-        root (str | None, default=None):
+        root (str | Path | None, default=None):
             The root directory.
 
     Returns:
@@ -71,13 +71,13 @@ def format_hash_line(hex_hash_value: str, path: str, *, root: str | None = None)
     return f"{hex_hash_value} *{path}\n"
 
 
-def parse_hash_line(hash_line: str, *, root: str | None = None) -> tuple[str, str]:
+def parse_hash_line(hash_line: str, *, root: str | Path | None = None) -> tuple[str, str]:
     r"""Parse hash line.
 
     Parameters:
         hash_line (str):
             The line of *hash* and *name* with GNU Coreutils style.
-        root (str | None, default=None):
+        root (str | Path | None, default=None):
             The root directory.
 
     Raises:
@@ -103,7 +103,9 @@ def parse_hash_line(hash_line: str, *, root: str | None = None) -> tuple[str, st
     return hex_hash_value, path
 
 
-def generate_hash_line(path: str, hash_function: Callable[[str], bytes], *, root: str | None = None) -> str:
+def generate_hash_line(
+    path: str, hash_function: Callable[[str | Path], bytes], *, root: str | Path | None = None
+) -> str:
     """Generate hash line.
 
     Parameters:
@@ -113,9 +115,9 @@ def generate_hash_line(path: str, hash_function: Callable[[str], bytes], *, root
             (1) Absolute path;
             (2) Relative path;
             (3) Relative to a given root directory.
-        hash_function (Callable[[str], bytes]):
+        hash_function (Callable[[str | Path], bytes]):
             The function used to generate hash value.
-        root (str | None, default=None):
+        root (str | Path | None, default=None):
             The root directory.
 
     Returns:
@@ -128,15 +130,17 @@ def generate_hash_line(path: str, hash_function: Callable[[str], bytes], *, root
     return format_hash_line(hex_hash_value, path, root=root)
 
 
-def check_hash_line(hash_line: str, hash_function: Callable[[str], bytes], *, root: str | None = None) -> str:
+def check_hash_line(
+    hash_line: str, hash_function: Callable[[str | Path], bytes], *, root: str | Path | None = None
+) -> str:
     """Check hash line.
 
     Parameters:
         hash_line (str):
             The line of *hash* and *name* with GNU Coreutils style.
-        hash_function (Callable[[str], bytes]):
+        hash_function (Callable[[str | Path], bytes]):
             The function used to generate hash value.
-        root (str | None, default=None):
+        root (str | Path | None, default=None):
             The root directory.
 
     Raises:
@@ -215,11 +219,11 @@ class HashFileReader:
 
     __iter__ = iter
 
-    def iter2(self, *, root: str | None = None) -> Iterator[tuple[str, str]]:
+    def iter2(self, *, root: str | Path | None = None) -> Iterator[tuple[str, str]]:
         """Yield hash and name.
 
         Parameters:
-            root (str | None, default=None):
+            root (str | Path | None, default=None):
                 The root directory.
 
         Yields:
@@ -230,11 +234,11 @@ class HashFileReader:
         for hash_line in self:
             yield parse_hash_line(hash_line, root=root)
 
-    def iter_hash(self, *, root: str | None = None) -> Iterator[str]:
+    def iter_hash(self, *, root: str | Path | None = None) -> Iterator[str]:
         """Yield hash.
 
         Parameters:
-            root (str | None, default=None):
+            root (str | Path | None, default=None):
                 The root directory.
 
         Yields:
@@ -245,11 +249,11 @@ class HashFileReader:
         for entry in self.iter2(root=root):
             yield entry[0]
 
-    def iter_name(self, *, root: str | None = None) -> Iterator[str]:
+    def iter_name(self, *, root: str | Path | None = None) -> Iterator[str]:
         """Yield name.
 
         Parameters:
-            root (str | None, default=None):
+            root (str | Path | None, default=None):
                 The root directory.
 
         Yields:
