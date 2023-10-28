@@ -32,10 +32,10 @@ dependencies = [
     "click>=8.1",
     "click-didyoumean>=0.3",
     "click-option-group>=0.5",
-    "importlib-metadata>=4.4",
-    "natsort>=8.1",
-    "tqdm>=4.60",
-    "typing-extensions",
+    "importlib-metadata>=4.10",
+    "natsort>=8.4",
+    "tqdm>=4.66",
+    "typing-extensions>=4.4",
 ]
 dynamic = ["version"]
 
