@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 from typing import Generator
 
 import pytest
@@ -17,5 +17,5 @@ def vectors(tmp_path_factory: TempPathFactory) -> Generator[Vectors, None, None]
 
 
 @pytest.fixture(scope="session")
-def root() -> str:
-    return os.path.join(os.path.dirname(__file__), "data")
+def root() -> Path:
+    return Path(__file__).parent / "data"
