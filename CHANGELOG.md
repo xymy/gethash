@@ -55,7 +55,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [5.6] - 2022-10-19
 
-### Dependencies
+### Configuration
 
 - Migrated development dependencies to `requirements-dev.txt`.
 
@@ -93,20 +93,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added `HashContext` protocol class for annotating hash context type.
+- Added `gethash.backends` entry points.
 
 ### Changed
 
 - Changed type annotation of `ctx` argument from `Any` to `HashContext`.
 - Now load backends via entry points.
 
+### Configuration
+
+- Added Python 3.11 support.
+
 ### Linting
 
 - Adopted `flake8-comprehensions` and `flake8-simplify`.
 - Migrated `mypy` configuration to `pyproject.toml`.
-
-### Packaging
-
-- Added `gethash.backends` entry points.
 
 ## [5.3] - 2022-06-05
 
@@ -120,7 +121,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fixed a reading error when `chunksize < 0` for `Hasher._hash_file()`.
 
-### Dependencies
+### Configuration
 
 - Dropped Python 3.7 support.
 
@@ -131,11 +132,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [5.2] - 2022-05-16
 
-### Changed
+### Added
 
-- `HashFileReader.iter_hash()` now accepts `root` argument.
+- Added `root` argument to `HashFileReader.iter_hash()`.
 
-### Packaging
+### Configuration
 
 - Removed `setup.py`. Now use `python -m build`.
 
@@ -154,15 +155,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-- Removed ``sorted_locale()`` function.
+- Removed `sorted_locale()` function.
 - Removed entry points for legacy commands.
 
-### Dependencies
+### Configuration
 
 - Switched dependency from `pycryptodomex` to `pycryptodome`.
-
-### Packaging
-
 - Added PyPI classifier `Intended Audience :: Developers`.
 
 [Unreleased]: https://github.com/xymy/gethash/compare/v5.8...HEAD
