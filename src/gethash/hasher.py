@@ -3,9 +3,10 @@ from __future__ import annotations
 import io
 import os
 from os import PathLike
-from typing import Any, Protocol, TypeVar
+from typing import Any, Protocol
 
 from tqdm import tqdm
+from typing_extensions import Self
 
 from .utils.strxor import strxor
 
@@ -16,9 +17,6 @@ _CHUNKSIZE = 0x100000  # 1 MiB
 
 class IsADirectory(OSError):
     """Raised by :meth:`Hasher.__call__`."""
-
-
-Self = TypeVar("Self", bound="HashContext")
 
 
 class HashContext(Protocol):
