@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import io
 import os
-from os import PathLike
+from pathlib import Path
 from typing import Any, Protocol
 
 from tqdm import tqdm
@@ -94,17 +94,12 @@ class Hasher:
         self.tqdm_type = tqdm_type
 
     def __call__(
-        self,
-        path: str | PathLike[str],
-        start: int | None = None,
-        stop: int | None = None,
-        *,
-        dir_ok: bool = False,
+        self, path: str | Path, start: int | None = None, stop: int | None = None, *, dir_ok: bool = False
     ) -> bytes:
         """Return the hash value of a file or a directory.
 
         Parameters:
-            path (str | PathLike[str]):
+            path (str | Path):
                 The path of a file or a directory.
             start (int | None, default=None):
                 The start offset of the file or files in the directory.
@@ -122,20 +117,13 @@ class Hasher:
                 The hash value of the file or the directory.
         """
 
-        if start is not None and not isinstance(start, int):
-            tn = type(start).__name__
-            raise TypeError(f"start must be int or None, not {tn}")
-        if stop is not None and not isinstance(stop, int):
-            tn = type(stop).__name__
-            raise TypeError(f"stop must be int or None, not {tn}")
-
         if os.path.isdir(path):
             if dir_ok:
                 return self._hash_dir(path, start, stop)
             raise IsADirectory(f"{path!r} is a directory")
         return self._hash_file(path, start, stop)
 
-    def _hash_dir(self, dirpath: str | PathLike[str], start: int | None = None, stop: int | None = None) -> bytes:
+    def _hash_dir(self, dirpath: str | Path, start: int | None = None, stop: int | None = None) -> bytes:
         # The initial hash value is all zeros.
         value = bytearray(self._ctx.digest_size)
         with os.scandir(dirpath) as it:
@@ -148,7 +136,7 @@ class Hasher:
                 strxor(value, other, value)
         return bytes(value)
 
-    def _hash_file(self, filepath: str | PathLike[str], start: int | None = None, stop: int | None = None) -> bytes:
+    def _hash_file(self, filepath: str | Path, start: int | None = None, stop: int | None = None) -> bytes:
         # Clamp `(start, stop)` to `(0, filesize)`.
         filesize = os.path.getsize(filepath)
         if start is None or start < 0:
