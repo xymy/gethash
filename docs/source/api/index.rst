@@ -7,3 +7,4 @@ API Reference
     core
     hasher
     utils
+    wrappers
