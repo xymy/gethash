@@ -19,10 +19,6 @@ Classes
 
 .. autoclass:: HashFileReader
 
-.. note::
-
-    :meth:`HashFileReader.__iter__` is an alias of :meth:`HashFileReader.iter`.
-
 .. autoclass:: HashFileWriter
 
 Exceptions

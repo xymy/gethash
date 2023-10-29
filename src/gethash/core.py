@@ -207,6 +207,9 @@ class HashFileReader:
         Yields:
             str:
                 ``hash_line``.
+
+        Note:
+            :meth:`HashFileReader.__iter__` is an alias of this method.
         """
 
         with self:
