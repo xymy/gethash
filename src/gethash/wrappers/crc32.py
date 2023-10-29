@@ -37,9 +37,8 @@ class CRC32:
         _check_int(value, "value")
         self._value = value & 0xFFFFFFFF
 
-    def update(self, data: bytes) -> None:
-        _check_bytes(data, "data")
-        self._value = zlib.crc32(data, self._value)
+    def copy(self) -> CRC32:
+        return type(self)(value=self._value)
 
     def digest(self) -> bytes:
         return self._value.to_bytes(4, "big")
@@ -47,8 +46,9 @@ class CRC32:
     def hexdigest(self) -> str:
         return self._value.to_bytes(4, "big").hex()
 
-    def copy(self) -> CRC32:
-        return type(self)(value=self._value)
+    def update(self, data: bytes) -> None:
+        _check_bytes(data, "data")
+        self._value = zlib.crc32(data, self._value)
 
 
 def new() -> CRC32:

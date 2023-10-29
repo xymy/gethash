@@ -23,16 +23,16 @@ class HashContext(Protocol):
 
     @property
     def digest_size(self) -> int:
-        ...
+        """The size of the resulting hash in bytes."""
 
-    def update(self, data: bytes) -> None:
-        ...
+    def copy(self) -> Self:
+        """Return a copy the current hash context."""
 
     def digest(self) -> bytes:
-        ...
+        """Return the digest of the data passed so far."""
 
-    def copy(self: Self) -> Self:
-        ...
+    def update(self, data: bytes) -> None:
+        """Pass data to update the current hash context."""
 
 
 class Hasher:

@@ -80,7 +80,7 @@ if __name__ == "__main__":
 """
 
 
-def main():
+def main() -> None:
     cli_dir = Path(__file__).parent
     for meta in META_LIST:
         command_name = meta["command_name"]
