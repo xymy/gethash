@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import io
 import os
 from pathlib import Path
 from typing import Any, Protocol
@@ -117,28 +116,28 @@ class Hasher:
                 The hash value of the file or the directory.
         """
 
-        if os.path.isdir(path):
+        path = Path(path)
+        if path.is_dir():
             if dir_ok:
                 return self._hash_dir(path, start, stop)
-            raise IsADirectory(f"{path!r} is a directory")
+            raise IsADirectory(f"{str(path)!r} is a directory")
         return self._hash_file(path, start, stop)
 
-    def _hash_dir(self, dirpath: str | Path, start: int | None = None, stop: int | None = None) -> bytes:
+    def _hash_dir(self, dirpath: Path, start: int | None = None, stop: int | None = None) -> bytes:
         # The initial hash value is all zeros.
         value = bytearray(self._ctx.digest_size)
-        with os.scandir(dirpath) as it:
-            for entry in it:
-                if entry.is_dir():
-                    other = self._hash_dir(entry.path, start, stop)
-                else:
-                    other = self._hash_file(entry.path, start, stop)
-                # Just XOR each byte string as the result of hashing.
-                strxor(value, other, value)
+        for entry in dirpath.iterdir():
+            if entry.is_dir():
+                other = self._hash_dir(entry, start, stop)
+            else:
+                other = self._hash_file(entry, start, stop)
+            # Just XOR each byte string as the result of hashing.
+            strxor(value, other, value)
         return bytes(value)
 
-    def _hash_file(self, filepath: str | Path, start: int | None = None, stop: int | None = None) -> bytes:
+    def _hash_file(self, filepath: Path, start: int | None = None, stop: int | None = None) -> bytes:
         # Clamp `(start, stop)` to `(0, filesize)`.
-        filesize = os.path.getsize(filepath)
+        filesize = filepath.stat().st_size
         if start is None or start < 0:
             start = 0
         if stop is None or stop > filesize:
@@ -157,7 +156,7 @@ class Hasher:
 
         ctx = self._ctx.copy()
         with open(filepath, "rb") as f:
-            f.seek(start, io.SEEK_SET)
+            f.seek(start, os.SEEK_SET)
             with self.tqdm_type(total=total, **self.tqdm_args) as bar:
                 for _ in range(count):
                     chunk = f.read(chunksize)

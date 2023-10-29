@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Now `Hasher` supports `pathlib.Path`.
 - Now `HashFileReader` and `HashFileWriter` support `pathlib.Path`.
 - Now `format_hash_line()`, `parse_hash_line()`, `generate_hash_line()` and `check_hash_line()` support `pathlib.Path`.
 
