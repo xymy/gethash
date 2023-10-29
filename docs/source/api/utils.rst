@@ -3,8 +3,8 @@ gethash.utils
 
 .. currentmodule:: gethash.utils
 
-Glob
-----
+gethash.utils.glob
+------------------
 
 .. currentmodule:: gethash.utils.glob
 
@@ -18,8 +18,8 @@ Glob
 
 .. autofunction:: sorted_path
 
-Strxor
-------
+gethash.utils.glob.strxor
+-------------------------
 
 .. currentmodule:: gethash.utils.strxor
 
