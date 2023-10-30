@@ -4,8 +4,6 @@ from typing import overload
 
 from . import _check_bytes, _check_bytes_w_opt
 
-__all__ = ["strxor"]
-
 
 def _py_strxor(term1: bytes, term2: bytes, output: bytearray | None = None) -> bytes | None:
     if output is None:

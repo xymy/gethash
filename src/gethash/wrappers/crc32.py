@@ -5,8 +5,6 @@ from typing import cast
 
 from ..utils import _check_bytes, _check_bytes_opt, _check_int, _check_int_opt
 
-__all__ = ["CRC32"]
-
 
 class CRC32:
     """Hash functions API wrapper for CRC32.
