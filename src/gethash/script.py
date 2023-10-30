@@ -3,7 +3,8 @@ from __future__ import annotations
 import functools
 import os
 import sys
-from typing import Any, Callable, Iterable, TextIO
+from collections.abc import Iterable
+from typing import Any, Callable, TextIO
 
 import click
 from click import Command

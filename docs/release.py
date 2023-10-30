@@ -21,7 +21,7 @@ except ImportError:
     console.print("Package [u]gethash[/u] should be installed in the environment", style="b red")
     sys.exit(1)
 
-docs_dir = Path(__file__).resolve().parent
+docs_dir = Path(__file__).parent
 source_dir = docs_dir / "source"
 build_dir = docs_dir / "build"
 html_dir = build_dir / "html"

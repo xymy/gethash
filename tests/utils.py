@@ -1,5 +1,6 @@
+from collections.abc import Iterator
 from pathlib import Path
-from typing import Iterator, List, Tuple, TypedDict
+from typing import TypedDict
 
 
 class Vector(TypedDict):
@@ -14,7 +15,7 @@ class Vectors:
     def __init__(self, root: Path) -> None:
         self.root = root
 
-    def iter_path_vector(self) -> Iterator[Tuple[Path, Vector]]:
+    def iter_path_vector(self) -> Iterator[tuple[Path, Vector]]:
         for i, vector in enumerate(_vectors):
             yield self.root.joinpath(str(i)), vector
 
@@ -27,7 +28,7 @@ class Vectors:
             path.unlink(missing_ok=True)
 
 
-_vectors: List[Vector] = [
+_vectors: list[Vector] = [
     {
         "data": b"",
         "crc32": "00000000",

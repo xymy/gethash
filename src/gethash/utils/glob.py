@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import glob
 import os
-from typing import Any, AnyStr, Callable, Iterable, Iterator
+from collections.abc import Iterable, Iterator
+from typing import Any, AnyStr, Callable
 
 from natsort import os_sort_keygen
 

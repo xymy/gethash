@@ -2,9 +2,10 @@ from __future__ import annotations
 
 import os
 import re
+from collections.abc import Iterator
 from hmac import compare_digest
 from pathlib import Path
-from typing import Any, Callable, Iterator
+from typing import Any, Callable
 
 from typing_extensions import Self
 

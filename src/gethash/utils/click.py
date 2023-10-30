@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import sys
-from typing import Any, Sequence, cast
+from collections.abc import Sequence
+from typing import Any, cast
 
 import click
 from click import Context, Parameter
