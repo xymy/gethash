@@ -113,9 +113,9 @@ path = "src/gethash/__init__.py"
 
 [tool.hatch.envs.default]
 type = "virtual"
-dependencies = ["gethash[all,docs,lint,test]"]
-system-packages = true
 path = ".venv"
+system-packages = true
+features = ["all", "docs", "lint", "test"]
 
 [tool.hatch.envs.default.scripts]
 docs = "python {root}{/}docs{/}release.py {args}"

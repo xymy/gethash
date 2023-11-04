@@ -25,14 +25,12 @@ extensions = [
     "myst_parser",
     "sphinx_copybutton",
 ]
-templates_path = ["_templates"]
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = "furo"
 html_title = f"{project} {release}"
-html_static_path = ["_static"]
 
 # -- Options for autodoc -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html#module-sphinx.ext.autodoc
