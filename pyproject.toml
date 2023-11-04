@@ -103,10 +103,10 @@ sha3-512 = "gethash.cli.sha3_512:main"
 sha512 = "gethash.cli.sha512:main"
 
 [project.urls]
-Homepage = "https://github.com/xymy/gethash"
-Documentation = "https://github.com/xymy/gethash"
-"Issue Tracker" = "https://github.com/xymy/gethash/issues"
-"Source Code" = "https://github.com/xymy/gethash"
+Changelog = "https://github.com/xymy/gethash/blob/main/CHANGELOG.md"
+Documentation = "https://github.com/xymy/gethash/tree/main/docs"
+Source = "https://github.com/xymy/gethash"
+Tracker = "https://github.com/xymy/gethash/issues"
 
 [tool.hatch.version]
 path = "src/gethash/__init__.py"

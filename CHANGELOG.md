@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added Python 3.12 support.
 - Dropped Python 3.8 support.
 
+### Documentation
+
+- Updated project links.
+
 ## [5.9] - 2023-10-30
 
 ### Changed

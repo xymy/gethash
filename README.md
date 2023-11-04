@@ -116,7 +116,7 @@ $ sha1 -c *.sha1
 
 ## Project Links
 
-- Homepage: <https://github.com/xymy/gethash>
-- Documentation: <https://github.com/xymy/gethash>
-- Issue Tracker: <https://github.com/xymy/gethash/issues>
-- Source Code: <https://github.com/xymy/gethash>
+- Changelog: <https://github.com/xymy/gethash/blob/main/CHANGELOG.md>
+- Documentation: <https://github.com/xymy/gethash/tree/main/docs>
+- Source: <https://github.com/xymy/gethash>
+- Tracker: <https://github.com/xymy/gethash/issues>
