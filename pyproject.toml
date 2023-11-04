@@ -14,7 +14,6 @@ classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Environment :: Console",
     "Intended Audience :: Developers",
-    "License :: OSI Approved",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
@@ -45,6 +44,7 @@ all = [
     "pycryptodome>=3.16",
 ]
 docs = [
+    # https://rich.readthedocs.io/en/latest/
     "rich",
     # https://www.sphinx-doc.org/en/master/
     "sphinx>=7.2",
