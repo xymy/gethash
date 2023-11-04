@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import abc
 import functools
 import os
 import sys
 from collections.abc import Iterable
+from pathlib import Path
 from typing import Any, Callable, TextIO
 
 import click
@@ -31,59 +33,79 @@ class ParseHashFileError(ValueError):
         self.lineno = lineno
 
 
-class Output:
-    """Determine the output mode and provide the output interface."""
+class Output(abc.ABC):
+    """Output interface for hash script."""
 
-    def __init__(
-        self, agg: str | None = None, sep: bool | None = None, null: bool | None = None, sync: bool = False
-    ) -> None:
-        if (agg and sep) or (agg and null) or (sep and null):
-            raise ValueError("require exactly one argument")
+    @abc.abstractmethod
+    def close(self) -> None:
+        """Close output."""
 
-        # Use the null mode by default.
-        if not (agg or sep or null):
-            null = True
+    @abc.abstractmethod
+    def dump(self, hash_line: str, hash_path: str, path: str) -> None:
+        """Dump hash line to output."""
 
-        # Determine the output mode and dump method.
-        if agg:
-            self.agg_file = HashFileWriter(agg)
-            self._dump = self.output_agg
-        elif sep:
-            self._dump = self.output_sep
-        elif null:
-            self._dump = self.output_null
 
+class AggOutput(Output):
+    def __init__(self, filepath: str | Path, *, sync: bool = False) -> None:
+        self.hash_file = HashFileWriter(filepath)
         self.sync = sync
         self.maxmtime = 0.0
 
     def close(self) -> None:
-        try:
-            agg_file = self.agg_file
-        except AttributeError:
-            pass
-        else:
-            agg_file.close()
-            if self.sync:
-                os.utime(agg_file.name, (self.maxmtime, self.maxmtime))
+        self.hash_file.close()
+        if self.sync:
+            os.utime(self.hash_file.name, (self.maxmtime, self.maxmtime))
 
     def dump(self, hash_line: str, hash_path: str, path: str) -> None:
-        self._dump(hash_line, hash_path, path)
-
-    def output_agg(self, hash_line: str, hash_path: str, path: str) -> None:
-        self.agg_file.write_hash_line(hash_line)
+        self.hash_file.write_hash_line(hash_line)
         if self.sync:
             mtime = os.path.getmtime(path)
             self.maxmtime = max(self.maxmtime, mtime)
 
-    def output_sep(self, hash_line: str, hash_path: str, path: str) -> None:
-        with HashFileWriter(hash_path) as f:
-            f.write_hash_line(hash_line)
+
+class SepOutput(Output):
+    def __init__(self, *, sync: bool = False) -> None:
+        self.sync = sync
+
+    def close(self) -> None:
+        pass
+
+    def dump(self, hash_line: str, hash_path: str, path: str) -> None:
+        with HashFileWriter(hash_path) as hash_file:
+            hash_file.write_hash_line(hash_line)
         if self.sync:
             mtime = os.path.getmtime(path)
             os.utime(hash_path, (mtime, mtime))
 
-    def output_null(self, hash_line: str, hash_path: str, path: str) -> None:
+
+class NullOutput(Output):
+    def __init__(self) -> None:
         pass
+
+    def close(self) -> None:
+        pass
+
+    def dump(self, hash_line: str, hash_path: str, path: str) -> None:
+        pass
+
+
+def create_output(
+    agg: str | None = None, sep: bool | None = None, null: bool | None = None, *, sync: bool = False
+) -> Output:
+    if (agg and sep) or (agg and null) or (sep and null):
+        raise ValueError("require exactly one argument")
+
+    # Use the null mode by default.
+    if not (agg or sep or null):
+        null = True
+
+    # Determine the output mode and dump method.
+    if agg:
+        return AggOutput(agg, sync=sync)
+    elif sep:
+        return SepOutput(sync=sync)
+    else:
+        return NullOutput()
 
 
 class Gethash:
@@ -121,7 +143,7 @@ class Gethash:
         agg = kwargs.pop("agg", None)
         sep = kwargs.pop("sep", None)
         null = kwargs.pop("null", None)
-        self.output = Output(agg, sep, null, sync=self.sync)
+        self.output = create_output(agg, sep, null, sync=self.sync)
 
         # Prepare arguments and construct the hash function.
         self.start = kwargs.pop("start", None)
