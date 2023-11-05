@@ -60,7 +60,7 @@ lint = [
     "black>=23.10",
     # https://docs.astral.sh/ruff/
     "ruff>=0.1",
-    # https://www.mypy-lang.org/
+    # https://mypy.readthedocs.io/en/stable/
     "mypy>=1.6",
 ]
 test = [
