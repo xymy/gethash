@@ -1,9 +1,8 @@
 from __future__ import annotations
 
 import zlib
-from typing import cast
 
-from ..utils import _check_bytes, _check_bytes_opt, _check_int, _check_int_opt
+from typing_extensions import Self
 
 
 class CRC32:
@@ -19,23 +18,13 @@ class CRC32:
     """
 
     name = "CRC32"
+
     digest_size = 4
 
-    def __init__(self, data: bytes | None = None, value: int | None = None) -> None:
-        data = _check_bytes_opt(data, "data", b"")
-        value = _check_int_opt(value, "value", 0)
-        self._value = zlib.crc32(cast(bytes, data), cast(int, value))
+    def __init__(self, data: bytes = b"", value: int = 0) -> None:
+        self._value = zlib.crc32(data, value)
 
-    @property
-    def value(self) -> int:
-        return self._value
-
-    @value.setter
-    def value(self, value: int) -> None:
-        _check_int(value, "value")
-        self._value = value & 0xFFFFFFFF
-
-    def copy(self) -> CRC32:
+    def copy(self) -> Self:
         return type(self)(value=self._value)
 
     def digest(self) -> bytes:
@@ -45,7 +34,6 @@ class CRC32:
         return self._value.to_bytes(4, "big").hex()
 
     def update(self, data: bytes) -> None:
-        _check_bytes(data, "data")
         self._value = zlib.crc32(data, self._value)
 
 
