@@ -10,7 +10,7 @@ class TestHasher:
     def _assert(self, vectors: Vectors, ctx: HashContext, name: str) -> None:
         hasher = Hasher(ctx)
         for path, vector in vectors.iter_path_vector():
-            assert hasher(path).hex() == vector[name]
+            assert hasher(path).hex() == vector[name]  # type: ignore [literal-required]
 
     def test_crc32(self, vectors: Vectors) -> None:
         ctx = CRC32()
