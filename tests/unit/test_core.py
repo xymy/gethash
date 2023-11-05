@@ -58,13 +58,13 @@ def foo_a_hash_path(root: Path) -> Path:
 
 
 def test_format_hash_line(foo_hash_line: str, foo_hash: str, foo_name: str) -> None:
-    result = format_hash_line(foo_hash, foo_name)
+    result = format_hash_line(foo_name, foo_hash)
     assert result == foo_hash_line
 
 
 def test_parse_hash_line(foo_hash_line: str, foo_hash: str, foo_name: str) -> None:
     result = parse_hash_line(foo_hash_line)
-    assert result == (foo_hash, foo_name)
+    assert result == (foo_name, foo_hash)
 
     with pytest.raises(ParseHashLineError):
         parse_hash_line(foo_hash + foo_name)
@@ -101,11 +101,11 @@ class TestHashFileReader:
             assert hash_line == foo_hash_line
 
     def test_iter2(self, foo_hash_path: Path, foo_a_hash_path: Path, foo_hash: str, foo_name: str) -> None:
-        for hash, name in HashFileReader(foo_hash_path).iter2():
-            assert (hash, name) == (foo_hash, foo_name)
+        for name, hash in HashFileReader(foo_hash_path).iter2():
+            assert (name, hash) == (foo_name, foo_hash)
 
-        for hash, name in HashFileReader(foo_a_hash_path).iter2():
-            assert (hash, name) == (foo_hash, foo_name)
+        for name, hash in HashFileReader(foo_a_hash_path).iter2():
+            assert (name, hash) == (foo_name, foo_hash)
 
     def test_iter_hash(self, foo_hash_path: Path, foo_a_hash_path: Path, foo_hash: str) -> None:
         for hash in HashFileReader(foo_hash_path).iter_hash():

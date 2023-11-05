@@ -31,18 +31,18 @@ class CheckHashLineError(ValueError):
         self.curr_hex_hash_value = curr_hex_hash_value
 
 
-def format_hash_line(hex_hash_value: str, path: str, *, root: str | Path | None = None) -> str:
+def format_hash_line(path: str, hex_hash_value: str, *, root: str | Path | None = None) -> str:
     r"""Format hash line.
 
     Parameters:
-        hex_hash_value (str):
-            The hexadecimal hash value string.
         path (str):
             The path of a file or a directory with corresponding hash value.
             Three representations are supported:
             (1) Absolute path;
             (2) Relative path;
             (3) Relative to a given root directory.
+        hex_hash_value (str):
+            The hexadecimal hash value string.
         root (str | Path | None, default=None):
             The root directory.
 
@@ -51,7 +51,7 @@ def format_hash_line(hex_hash_value: str, path: str, *, root: str | Path | None 
             ``hash_line``.
 
     Examples:
-        >>> format_hash_line('d41d8cd98f00b204e9800998ecf8427e', 'foo.txt')
+        >>> format_hash_line('foo.txt', 'd41d8cd98f00b204e9800998ecf8427e')
         'd41d8cd98f00b204e9800998ecf8427e *foo.txt\n'
     """
 
@@ -76,11 +76,11 @@ def parse_hash_line(hash_line: str, *, root: str | Path | None = None) -> tuple[
 
     Returns:
         tuple[str, str]:
-            ``(hex_hash_value, path)``.
+            ``(path, hex_hash_value)``.
 
     Examples:
         >>> parse_hash_line('d41d8cd98f00b204e9800998ecf8427e *foo.txt\n')
-        ('d41d8cd98f00b204e9800998ecf8427e', 'foo.txt')
+        ('foo.txt', 'd41d8cd98f00b204e9800998ecf8427e')
     """
 
     m = _HASH_LINE_RE.match(hash_line)
@@ -90,7 +90,7 @@ def parse_hash_line(hash_line: str, *, root: str | Path | None = None) -> tuple[
     if root is not None:
         path = os.path.join(root, path)
     path = os.path.normpath(path)
-    return hex_hash_value, path
+    return path, hex_hash_value
 
 
 def generate_hash_line(path: str, hash_function: Callable[[str], bytes], *, root: str | Path | None = None) -> str:
@@ -115,7 +115,7 @@ def generate_hash_line(path: str, hash_function: Callable[[str], bytes], *, root
 
     hash_value = hash_function(path)
     hex_hash_value = hash_value.hex()
-    return format_hash_line(hex_hash_value, path, root=root)
+    return format_hash_line(path, hex_hash_value, root=root)
 
 
 def check_hash_line(hash_line: str, hash_function: Callable[[str], bytes], *, root: str | Path | None = None) -> str:
@@ -138,7 +138,7 @@ def check_hash_line(hash_line: str, hash_function: Callable[[str], bytes], *, ro
             ``path``.
     """
 
-    hex_hash_value, path = parse_hash_line(hash_line, root=root)
+    path, hex_hash_value = parse_hash_line(hash_line, root=root)
     hash_value = bytes.fromhex(hex_hash_value)
     curr_hash_value = hash_function(path)
     if not compare_digest(curr_hash_value, hash_value):
@@ -158,8 +158,8 @@ class HashFileReader:
 
     Note:
         - ``hash_line``: The line of *hash* and *name* with GNU Coreutils style.
-        - ``hash``: The hexadecimal hash value string.
         - ``name``: The path of a file or a directory with corresponding hash value.
+        - ``hash``: The hexadecimal hash value string.
     """
 
     def __init__(self, filepath: str | Path) -> None:
@@ -209,7 +209,7 @@ class HashFileReader:
     __iter__ = iter
 
     def iter2(self, *, root: str | Path | None = None) -> Iterator[tuple[str, str]]:
-        """Yield hash and name.
+        """Yield name and hash.
 
         Parameters:
             root (str | Path | None, default=None):
@@ -217,26 +217,11 @@ class HashFileReader:
 
         Yields:
             tuple[str, str]:
-                ``(hash, name)``.
+                ``(name, hash)``.
         """
 
         for hash_line in self:
             yield parse_hash_line(hash_line, root=root)
-
-    def iter_hash(self, *, root: str | Path | None = None) -> Iterator[str]:
-        """Yield hash.
-
-        Parameters:
-            root (str | Path | None, default=None):
-                The root directory.
-
-        Yields:
-            str:
-                ``hash``.
-        """
-
-        for entry in self.iter2(root=root):
-            yield entry[0]
 
     def iter_name(self, *, root: str | Path | None = None) -> Iterator[str]:
         """Yield name.
@@ -248,6 +233,21 @@ class HashFileReader:
         Yields:
             str:
                 ``name``.
+        """
+
+        for entry in self.iter2(root=root):
+            yield entry[0]
+
+    def iter_hash(self, *, root: str | Path | None = None) -> Iterator[str]:
+        """Yield hash.
+
+        Parameters:
+            root (str | Path | None, default=None):
+                The root directory.
+
+        Yields:
+            str:
+                ``hash``.
         """
 
         for entry in self.iter2(root=root):
