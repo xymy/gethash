@@ -12,9 +12,9 @@ class CRC32:
 
     References:
         - PEP 247 -- API for Cryptographic Hash Functions
-          https://www.python.org/dev/peps/pep-0247/
+          https://peps.python.org/pep-0247/
         - PEP 452 -- API for Cryptographic Hash Functions v2.0
-          https://www.python.org/dev/peps/pep-0452/
+          https://peps.python.org/pep-0452/
     """
 
     name = "CRC32"
