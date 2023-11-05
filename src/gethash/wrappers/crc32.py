@@ -8,8 +8,6 @@ from typing_extensions import Self
 class CRC32:
     """Hash functions API wrapper for CRC32.
 
-    The context exposes the ``value`` attribute for the current CRC32 value.
-
     References:
         - PEP 247 -- API for Cryptographic Hash Functions
           https://peps.python.org/pep-0247/
