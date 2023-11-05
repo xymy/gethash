@@ -23,11 +23,11 @@ class ParseHashLineError(ValueError):
 class CheckHashLineError(ValueError):
     """Raised by :func:`check_hash_line`."""
 
-    def __init__(self, hash_line: str, hex_hash_value: str, path: str, curr_hex_hash_value: str) -> None:
+    def __init__(self, hash_line: str, path: str, hex_hash_value: str, curr_hex_hash_value: str) -> None:
         super().__init__(hash_line, hex_hash_value, path, curr_hex_hash_value)
         self.hash_line = hash_line
-        self.hex_hash_value = hex_hash_value
         self.path = path
+        self.hex_hash_value = hex_hash_value
         self.curr_hex_hash_value = curr_hex_hash_value
 
 
@@ -142,7 +142,7 @@ def check_hash_line(hash_line: str, hash_function: Callable[[str], bytes], *, ro
     hash_value = bytes.fromhex(hex_hash_value)
     curr_hash_value = hash_function(path)
     if not compare_digest(curr_hash_value, hash_value):
-        raise CheckHashLineError(hash_line, hex_hash_value, path, curr_hash_value.hex())
+        raise CheckHashLineError(hash_line, path, hex_hash_value, curr_hash_value.hex())
     return path
 
 
