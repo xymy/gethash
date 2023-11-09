@@ -26,6 +26,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Updated project links.
 
+### Linting
+
+- Adopted `check-case-conflict` and `check-merge-conflict` for `pre-commit-hooks`.
+
 ### Testing
 
 - Added test cases for `gethash.wrappers.crc32`.
