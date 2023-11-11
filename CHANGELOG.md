@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Linting
 
 - Adopted `check-case-conflict` and `check-merge-conflict` for `pre-commit-hooks`.
+- Updated `mymy` configuration.
 
 ### Testing
 
