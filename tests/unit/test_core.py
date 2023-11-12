@@ -18,21 +18,7 @@ from gethash.core import (
     parse_hash_line,
 )
 
-from ..data import (
-    DATA_DIR,
-    FOO_TXT_A_SHA256_PATH,
-    FOO_TXT_NAME,
-    FOO_TXT_PATH,
-    FOO_TXT_SHA256_HASH,
-    FOO_TXT_SHA256_HASH_LINE,
-    FOO_TXT_SHA256_PATH,
-    FOO_ZIP_A_SHA256_PATH,
-    FOO_ZIP_NAME,
-    FOO_ZIP_PATH,
-    FOO_ZIP_SHA256_HASH,
-    FOO_ZIP_SHA256_HASH_LINE,
-    FOO_ZIP_SHA256_PATH,
-)
+from ..data import FOO_TXT_A_SHA256, FOO_TXT_SHA256, FOO_ZIP_A_SHA256, FOO_ZIP_SHA256
 
 
 def sha256_digest(path: str | Path) -> bytes:
@@ -58,11 +44,14 @@ def pick_first(iterable: Iterable[T]) -> T:
         raise AssertionError
 
 
+_TestFormatParseHashLine_ARGNAMES = ("hash_line", "name", "hash")
+
+
 @pytest.mark.parametrize(
-    "hash_line, name, hash",
+    _TestFormatParseHashLine_ARGNAMES,
     [
-        (FOO_TXT_SHA256_HASH_LINE, FOO_TXT_NAME, FOO_TXT_SHA256_HASH),
-        (FOO_ZIP_SHA256_HASH_LINE, FOO_ZIP_NAME, FOO_ZIP_SHA256_HASH),
+        FOO_TXT_SHA256.get(_TestFormatParseHashLine_ARGNAMES),
+        FOO_ZIP_SHA256.get(_TestFormatParseHashLine_ARGNAMES),
     ],
 )
 class TestFormatParseHashLine:
@@ -78,11 +67,14 @@ class TestFormatParseHashLine:
             parse_hash_line(hash + name)
 
 
+_TestGenerateCheckHashLine_ARGNAMES = ("root", "path", "hash_line")
+
+
 @pytest.mark.parametrize(
-    "root, path, hash_line",
+    _TestGenerateCheckHashLine_ARGNAMES,
     [
-        (DATA_DIR, FOO_TXT_PATH, FOO_TXT_SHA256_HASH_LINE),
-        (DATA_DIR, FOO_ZIP_PATH, FOO_ZIP_SHA256_HASH_LINE),
+        FOO_TXT_SHA256.get(_TestGenerateCheckHashLine_ARGNAMES),
+        FOO_ZIP_SHA256.get(_TestGenerateCheckHashLine_ARGNAMES),
     ],
 )
 class TestGenerateCheckHashLine:
@@ -98,84 +90,91 @@ class TestGenerateCheckHashLine:
             check_hash_line("0" + hash_line[1:], sha256_digest, root=root)
 
 
+_TestHashFileReader_ARGNAMES = ("hash_path", "hash_line")
+
+
 @pytest.mark.parametrize(
-    "hash_path, a_hash_path, hash_line",
+    _TestHashFileReader_ARGNAMES,
     [
-        (FOO_TXT_SHA256_PATH, FOO_TXT_A_SHA256_PATH, FOO_TXT_SHA256_HASH_LINE),
-        (FOO_ZIP_SHA256_PATH, FOO_ZIP_A_SHA256_PATH, FOO_ZIP_SHA256_HASH_LINE),
+        FOO_TXT_SHA256.get(_TestHashFileReader_ARGNAMES),
+        FOO_TXT_A_SHA256.get(_TestHashFileReader_ARGNAMES),
+        FOO_ZIP_SHA256.get(_TestHashFileReader_ARGNAMES),
+        FOO_ZIP_A_SHA256.get(_TestHashFileReader_ARGNAMES),
     ],
 )
 class TestHashFileReader:
-    def test_read_hash_line(self, hash_path: Path, a_hash_path: Path, hash_line: str) -> None:
+    def test_read_hash_line(self, hash_path: Path, hash_line: str) -> None:
         with HashFileReader(hash_path) as hash_file:
             assert hash_file.read_hash_line() == hash_line
             assert hash_file.read_hash_line() == ""
 
-        with HashFileReader(a_hash_path) as hash_file:
-            assert hash_file.read_hash_line() == hash_line
-            assert hash_file.read_hash_line() == ""
-
-    def test_iter(self, hash_path: Path, a_hash_path: Path, hash_line: str) -> None:
+    def test_iter(self, hash_path: Path, hash_line: str) -> None:
         result = pick_first(HashFileReader(hash_path).iter())
         assert result == hash_line
 
-        result = pick_first(HashFileReader(a_hash_path).iter())
-        assert result == hash_line
+
+_TestHashFileReaderIter2_ARGNAMES = ("hash_path", "name", "hash")
 
 
 @pytest.mark.parametrize(
-    "hash_path, a_hash_path, name, hash",
+    _TestHashFileReaderIter2_ARGNAMES,
     [
-        (FOO_TXT_SHA256_PATH, FOO_TXT_A_SHA256_PATH, FOO_TXT_NAME, FOO_TXT_SHA256_HASH),
-        (FOO_ZIP_SHA256_PATH, FOO_ZIP_A_SHA256_PATH, FOO_ZIP_NAME, FOO_ZIP_SHA256_HASH),
+        FOO_TXT_SHA256.get(_TestHashFileReaderIter2_ARGNAMES),
+        FOO_TXT_A_SHA256.get(_TestHashFileReaderIter2_ARGNAMES),
+        FOO_ZIP_SHA256.get(_TestHashFileReaderIter2_ARGNAMES),
+        FOO_ZIP_A_SHA256.get(_TestHashFileReaderIter2_ARGNAMES),
     ],
 )
 class TestHashFileReaderIter2:
-    def test_iter2(self, hash_path: Path, a_hash_path: Path, name: str, hash: str) -> None:
+    def test_iter2(self, hash_path: Path, name: str, hash: str) -> None:
         result = pick_first(HashFileReader(hash_path).iter2())
         assert result == (name, hash)
 
-        result = pick_first(HashFileReader(a_hash_path).iter2())
-        assert result == (name, hash)
+
+TestHashFileReaderIterName_ARGNAMES = ("hash_path", "name")
 
 
 @pytest.mark.parametrize(
-    "hash_path, a_hash_path, name",
+    TestHashFileReaderIterName_ARGNAMES,
     [
-        (FOO_TXT_SHA256_PATH, FOO_TXT_A_SHA256_PATH, FOO_TXT_NAME),
-        (FOO_ZIP_SHA256_PATH, FOO_ZIP_A_SHA256_PATH, FOO_ZIP_NAME),
+        FOO_TXT_SHA256.get(TestHashFileReaderIterName_ARGNAMES),
+        FOO_TXT_A_SHA256.get(TestHashFileReaderIterName_ARGNAMES),
+        FOO_ZIP_SHA256.get(TestHashFileReaderIterName_ARGNAMES),
+        FOO_ZIP_A_SHA256.get(TestHashFileReaderIterName_ARGNAMES),
     ],
 )
 class TestHashFileReaderIterName:
-    def test_iter_name(self, hash_path: Path, a_hash_path: Path, name: str) -> None:
+    def test_iter_name(self, hash_path: Path, name: str) -> None:
         result = pick_first(HashFileReader(hash_path).iter_name())
         assert result == name
 
-        result = pick_first(HashFileReader(a_hash_path).iter_name())
-        assert result == name
+
+_TestHashFileReaderIterHash_ARGNAMES = ("hash_path", "hash")
 
 
 @pytest.mark.parametrize(
-    "hash_path, a_hash_path, hash",
+    _TestHashFileReaderIterHash_ARGNAMES,
     [
-        (FOO_TXT_SHA256_PATH, FOO_TXT_A_SHA256_PATH, FOO_TXT_SHA256_HASH),
-        (FOO_ZIP_SHA256_PATH, FOO_ZIP_A_SHA256_PATH, FOO_ZIP_SHA256_HASH),
+        FOO_TXT_SHA256.get(_TestHashFileReaderIterHash_ARGNAMES),
+        FOO_TXT_A_SHA256.get(_TestHashFileReaderIterHash_ARGNAMES),
+        FOO_ZIP_SHA256.get(_TestHashFileReaderIterHash_ARGNAMES),
+        FOO_ZIP_A_SHA256.get(_TestHashFileReaderIterHash_ARGNAMES),
     ],
 )
 class TestHashFileReaderIterHash:
-    def test_iter_hash(self, hash_path: Path, a_hash_path: Path, hash: str) -> None:
+    def test_iter_hash(self, hash_path: Path, hash: str) -> None:
         result = pick_first(HashFileReader(hash_path).iter_hash())
         assert result == hash
 
-        result = pick_first(HashFileReader(a_hash_path).iter_hash())
-        assert result == hash
+
+_TestHashFileWriter_ARGNAMES = ("hash_path", "hash_line")
 
 
 @pytest.mark.parametrize(
-    "hash_path, hash_line",
+    _TestHashFileWriter_ARGNAMES,
     [
-        (FOO_TXT_SHA256_PATH, FOO_TXT_SHA256_HASH_LINE),
-        (FOO_ZIP_SHA256_PATH, FOO_ZIP_SHA256_HASH_LINE),
+        FOO_TXT_SHA256.get(_TestHashFileWriter_ARGNAMES),
+        FOO_ZIP_SHA256.get(_TestHashFileWriter_ARGNAMES),
     ],
 )
 class TestHashFileWriter:
