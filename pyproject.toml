@@ -64,6 +64,8 @@ lint = [
     "mypy>=1.6",
 ]
 test = [
+    # https://more-itertools.readthedocs.io/en/stable/
+    "more-itertools>=10.0",
     # https://coverage.readthedocs.io/en/latest/
     "coverage>=7.3",
     # https://hypothesis.readthedocs.io/en/latest/

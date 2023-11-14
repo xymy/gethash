@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-from collections.abc import Iterable
 from hashlib import sha256
 from pathlib import Path
-from typing import TypeVar
 
 import pytest
+from more_itertools import one
 
 from gethash.core import (
     CheckHashLineError,
@@ -29,19 +28,6 @@ def sha256_digest(path: str | Path) -> bytes:
 def read_text(path: str | Path) -> str:
     with open(path, encoding="utf-8") as f:
         return f.read()
-
-
-T = TypeVar("T")
-
-
-def pick_first(iterable: Iterable[T]) -> T:
-    value = next(iterable)  # type: ignore [call-overload]
-    try:
-        next(iterable)  # type: ignore [call-overload]
-    except StopIteration:
-        return value
-    else:
-        raise AssertionError
 
 
 _TestFormatParseHashLine_ARGNAMES = ("hash_line", "name", "hash")
@@ -109,7 +95,7 @@ class TestHashFileReader:
             assert hash_file.read_hash_line() == ""
 
     def test_iter(self, hash_path: Path, hash_line: str) -> None:
-        result = pick_first(HashFileReader(hash_path).iter())
+        result = one(HashFileReader(hash_path).iter())
         assert result == hash_line
 
 
@@ -127,7 +113,7 @@ _TestHashFileReaderIter2_ARGNAMES = ("hash_path", "name", "hash")
 )
 class TestHashFileReaderIter2:
     def test_iter2(self, hash_path: Path, name: str, hash: str) -> None:
-        result = pick_first(HashFileReader(hash_path).iter2())
+        result = one(HashFileReader(hash_path).iter2())
         assert result == (name, hash)
 
 
@@ -145,7 +131,7 @@ TestHashFileReaderIterName_ARGNAMES = ("hash_path", "name")
 )
 class TestHashFileReaderIterName:
     def test_iter_name(self, hash_path: Path, name: str) -> None:
-        result = pick_first(HashFileReader(hash_path).iter_name())
+        result = one(HashFileReader(hash_path).iter_name())
         assert result == name
 
 
@@ -163,7 +149,7 @@ _TestHashFileReaderIterHash_ARGNAMES = ("hash_path", "hash")
 )
 class TestHashFileReaderIterHash:
     def test_iter_hash(self, hash_path: Path, hash: str) -> None:
-        result = pick_first(HashFileReader(hash_path).iter_hash())
+        result = one(HashFileReader(hash_path).iter_hash())
         assert result == hash
 
 
