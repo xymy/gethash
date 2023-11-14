@@ -130,7 +130,6 @@ target-version = ["py39"]
 line-length = 120
 target-version = "py39"
 cache-dir = ".cache/ruff"
-extend-exclude = [".cache"]
 src = ["src"]
 show-fixes = true
 show-source = true
@@ -146,7 +145,6 @@ select = [
     "ISC", # flake8-implicit-str-concat
     "ICN", # flake8-import-conventions
     "PIE", # flake8-pie
-    "Q",   # flake8-quotes
     "SIM", # flake8-simplify
     "TCH", # flake8-type-checking
     "FLY", # flynt
