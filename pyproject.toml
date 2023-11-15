@@ -8,7 +8,6 @@ description = "Command-line hash utility"
 readme = "README.md"
 license = "MIT"
 authors = [{ name = "xymy", email = "thyfan@163.com" }]
-maintainers = [{ name = "xymy", email = "thyfan@163.com" }]
 keywords = ["cryptography", "hash", "utility"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -120,9 +119,8 @@ system-packages = true
 features = ["all", "docs", "lint", "test"]
 
 [tool.hatch.envs.default.scripts]
+test = ["coverage erase", "python -m pytest {args}", "coverage report"]
 docs = "python {root}{/}docs{/}release.py {args}"
-lint = "pre-commit run -a"
-test = ["coverage erase", "python -m pytest", "coverage report"]
 
 [tool.black]
 line-length = 120
