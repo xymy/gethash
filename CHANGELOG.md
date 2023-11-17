@@ -36,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added test cases for `gethash.wrappers.crc32`.
 - Adopted `more-itertools` for testing.
+- Improved tox config.
 
 ## [5.9] - 2023-10-30
 
