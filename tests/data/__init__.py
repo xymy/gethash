@@ -17,6 +17,18 @@ class HashData:
 
 DATA_DIR = Path(__file__).parent
 
+FOO_TXT_CRC32 = HashData(
+    DATA_DIR,
+    "foo.txt",
+    "00000000",
+    ".crc32",
+)
+FOO_ZIP_CRC32 = HashData(
+    DATA_DIR,
+    "foo.zip",
+    "73de4bdf",
+    ".crc32",
+)
 FOO_TXT_SHA256 = HashData(
     DATA_DIR,
     "foo.txt",
