@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.0] - 2023-11-19
+
 ### Added
 
 - Added `AggOutput`, `SepOutput` and `NullOutput` classes.
@@ -16,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed `Output` to abstract base class.
 - Refactored `CRC32` class.
 - Now `CheckHashLineError` requires hexadecimal hash value string.
+- Refactored `format_hash_line()` and `parse_hash_line()`.
 
 ### Configuration
 
@@ -35,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Testing
 
 - Added test cases for `gethash.wrappers.crc32`.
+- Added more test data.
 - Adopted `more-itertools` for testing.
 - Improved tox config.
 
@@ -202,7 +206,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Switched dependency from `pycryptodomex` to `pycryptodome`.
 - Added PyPI classifier `Intended Audience :: Developers`.
 
-[Unreleased]: https://github.com/xymy/gethash/compare/v5.9...HEAD
+[Unreleased]: https://github.com/xymy/gethash/compare/v6.0...HEAD
+[6.0]: https://github.com/xymy/gethash/compare/v5.9...v6.0
 [5.9]: https://github.com/xymy/gethash/compare/v5.8...v5.9
 [5.8]: https://github.com/xymy/gethash/compare/v5.7...v5.8
 [5.7]: https://github.com/xymy/gethash/compare/v5.6...v5.7
