@@ -49,18 +49,17 @@ class AggOutput(Output):
     def __init__(self, filepath: str | Path, *, sync: bool = False) -> None:
         self.hash_file = HashFileWriter(filepath)
         self.sync = sync
-        self.maxmtime = 0.0
+        self.maxt = 0
 
     def close(self) -> None:
         self.hash_file.close()
         if self.sync:
-            os.utime(self.hash_file.name, (self.maxmtime, self.maxmtime))
+            os.utime(self.hash_file.name, ns=(self.maxt, self.maxt))
 
     def dump(self, hash_line: str, hash_path: str, path: str) -> None:
         self.hash_file.write_hash_line(hash_line)
         if self.sync:
-            mtime = os.path.getmtime(path)
-            self.maxmtime = max(self.maxmtime, mtime)
+            self.maxt = max(os.stat(path).st_mtime_ns, self.maxt)
 
 
 class SepOutput(Output):
@@ -74,8 +73,8 @@ class SepOutput(Output):
         with HashFileWriter(hash_path) as hash_file:
             hash_file.write_hash_line(hash_line)
         if self.sync:
-            mtime = os.path.getmtime(path)
-            os.utime(hash_path, (mtime, mtime))
+            t = os.stat(path).st_mtime_ns
+            os.utime(hash_path, ns=(t, t))
 
 
 class NullOutput(Output):
@@ -198,12 +197,12 @@ class Gethash:
                 self.echo_exception(hash_path, e)
 
     def _check_hash(self, hash_path: str) -> None:
-        maxmtime = 0.0
+        maxt = 0
         for i, hash_line in enumerate(HashFileReader(hash_path)):
             try:
                 root = self.check_root(hash_path)
                 path = check_hash_line(hash_line, self.hash_function, root=root)
-                maxmtime = max(maxmtime, os.path.getmtime(path))
+                maxt = max(os.stat(path).st_mtime_ns, maxt)
             except ParseHashLineError as e:
                 raise ParseHashFileError(e.hash_line, i) from None
             except CheckHashLineError as e:
@@ -211,7 +210,7 @@ class Gethash:
             else:
                 self.echo(f"[SUCCESS] {path}", fg="green")
         if self.sync:
-            os.utime(hash_path, (maxmtime, maxmtime))
+            os.utime(hash_path, ns=(maxt, maxt))
 
     def check_root(self, path: str) -> str | None:
         if self.inplace:
