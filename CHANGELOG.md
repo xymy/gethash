@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Now `--sync` option supports nanoseconds timestamp without precision loss.
 
+### Removed
+
+- Removed `PathWithSuffix` class.
+
 ### Documentation
 
 - Added `--no-clean` and `--no-dist` options to `docs/release.py` script.

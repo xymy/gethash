@@ -22,7 +22,7 @@ from .core import (
     generate_hash_line,
 )
 from .hasher import HashContext, Hasher
-from .utils.click import CommandX, PathWithSuffix
+from .utils.click import CommandX
 from .utils.glob import glob_filters, sorted_path
 
 
@@ -307,7 +307,7 @@ def gethashcli(command_name: str, display_name: str, **extras: Any) -> Callable[
         @output_mode.option(
             "-o",
             "--agg",
-            type=PathWithSuffix(suffix=suffix, dir_okay=False),
+            type=click.Path(dir_okay=False),
             help="Set the aggregate output file.",
         )
         @output_mode.option("-s", "--sep", is_flag=True, help="Separate output files.")
