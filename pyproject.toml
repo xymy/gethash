@@ -113,14 +113,26 @@ Tracker = "https://github.com/xymy/gethash/issues"
 path = "src/gethash/__init__.py"
 
 [tool.hatch.envs.default]
-type = "virtual"
 path = ".venv"
 system-packages = true
 features = ["all", "docs", "lint", "test"]
 
+[tool.hatch.envs.default.env-vars]
+COVERAGE_FILE = "{root}{/}.coverage"
+HYPOTHESIS_STORAGE_DIRECTORY = "{root}{/}.cache{/}hypothesis"
+
 [tool.hatch.envs.default.scripts]
-test = ["coverage erase", "python -m pytest {args}", "coverage report"]
 docs = "python {root}{/}docs{/}release.py {args}"
+lint = [
+    "black {root}{/}src {root}{/}tests",
+    "ruff {root}{/}src {root}{/}tests",
+    "mypy {root}{/}src {root}{/}tests",
+]
+test = [
+    "coverage erase",
+    "python -m pytest -o cache_dir={root}{/}.cache{/}pytest --cov-report=html:{root}{/}htmlcov {args}",
+    "coverage report",
+]
 
 [tool.black]
 line-length = 120

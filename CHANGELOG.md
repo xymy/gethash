@@ -19,6 +19,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Adopted more `ruff` rules.
 
+### Testing
+
+- Improved tox config.
+- Now store `hypothesis` and `pytest` cache in `.cache` directory.
+
 ## [6.0] - 2023-11-19
 
 ### Added
