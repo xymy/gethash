@@ -12,6 +12,8 @@
 
 /.mypy_cache/
 /.ruff_cache/
+/.dmypy.json
+/dmypy.json
 
 /.hypothesis/
 /.pytest_cache/
@@ -26,11 +28,6 @@
 /.venv/
 /venv/
 
-# Python
-__pycache__/
-*.egg-info/
-*.py[cod]
-
 # C/C++
 *.obj
 *.lib
@@ -40,6 +37,11 @@ __pycache__/
 *.a
 *.so
 *.out
+
+# Python
+__pycache__/
+*.egg-info/
+*.py[cod]
 
 # macOS
 .DS_Store
