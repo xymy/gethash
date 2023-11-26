@@ -75,6 +75,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Migrated build system from `setuptools` to `hatch`.
 - Now use `hatch` to setup development environment.
+- Now require `importlib-metadata>=4.10`.
+- Now require `natsort>=8.4`.
+- Now require `tqdm>=4.66`.
+- Now require `typing-extensions>=4.4`.
 
 ### Documentation
 
@@ -86,6 +90,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Configuration
 
 - Now allow to setup development environment via `tox devenv -e dev .venv`.
+- Adopted `typing-extensions`.
 
 ### Documentation
 
@@ -110,6 +115,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Configuration
 
 - Migrated development dependencies to `setup.cfg`.
+- Now require `importlib-metadata>=4.4`.
 
 ### Linting
 
@@ -122,6 +128,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Configuration
 
 - Migrated development dependencies to `requirements-dev.txt`.
+- Now require `click>=8.1`.
 
 ### Documentation
 
@@ -202,9 +209,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Configuration
 
+- Now require `natsort>=8.1`.
 - Removed `setup.py`. Now use `python -m build`.
 
 ## [5.1] - 2022-01-18
+
+### Configuration
+
+- Now require `tqdm>=4.60`.
+- Now require `importlib-metadata>=4.4; python_version < "3.10"`.
 
 ### Documentation
 
@@ -224,6 +237,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Configuration
 
+- Now require `click>=8.0`.
+- Removed `colorama>=0.4; platform_system == "Windows"` dependency.
 - Switched dependency from `pycryptodomex` to `pycryptodome`.
 - Added PyPI classifier `Intended Audience :: Developers`.
 
