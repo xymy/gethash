@@ -2,12 +2,11 @@ from __future__ import annotations
 
 from typing import overload
 
-from . import _check_bytes, _check_bytes_w_opt
-
 
 def _py_strxor(term1: bytes, term2: bytes, output: bytearray | None = None) -> bytes | None:
     if output is None:
         return bytes(x1 ^ x2 for x1, x2 in zip(term1, term2))
+
     for i, (x1, x2) in enumerate(zip(term1, term2)):
         output[i] = x1 ^ x2
     return None
@@ -22,7 +21,7 @@ else:
 
 
 @overload
-def strxor(term1: bytes, term2: bytes, output: None) -> bytes:
+def strxor(term1: bytes, term2: bytes, output: None = None) -> bytes:
     ...
 
 
@@ -49,9 +48,6 @@ def strxor(term1: bytes, term2: bytes, output: bytearray | None = None) -> bytes
             return ``None``.
     """
 
-    _check_bytes(term1, "term1")
-    _check_bytes(term2, "term2")
-    _check_bytes_w_opt(output, "output")
     if len(term1) != len(term2):
         raise ValueError("term1 and term2 must have the same length")
     if output is not None and len(output) != len(term1):
