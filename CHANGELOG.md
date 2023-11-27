@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Testing
 
+- Added test cases for `gethash.utils.strxor`.
 - Improved tox config.
 - Now store `hypothesis` and `pytest` cache in `.cache` directory.
 
