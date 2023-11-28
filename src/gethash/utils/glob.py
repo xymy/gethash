@@ -7,8 +7,6 @@ from typing import Any, AnyStr, Callable
 
 from natsort import os_sort_keygen
 
-from . import _check_int, _check_str
-
 _ESCAPE_SQUARE = glob.escape("[")
 _ESCAPE_SQUARE_BYTES = glob.escape(b"[")
 
@@ -55,7 +53,6 @@ def _glob2(path: AnyStr, *, recursive: bool = False, user: bool = False, vars: b
 
 
 def _get_glob(mode: int) -> Callable[..., Iterator]:
-    _check_int(mode, "mode")
     if mode == 0:
         return _glob0
     elif mode == 1:
@@ -67,7 +64,6 @@ def _get_glob(mode: int) -> Callable[..., Iterator]:
 
 
 def _path_filter(paths: Iterable[AnyStr], *, type: str) -> Iterator[AnyStr]:
-    _check_str(type, "type")
     pred: Callable[[str | bytes], bool]
     if type == "a":
         pred = os.path.exists
