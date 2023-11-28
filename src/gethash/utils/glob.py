@@ -9,19 +9,26 @@ from natsort import os_sort_keygen
 
 from . import _check_int, _check_str
 
-__all__ = [
-    "glob_scanner",
-    "glob_filter",
-    "glob_scanners",
-    "glob_filters",
-    "sorted_path",
-]
-
 _ESCAPE_SQUARE = glob.escape("[")
 _ESCAPE_SQUARE_BYTES = glob.escape(b"[")
 
 
-def _expand(path: AnyStr, *, user: bool = False, vars: bool = False) -> AnyStr:
+def expand_path(path: AnyStr, *, user: bool = False, vars: bool = False) -> AnyStr:
+    """Expand user home directory and environment variables.
+
+    Parameters:
+        path (AnyStr):
+            The path.
+        user (bool, default=False):
+            If ``True``, expand user home directory.
+        vars (bool, default=False):
+            If ``True``, expand environment variables.
+
+    Returns:
+        AnyStr:
+            The expanded path.
+    """
+
     if user:
         path = os.path.expanduser(path)
     if vars:
@@ -30,11 +37,11 @@ def _expand(path: AnyStr, *, user: bool = False, vars: bool = False) -> AnyStr:
 
 
 def _glob0(path: AnyStr, *, recursive: bool = False, user: bool = False, vars: bool = False) -> Iterator[AnyStr]:
-    yield _expand(path, user=user, vars=vars)
+    yield expand_path(path, user=user, vars=vars)
 
 
 def _glob1(path: AnyStr, *, recursive: bool = False, user: bool = False, vars: bool = False) -> Iterator[AnyStr]:
-    path = _expand(path, user=user, vars=vars)
+    path = expand_path(path, user=user, vars=vars)
     if isinstance(path, bytes):
         path = path.replace(b"[", _ESCAPE_SQUARE_BYTES)
     else:
@@ -43,7 +50,7 @@ def _glob1(path: AnyStr, *, recursive: bool = False, user: bool = False, vars: b
 
 
 def _glob2(path: AnyStr, *, recursive: bool = False, user: bool = False, vars: bool = False) -> Iterator[AnyStr]:
-    path = _expand(path, user=user, vars=vars)
+    path = expand_path(path, user=user, vars=vars)
     yield from glob.iglob(path, recursive=recursive)
 
 

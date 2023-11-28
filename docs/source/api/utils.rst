@@ -8,6 +8,8 @@ gethash.utils.glob
 
 .. currentmodule:: gethash.utils.glob
 
+.. autofunction:: expand_path
+
 .. autofunction:: glob_scanner
 
 .. autofunction:: glob_filter
