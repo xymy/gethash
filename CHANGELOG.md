@@ -9,7 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added `gethash.utils.glob.expand_path()` function.
+- Added `expand_path()` function.
+- Added `auto_glob()` function.
+- Added `--auto` option to provide an alternative file selection method.
 
 ### Changed
 

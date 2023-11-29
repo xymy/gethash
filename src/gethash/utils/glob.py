@@ -10,6 +10,22 @@ from natsort import os_sort_keygen
 _ESCAPE_SQUARE = glob.escape("[")
 _ESCAPE_SQUARE_BYTES = glob.escape(b"[")
 
+_HASH_SUFFIXES = (
+    ".blake2b",
+    ".blake2s",
+    ".crc32",
+    ".md2",
+    ".md4",
+    ".md5",
+    ".ripemd160",
+    ".sha1",
+    ".sha256",
+    ".sha512",
+    ".sha3_256",
+    ".sha3_512",
+    ".sm3",
+)
+
 
 def expand_path(path: AnyStr, *, user: bool = False, vars: bool = False) -> AnyStr:
     """Expand user home directory and environment variables.
@@ -199,6 +215,14 @@ def glob_filters(
 
     matched = glob_scanners(paths, mode=mode, recursive=recursive, user=user, vars=vars)
     yield from _path_filter(matched, type=type)
+
+
+def auto_glob(roots: Iterable[str]) -> Iterator[str]:
+    for root in roots:
+        for dirpath, _dirnames, filenames in os.walk(root):
+            for filename in filenames:
+                if not filename.lower().endswith(_HASH_SUFFIXES):
+                    yield os.path.join(dirpath, filename)
 
 
 def sorted_path(

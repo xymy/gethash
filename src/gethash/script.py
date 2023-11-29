@@ -23,7 +23,7 @@ from .core import (
 )
 from .hasher import HashContext, Hasher
 from .utils.click import CommandX
-from .utils.glob import glob_filters, sorted_path
+from .utils.glob import auto_glob, glob_filters, sorted_path
 
 
 class ParseHashFileError(ValueError):
@@ -125,6 +125,7 @@ class Gethash:
 
     def __init__(self, ctx: HashContext, **kwargs: Any) -> None:
         self.ctx = ctx
+        self.auto = kwargs.pop("auto", False)
         self.sync = kwargs.pop("sync", False)
         self.suffix = kwargs.pop("suffix", ".sha")
 
@@ -218,6 +219,8 @@ class Gethash:
         return self.root
 
     def glob_function(self, paths: Iterable[str]) -> Iterable[str]:
+        if self.auto:
+            return sorted_path(auto_glob(paths))
         return sorted_path(
             glob_filters(paths, mode=self.glob_mode, type=self.glob_type, recursive=True, user=True, vars=True)
         )
@@ -266,6 +269,7 @@ def gethashcli(command_name: str, display_name: str, **extras: Any) -> Callable[
 
         @click.command(command_name, cls=CommandX, context_settings=context_settings, no_args_is_help=True)
         @click.argument("files", nargs=-1)
+        @click.option("-a", "--auto", is_flag=True, help="Search files automatically")
         @click.option(
             "-c",
             "--check",
@@ -334,6 +338,8 @@ def gethashcli(command_name: str, display_name: str, **extras: Any) -> Callable[
         @functools.wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
             kwargs.setdefault("suffix", suffix)
+            if kwargs.get("auto", False):
+                kwargs.setdefault("files", (".",))
             return func(*args, **kwargs)
 
         return wrapper
