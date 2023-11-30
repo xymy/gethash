@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.1] - 2023-11-30
+
 ### Added
 
 - Added `expand_path()` function.
@@ -249,7 +251,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Switched dependency from `pycryptodomex` to `pycryptodome`.
 - Added PyPI classifier `Intended Audience :: Developers`.
 
-[Unreleased]: https://github.com/xymy/gethash/compare/v6.0...HEAD
+[Unreleased]: https://github.com/xymy/gethash/compare/v6.1...HEAD
+[6.1]: https://github.com/xymy/gethash/compare/v6.0...v6.1
 [6.0]: https://github.com/xymy/gethash/compare/v5.9...v6.0
 [5.9]: https://github.com/xymy/gethash/compare/v5.8...v5.9
 [5.8]: https://github.com/xymy/gethash/compare/v5.7...v5.8
