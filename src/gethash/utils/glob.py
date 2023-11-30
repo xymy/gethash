@@ -239,7 +239,7 @@ def sorted_path(
             The same parameter as :func:`sorted`.
 
     Returns:
-        List[AnyStr]:
+        list[AnyStr]:
             The sorted list of path strings.
     """
 

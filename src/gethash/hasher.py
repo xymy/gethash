@@ -44,7 +44,7 @@ class Hasher:
             The hash context prototype used to generate hash values.
         chunksize (int | None, default=None):
             The chunk size for reading data from files.
-        tqdm_args (Dict[str, Any] | None, default=None):
+        tqdm_args (dict[str, Any] | None, default=None):
             The arguments passed to the ``tqdm_type``.
         tqdm_type (Type[tqdm] | None, default=None):
             The ``tqdm`` type.
