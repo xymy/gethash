@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- Removed `glob_scanner()` and `glob_filter()` functions.
+
 ## [6.1] - 2023-11-30
 
 ### Added

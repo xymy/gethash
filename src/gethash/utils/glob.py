@@ -92,65 +92,6 @@ def _path_filter(paths: Iterable[AnyStr], *, type: str) -> Iterator[AnyStr]:
     yield from filter(pred, paths)
 
 
-def glob_scanner(
-    path: AnyStr, *, mode: int = 1, recursive: bool = False, user: bool = False, vars: bool = False
-) -> Iterator[AnyStr]:
-    """Match a path with glob patterns.
-
-    Parameters:
-        path (AnyStr):
-            A path with glob patterns.
-        mode (int, default=1):
-            The mode of glob. If ``0``, disable globbing; if ``1``, resolve
-            ``*`` and ``?``; if ``2``, resolve ``*``, ``?`` and ``[]``.
-        recursive (bool, default=False):
-            If ``True``, the pattern ``**`` will match any files and zero or
-            more directories, subdirectories and symbolic links to directories.
-        user (bool, default=False):
-            If ``True``, user home directory will be expanded.
-        vars (bool, default=False):
-            If ``True``, environment variables will be expanded.
-
-    Yields:
-        AnyStr:
-            The matched path.
-    """
-
-    glob = _get_glob(mode)
-    yield from glob(path, recursive=recursive, user=user, vars=vars)
-
-
-def glob_filter(
-    path: AnyStr, *, mode: int = 1, type: str = "a", recursive: bool = False, user: bool = False, vars: bool = False
-) -> Iterator[AnyStr]:
-    """Match and filter a path with glob patterns.
-
-    Parameters:
-        path (AnyStr):
-            A path with glob patterns.
-        mode (int, default=1):
-            The mode of glob. If ``0``, disable globbing; if ``1``, resolve
-            ``*`` and ``?``; if ``2``, resolve ``*``, ``?`` and ``[]``.
-        type (str, default='a'):
-            The type of file. If ``a``, include all types; if ``d``, include
-            directories; if ``f``, include files.
-        recursive (bool, default=False):
-            If ``True``, the pattern ``**`` will match any files and zero or
-            more directories, subdirectories and symbolic links to directories.
-        user (bool, default=False):
-            If ``True``, user home directory will be expanded.
-        vars (bool, default=False):
-            If ``True``, environment variables will be expanded.
-
-    Yields:
-        AnyStr:
-            The matched path with the given file type.
-    """
-
-    matched = glob_scanner(path, mode=mode, recursive=recursive, user=user, vars=vars)
-    yield from _path_filter(matched, type=type)
-
-
 def glob_scanners(
     paths: Iterable[AnyStr], *, mode: int = 1, recursive: bool = False, user: bool = False, vars: bool = False
 ) -> Iterator[AnyStr]:
