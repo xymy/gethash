@@ -129,9 +129,9 @@ lint = [
     "mypy {root}{/}src {root}{/}tests",
 ]
 test = [
-    "coverage erase",
-    "python -m pytest -o cache_dir={root}{/}.cache{/}pytest --cov-report=html:{root}{/}htmlcov {args}",
-    "coverage report",
+    "python -m coverage erase",
+    "python -m pytest --cov-report=html:{root}{/}htmlcov {args}",
+    "python -m coverage report",
 ]
 
 [tool.black]
