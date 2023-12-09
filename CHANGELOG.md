@@ -11,9 +11,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Removed `glob_scanner()` and `glob_filter()` functions.
 
+### Documentation
+
+- Removed `black` badge from documentation.
+
 ### Linting
 
 - Removed `pyupgrade`.
+- Removed `black`.
+- Adopted `ruff format`.
 
 ### Testing
 
