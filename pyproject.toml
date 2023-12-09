@@ -112,8 +112,8 @@ path = "src/gethash/__init__.py"
 
 [tool.hatch.envs.default]
 path = ".venv"
-system-packages = true
 features = ["all", "docs", "lint", "test"]
+system-packages = true
 
 [tool.hatch.envs.default.env-vars]
 COVERAGE_FILE = "{root}{/}.coverage"
