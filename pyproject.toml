@@ -121,11 +121,7 @@ HYPOTHESIS_STORAGE_DIRECTORY = "{root}{/}.cache{/}hypothesis"
 
 [tool.hatch.envs.default.scripts]
 docs = "python {root}{/}docs{/}release.py {args}"
-lint = [
-    "ruff check {root}{/}src {root}{/}tests",
-    "ruff format {root}{/}src {root}{/}tests",
-    "mypy {root}{/}src {root}{/}tests",
-]
+lint = ["ruff check {root}", "ruff format {root}", "mypy {root}"]
 test = [
     "python -m coverage erase",
     "python -m pytest --cov-report=html:{root}{/}htmlcov {args}",
