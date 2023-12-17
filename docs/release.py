@@ -1,25 +1,24 @@
-import argparse
 import shutil
 import subprocess
 import sys
 import tarfile
 from pathlib import Path
+from typing import Final
 
+import click
 from rich.console import Console
 from rich.markup import escape
 
+CONTEXT_SETTINGS: Final = dict(help_option_names=["-h", "--help"], max_content_width=120)
 
-def main() -> None:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--clean", action="store_true", help="clean the build directory")
-    parser.add_argument("--no-clean", action="store_false", dest="clean", help="do not clean the build directory")
-    parser.add_argument("--dist", action="store_true", help="build a distribution")
-    parser.add_argument("--no-dist", action="store_false", dest="dist", help="do not build a distribution")
-    args = parser.parse_args()
+
+@click.command(context_settings=CONTEXT_SETTINGS)
+@click.option("--clean/--no-clean", default=False, help="Whether or not to clean the build directory.")
+@click.option("--dist/--no-dist", default=False, help="Whether or not to build a distribution.")
+def release(*, clean: bool, dist: bool) -> None:
+    import gethash as pkg
 
     console = Console(soft_wrap=True, emoji=False, highlight=False)
-
-    import gethash as pkg
 
     docs_dir = Path(__file__).parent
     source_dir = docs_dir / "source"
@@ -32,7 +31,7 @@ def main() -> None:
     console.print(f"Build dir: [u]{build_dir}[/u]", style="b magenta")
     console.print()
 
-    if args.clean and build_dir.exists():
+    if clean and build_dir.exists():
         shutil.rmtree(build_dir)
         console.print(f"Clean the build directory [u]{escape(str(build_dir))}[/u]", style="b blue")
 
@@ -40,7 +39,7 @@ def main() -> None:
         [sys.executable, "-m", "sphinx.cmd.build", "-b", "html", "-d", doctrees_dir, source_dir, html_dir], check=True
     )
 
-    if args.dist:
+    if dist:
         dist_dir = docs_dir / "dist"
         dist_dir.mkdir(parents=True, exist_ok=True)
         dist_name = f"{pkg.__title__}-{pkg.__version__}-docs"
@@ -51,5 +50,14 @@ def main() -> None:
         console.print(f"Build a distribution [u]{escape(str(dist_path))}[/u]", style="b green")
 
 
+def main() -> int:
+    try:
+        return release(windows_expand_args=False)
+    except Exception:  # noqa: BLE001
+        console = Console()
+        console.print_exception()
+        return 1
+
+
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
